@@ -2,15 +2,16 @@
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.util.Random;
 
-class DrawPanel extends JPanel {
+class DrawPanel extends JPanel{
+    Graphics2D graphic;
 
     private void doDrawing(Graphics g) {
 
-        Graphics2D g2d = (Graphics2D) g;
-
-        g2d.setColor(Color.blue);
+        graphic = (Graphics2D) g;
+        graphic.setColor(Color.blue);
 
         for (int i = 0; i <= 1000; i++) {
 
@@ -23,19 +24,26 @@ class DrawPanel extends JPanel {
             Random r = new Random();
             int x = Math.abs(r.nextInt()) % w;
             int y = Math.abs(r.nextInt()) % h;
-            g2d.drawLine(x, y, x, y);
+            graphic.drawLine(x, y, x, y);
         }
+    }
+
+    public void markNewPoint(Point point){
+        graphic.setColor(Color.blue);
+        graphic.drawLine(point.x, point.y, 10, 10);
     }
 
     @Override
     public void paintComponent(Graphics g) {
 
-        super.paintComponent(g);
+//        super.paintComponent(g);
         doDrawing(g);
     }
 }
 
 class PointsEx extends JFrame {
+    DrawPanel drawPanel;
+    PointsEx p;
 
     public PointsEx() {
 
@@ -44,8 +52,48 @@ class PointsEx extends JFrame {
 
     private void initUI() {
 
-        DrawPanel drawPanel = new DrawPanel();
+        drawPanel = new DrawPanel();
         add(drawPanel);
+//        repaint(100, 0, 0, 350, 250);
+
+        addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                //drawPanel.markNewPoint(e.getPoint());
+
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+//                drawPanel.markNewPoint(e.getPoint());
+                PointsEx.super.repaint();
+                System.out.println("moved " + e.getX() + " " + e.getY() + " " + e.getButton());
+            }
+        });
+
+//        addMouseWheelListener(new MouseWheelListener() {
+//            @Override
+//            public void mouseWheelMoved(MouseWheelEvent e) {
+//                System.out.println("wheel " + e.getX() + " " + e.getY() + " " + e.getUnitsToScroll());
+//            }
+//        });
+
+//        addKeyListener(new KeyListener() {
+//            @Override
+//            public void keyTyped(KeyEvent e) {
+//                System.out.println("type " + e.getExtendedKeyCode() + " " + e.getKeyCode() + " " + e.getKeyChar() + " " +
+//                        e.getKeyLocation() + " " + e.paramString());
+//            }
+//
+//            @Override
+//            public void keyPressed(KeyEvent e) {
+//                System.out.println("pressed " + e.getExtendedKeyCode() + " " + e.getKeyCode() + " " + e.getKeyChar() + " " + e.getKeyLocation());
+//            }
+//
+//            @Override
+//            public void keyReleased(KeyEvent e) {
+//            }
+//        });
 
         setSize(350, 250);
         setTitle("Points");
