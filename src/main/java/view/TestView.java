@@ -7,10 +7,11 @@ public class TestView implements MyView{
 
     public TestView(ModelView model) {
         this.model = model;
+        model.registerView(this);
     }
 
     @Override
     public void refreshView() {
-
+        model.printModel();
     }
 }

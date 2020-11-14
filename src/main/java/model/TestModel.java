@@ -20,7 +20,7 @@ public class TestModel implements ModelController, ModelView{
 
     @Override
     public void tryMovePlayer(Point shift) {
-        playerPos.move(shift.x, shift.y);
+        playerPos.translate(shift.x, shift.y);
         refreshAllView();
     }
 
