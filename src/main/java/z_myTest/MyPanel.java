@@ -1,4 +1,4 @@
-package myTest;
+package z_myTest;
 
 import javax.swing.*;
 import java.awt.*;

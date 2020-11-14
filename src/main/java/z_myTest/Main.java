@@ -1,4 +1,4 @@
-package myTest;
+package z_myTest;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
