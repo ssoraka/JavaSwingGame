@@ -2,9 +2,11 @@ package model;
 
 import view.MyView;
 
-import java.awt.*;
+import java.awt.Point;
+import java.util.List;
 
 public interface ModelView {
     public void registerView(MyView view);
-    public void printModel();
+    public Point getPlayerPos();
+    public List<String> getMessages();
 }

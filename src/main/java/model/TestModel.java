@@ -7,13 +7,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestModel implements ModelController, ModelView{
-    List<MyView> views;
-    Point playerPos;
-    String message;
+    private List<MyView> views;
+    private Point playerPos;
+    private List<String> messages;
 
     public TestModel() {
-        this.views = new ArrayList<>();
+        views = new ArrayList<>();
+        messages = new ArrayList<>();
         playerPos = new Point(10,10);
+    }
+
+    public List<MyView> getViews() {
+        return views;
+    }
+
+    @Override
+    public Point getPlayerPos() {
+        return playerPos;
+    }
+
+    @Override
+    public List<String> getMessages() {
+        return messages;
     }
 
     // реакции на контроллеры
@@ -26,7 +41,7 @@ public class TestModel implements ModelController, ModelView{
 
     @Override
     public void printMessage(String message) {
-        this.message = message;
+        messages.add(message);
         refreshAllView();
     }
 
@@ -47,8 +62,11 @@ public class TestModel implements ModelController, ModelView{
 
     //надо отправлять какой-то интерфейс, чтоб вид мог себя обновить, пользуясь моделью
     @Override
-    public void printModel() {
-        System.out.println(playerPos.toString());
-        System.out.println(message);
+    public String toString() {
+        return "TestModel{" +
+                "views=" + views +
+                ", playerPos=" + playerPos +
+                ", messages=" + messages +
+                '}';
     }
 }

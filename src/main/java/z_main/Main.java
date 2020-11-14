@@ -8,27 +8,31 @@ public class Main {
     public static void main(String[] args) {
         TestModel model = new TestModel();
         TestView view = new TestView(model);
+        TestView view2 = new TestView(model);
+
         MyController controllers = new MyController();
         controllers.add(new MoveController(model));
         controllers.add(new TalkController(model));
 
-        ActionBuilder moveAction = new ActionBuilder().setAction(ActionBuilder.Action.MOVE_DOWN).build();
-        controllers.execute(moveAction);
-
-        ActionBuilder talkAction = new ActionBuilder()
+        ActionBuilder moveAction = new ActionBuilder()
+                .setAction(ActionBuilder.Action.MOVE_DOWN)
+                .build();
+        ActionBuilder talkAction1 = new ActionBuilder()
                 .setAction(ActionBuilder.Action.TEXT)
                 .setMessage("Hello World1")
                 .build();
-        controllers.execute(talkAction);
-        talkAction = new ActionBuilder()
+        ActionBuilder talkAction2 = new ActionBuilder()
                 .setAction(ActionBuilder.Action.TEXT)
                 .build();
-        controllers.execute(talkAction);
-        talkAction = new ActionBuilder()
+        ActionBuilder talkAction3 = new ActionBuilder()
                 .setAction(ActionBuilder.Action.TEXT)
                 .setMessage("Hello World2")
                 .build();
-        controllers.execute(talkAction);
+
+        controllers.execute(moveAction);
+        controllers.execute(talkAction1);
+        controllers.execute(talkAction2);
+        controllers.execute(talkAction3);
 
     }
 }

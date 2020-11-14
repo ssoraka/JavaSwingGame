@@ -12,6 +12,7 @@ public class TestView implements MyView{
 
     @Override
     public void refreshView() {
-        model.printModel();
+        System.out.println("Позиция игрока " + model.getPlayerPos().toString());
+        System.out.println("Список сообщений " + model.getMessages().toString());
     }
 }
