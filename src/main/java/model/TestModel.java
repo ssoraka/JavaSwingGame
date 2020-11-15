@@ -17,10 +17,6 @@ public class TestModel implements ModelController, ModelView{
         playerPos = new Point(10,10);
     }
 
-    public List<MyView> getViews() {
-        return views;
-    }
-
     @Override
     public Point getPlayerPos() {
         return playerPos;
