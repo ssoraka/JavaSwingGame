@@ -28,10 +28,7 @@ public class TerminalView implements MyView, Runnable{
 
     public void repaint() {
         Point pos = model.getPlayerPos();
-//        Point pos = new Point(10, 10);
 
-//        console = System.out.console();
-//        console.printf("dsa");
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 if (i == pos.y && j == pos.x)
@@ -41,7 +38,8 @@ public class TerminalView implements MyView, Runnable{
             }
             System.out.println("");
         }
-        System.out.flush();
+
+        System.out.printf("message = %s\n", model.getMessages());
     }
 
     @Override

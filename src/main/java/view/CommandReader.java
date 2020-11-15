@@ -1,7 +1,6 @@
 package view;
 
 import controllers.ActionBuilder;
-import javafx.scene.input.KeyCode;
 
 import java.awt.event.KeyEvent;
 
@@ -9,11 +8,11 @@ public class CommandReader {
     public final static ActionBuilder EMPTY = new ActionBuilder();
     ActionBuilder action;
     StringBuilder buffer;
-    boolean isReading;
+    boolean isWriting;
 
     public CommandReader() {
         buffer = new StringBuilder();
-        isReading = false;
+        isWriting = false;
     }
 
     public ActionBuilder getAction(KeyEvent key) {
@@ -25,45 +24,54 @@ public class CommandReader {
     }
 
     public ActionBuilder getAction(char keyChar, int keyCode) {
-
-        if (isReading) {
+        action = EMPTY;
+        if (isWriting) {
             readMessage(keyChar, keyCode);
         } else {
-            readComand(keyChar);
+            readCommand(keyCode);
         }
         return action;
     }
 
+    private void readCommand(int keyCode) {
+        switch (keyCode) {
+            case KeyEvent.VK_W: action = new ActionBuilder().setAction(ActionBuilder.Action.MOVE_UP).build(); break;
+            case KeyEvent.VK_S: action = new ActionBuilder().setAction(ActionBuilder.Action.MOVE_DOWN).build(); break;
+            case KeyEvent.VK_A: action = new ActionBuilder().setAction(ActionBuilder.Action.MOVE_LEFT).build(); break;
+            case KeyEvent.VK_D: action = new ActionBuilder().setAction(ActionBuilder.Action.MOVE_RIGHT).build(); break;
+            case KeyEvent.VK_ENTER: isWriting = true; break;
+            case KeyEvent.VK_ESCAPE: System.exit(0);
+            default:
+                break;
+        }
+    }
+
     private void readMessage(char keyChar, int keyCode) {
-        if (keyCode == KeyEvent.VK_SPACE) {
+        if (keyCode == KeyEvent.VK_ENTER) {
             action = new ActionBuilder()
                     .setAction(ActionBuilder.Action.TEXT)
                     .setMessage(buffer.toString())
                     .build();
             buffer = new StringBuilder();
+            isWriting = false;
         } else {
-            buffer.append(keyCode);
-            action = EMPTY;
+            if (isWritable(keyChar))
+                buffer.append(keyChar);
+            else if (keyCode == KeyEvent.VK_BACK_SPACE)
+                buffer.deleteCharAt(buffer.length() - 1);
         }
     }
 
-    private void readComand(int keyCode) {
-        action = new ActionBuilder();
-
-        switch (keyCode) {
-            case KeyEvent.VK_W: action.setAction(ActionBuilder.Action.MOVE_UP).build(); break;
-            case KeyEvent.VK_S: action.setAction(ActionBuilder.Action.MOVE_DOWN).build(); break;
-            case KeyEvent.VK_A: action.setAction(ActionBuilder.Action.MOVE_LEFT).build(); break;
-            case KeyEvent.VK_D: action.setAction(ActionBuilder.Action.MOVE_RIGHT).build(); break;
-            case KeyEvent.VK_T: {
-                isReading = true;
-                action = EMPTY;
-                break;
-            }
-            case KeyEvent.VK_ESCAPE: System.exit(0);
+    private boolean isWritable(char keyChar) {
+        switch (Character.getType(keyChar)) {
+            case Character.CONTROL:
+            case Character.FORMAT:
+            case Character.PRIVATE_USE:
+            case Character.SURROGATE:
+            case Character.UNASSIGNED:
+                return false;
             default:
-                action = EMPTY;break;
+                return true;
         }
-
     }
 }

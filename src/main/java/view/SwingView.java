@@ -28,8 +28,7 @@ public class SwingView implements MyView, Runnable{
         frame.add(panel);
         frame.addKeyListener(new KeyListener() {
 
-            private boolean isReader = false;
-            private StringBuilder buffer = new StringBuilder();
+            private CommandReader reader = new CommandReader();
 
             @Override
             public void keyTyped(KeyEvent e) {
@@ -38,33 +37,7 @@ public class SwingView implements MyView, Runnable{
             @Override
             public void keyPressed(KeyEvent e) {
 //                System.out.println(e.getKeyCode());
-
-                ActionBuilder action = new ActionBuilder();
-                if (isReader) {
-                    if (e.getKeyChar() == 't') {
-                        action.setAction(ActionBuilder.Action.TEXT).setMessage(buffer.toString()).build();
-                        isReader = false;
-                    } else {
-                        buffer.append(e.getKeyChar());
-                        return;
-                    }
-                } else if (e.getKeyChar() == 't') {
-                    isReader = true;
-                    return;
-                } else if (e.getKeyChar() == 'w') {
-                    action.setAction(ActionBuilder.Action.MOVE_UP).build();
-                } else if (e.getKeyChar() == 's') {
-                    action.setAction(ActionBuilder.Action.MOVE_DOWN).build();
-                } else if (e.getKeyChar() == 'a') {
-                    action.setAction(ActionBuilder.Action.MOVE_LEFT).build();
-                } else if (e.getKeyChar() == 'd') {
-                    action.setAction(ActionBuilder.Action.MOVE_RIGHT).build();
-                } else if (e.getKeyCode() == 27) {
-                    System.exit(0);
-                } else {
-                    return;
-                }
-                controllers.execute(action);
+                controllers.execute(reader.getAction(e));
             }
 
             @Override
