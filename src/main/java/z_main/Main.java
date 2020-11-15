@@ -24,21 +24,21 @@ public class Main {
 //        System.out.flush();
 
 
-//        TestModel model = new TestModel();
-//        MyController controllers = new MyController();
-//        controllers.add(new MoveController(model));
-//        controllers.add(new TalkController(model));
-//
-//        SwingView view = new SwingView(model, controllers);
-//        TerminalView view2 = new TerminalView(model);
-//
-//        Thread myThready = new Thread(view);
-//        myThready.setDaemon(true);
-//        myThready.start();
-//
-//        Thread myThready2 = new Thread(view2);
-//        myThready2.setDaemon(true);
-//        myThready2.start();
+        TestModel model = new TestModel();
+        MyController controllers = new MyController();
+        controllers.add(new MoveController(model));
+        controllers.add(new TalkController(model));
+
+        SwingView view = new SwingView(model, controllers);
+        TerminalView view2 = new TerminalView(model);
+
+        Thread myThready = new Thread(view);
+        myThready.setDaemon(true);
+        myThready.start();
+
+        Thread myThready2 = new Thread(view2);
+        myThready2.setDaemon(true);
+        myThready2.start();
 
 
 

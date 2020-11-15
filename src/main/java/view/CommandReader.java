@@ -51,28 +51,18 @@ public class CommandReader {
         action = new ActionBuilder();
 
         switch (keyCode) {
-            case KeyEvent.VK_W:
-                action.setAction(ActionBuilder.Action.MOVE_UP).build();
-                break;
-            case KeyEvent.VK_S:
-                action.setAction(ActionBuilder.Action.MOVE_DOWN).build();
-                break;
-            case KeyEvent.VK_A:
-                action.setAction(ActionBuilder.Action.MOVE_LEFT).build();
-                break;
-            case KeyEvent.VK_D:
-                action.setAction(ActionBuilder.Action.MOVE_RIGHT).build();
-                break;
+            case KeyEvent.VK_W: action.setAction(ActionBuilder.Action.MOVE_UP).build(); break;
+            case KeyEvent.VK_S: action.setAction(ActionBuilder.Action.MOVE_DOWN).build(); break;
+            case KeyEvent.VK_A: action.setAction(ActionBuilder.Action.MOVE_LEFT).build(); break;
+            case KeyEvent.VK_D: action.setAction(ActionBuilder.Action.MOVE_RIGHT).build(); break;
             case KeyEvent.VK_T: {
                 isReading = true;
                 action = EMPTY;
                 break;
             }
-            case KeyEvent.VK_ESCAPE:
-                System.exit(0);
+            case KeyEvent.VK_ESCAPE: System.exit(0);
             default:
-                action = EMPTY;
-                break;
+                action = EMPTY;break;
         }
 
     }
