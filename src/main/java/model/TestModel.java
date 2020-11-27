@@ -5,17 +5,58 @@ import view.MyView;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class TestModel implements ModelController, ModelView{
-    private Point playerPos;
+    final static public Point LEFT = new Point(-1, 0);
+    final static public Point RIGHT = new Point(1, 0);
+    final static public Point UP = new Point(0, -1);
+    final static public Point DOWN = new Point(0, 1);
+
+    final static private int WIDTH = 100;
+    final static private int HEIGHT = 100;
+
     private List<String> messages;
     private boolean hasChange;
 
+    private SomeThing map[][];
+    private List<SomeThing> animals;
+    private SomeThing player;
+    Random random;
 
     public TestModel() {
         messages = new ArrayList<>();
-        playerPos = new Point(5,5);
+        player = new SomeThing(Types.PlAYER, 5, 5);
         hasChange = true;
+
+        random = new Random();
+        map = new SomeThing[WIDTH][HEIGHT];
+        for (int i = 0; i < 100; i++) {
+            insertOnMap(new SomeThing(Types.STONE, random.nextInt(WIDTH), random.nextInt(HEIGHT)));
+            insertOnMap(new SomeThing(Types.TREE, random.nextInt(WIDTH), random.nextInt(HEIGHT)));
+        }
+        animals = new ArrayList<>(100);
+        for (int i = 0; i < 10; i++) {
+            animals.add(new SomeThing(Types.TREE, random.nextInt(WIDTH), random.nextInt(HEIGHT)));
+            insertOnMap(animals.get(animals.size() - 1));
+        }
+    }
+
+    private void insertOnMap(SomeThing object) {
+        map[object.getY()][object.getX()] = object;
+    }
+
+    private void moveAnimals() {
+        for (SomeThing animal : animals) {
+            switch (random.nextInt(5)) {
+                case 0 : tryMoveObject(animal, UP); break;
+                case 1 : tryMoveObject(animal, DOWN); break;
+                case 2 : tryMoveObject(animal, LEFT); break;
+                case 3 : tryMoveObject(animal, RIGHT); break;
+                default:
+                    break;
+            }
+        }
     }
 
     @Override
@@ -30,7 +71,7 @@ public class TestModel implements ModelController, ModelView{
 
     @Override
     public Point getPlayerPos() {
-        return playerPos;
+        return player.getPos();
     }
 
     @Override
@@ -39,12 +80,29 @@ public class TestModel implements ModelController, ModelView{
     }
 
 
+    public void tryMoveObject(SomeThing object, Point shift) {
+        Point pos = object.getPos();
+        if (pos.x == 0 && shift.x == -1)
+            return;
+        if (pos.x == WIDTH - 1 && shift.x == 1)
+            return;
+        if (pos.y == 0 && shift.y == 1)
+            return;
+        if (pos.y == HEIGHT - 1 && shift.y == -1)
+            return;
+        if (map[pos.y + shift.y][pos.x + shift.x] != null)
+            return;
+        map[pos.y][pos.x] = null;
+        pos.translate(shift.x, shift.y);
+        insertOnMap(object);
+    }
 
     // реакции на контроллеры
 
     @Override
     public void tryMovePlayer(Point shift) {
-        playerPos.translate(shift.x, shift.y);
+        tryMoveObject(player, shift);
+        moveAnimals();
         hasChange = true;
     }
 
@@ -59,7 +117,6 @@ public class TestModel implements ModelController, ModelView{
     @Override
     public String toString() {
         return "TestModel{" +
-                ", playerPos=" + playerPos +
                 ", messages=" + messages +
                 '}';
     }

@@ -10,4 +10,5 @@ public interface ModelView {
     public void applayChanges();
     public Point getPlayerPos();
     public List<String> getMessages();
+//    public void
 }
