@@ -1,25 +1,21 @@
 package view;
 
-import controllers.ActionBuilder;
 import controllers.Controller;
 import model.ModelView;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class SwingView implements MyView, Runnable{
+public class SwingView implements MyView{
     private ModelView model;
     private Controller controllers;
 
     private MyFrame frame;
     private MyPanel panel;
-    private boolean needRepaint;
 
     public SwingView(ModelView model, Controller controllers) {
         this.model = model;
         this.controllers = controllers;
-
-        model.registerView(this);
 
         panel = new MyPanel();
         panel.setPoint(model.getPlayerPos());
@@ -45,27 +41,10 @@ public class SwingView implements MyView, Runnable{
             }
         });
 
-        needRepaint = true;
+        refresh();
     }
 
-    @Override
-    public void refreshView() {
-        needRepaint = true;
-    }
-
-    @Override
-    public void run() {
-        while(true) {
-            if (needRepaint) {
-                frame.repaint();
-                needRepaint = false;
-            }
-
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    public void refresh() {
+        frame.repaint();
     }
 }

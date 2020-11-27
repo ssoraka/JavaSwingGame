@@ -6,7 +6,8 @@ import java.awt.Point;
 import java.util.List;
 
 public interface ModelView {
-    public void registerView(MyView view);
+    public boolean hasChange();
+    public void applayChanges();
     public Point getPlayerPos();
     public List<String> getMessages();
 }

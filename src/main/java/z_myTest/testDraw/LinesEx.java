@@ -1,3 +1,5 @@
+package z_myTest.testDraw;
+
 import java.awt.BasicStroke;
 import java.awt.EventQueue;
 import java.awt.Graphics;

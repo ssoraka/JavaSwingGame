@@ -4,12 +4,7 @@ import controllers.*;
 import model.TestModel;
 import view.SwingView;
 import view.TerminalView;
-
-import java.awt.event.KeyEvent;
-import java.io.Console;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
+import view.ViewActivator;
 
 public class Main {
     public static void main(String[] args) {
@@ -31,14 +26,13 @@ public class Main {
 
         SwingView view = new SwingView(model, controllers);
         TerminalView view2 = new TerminalView(model);
+        ViewActivator activator = new ViewActivator(model);
+        activator.registerView(view);
+        activator.registerView(view2);
 
-        Thread myThready = new Thread(view);
+        Thread myThready = new Thread(activator);
         myThready.setDaemon(true);
         myThready.start();
-
-        Thread myThready2 = new Thread(view2);
-        myThready2.setDaemon(true);
-        myThready2.start();
 
 
 

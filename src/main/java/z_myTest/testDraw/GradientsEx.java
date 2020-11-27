@@ -1,3 +1,5 @@
+package z_myTest.testDraw;
+
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.GradientPaint;

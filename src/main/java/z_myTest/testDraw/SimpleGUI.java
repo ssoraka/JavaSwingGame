@@ -1,3 +1,5 @@
+package z_myTest.testDraw;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;

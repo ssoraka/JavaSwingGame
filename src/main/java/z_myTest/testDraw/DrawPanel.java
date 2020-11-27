@@ -1,4 +1,4 @@
-//http://zetcode.com/javaswing/painting/
+package z_myTest.testDraw;//http://zetcode.com/javaswing/painting/
 
 import javax.swing.*;
 import java.awt.*;

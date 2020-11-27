@@ -7,14 +7,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestModel implements ModelController, ModelView{
-    private List<MyView> views;
     private Point playerPos;
     private List<String> messages;
+    private boolean hasChange;
+
 
     public TestModel() {
-        views = new ArrayList<>();
         messages = new ArrayList<>();
-        playerPos = new Point(10,10);
+        playerPos = new Point(5,5);
+        hasChange = true;
+    }
+
+    @Override
+    public boolean hasChange() {
+        return hasChange;
+    }
+
+    @Override
+    public void applayChanges() {
+        hasChange = false;
     }
 
     @Override
@@ -27,40 +38,27 @@ public class TestModel implements ModelController, ModelView{
         return messages;
     }
 
+
+
     // реакции на контроллеры
 
     @Override
     public void tryMovePlayer(Point shift) {
         playerPos.translate(shift.x, shift.y);
-        refreshAllView();
+        hasChange = true;
     }
 
     @Override
     public void printMessage(String message) {
         messages.add(message);
-        refreshAllView();
+        hasChange = true;
     }
 
-
-    //связанное с видами
-
-    public void refreshAllView() {
-        for (MyView view : views) {
-            view.refreshView();
-        }
-    }
-
-    //нужно указать виду, что он должен обновиться
-    @Override
-    public void registerView(MyView view) {
-        views.add(view);
-    }
 
     //надо отправлять какой-то интерфейс, чтоб вид мог себя обновить, пользуясь моделью
     @Override
     public String toString() {
         return "TestModel{" +
-                "views=" + views +
                 ", playerPos=" + playerPos +
                 ", messages=" + messages +
                 '}';

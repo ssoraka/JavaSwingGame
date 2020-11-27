@@ -26,11 +26,40 @@ public class CommandReader {
     public ActionBuilder getAction(char keyChar, int keyCode) {
         action = EMPTY;
         if (isWriting) {
-            readMessage(keyChar, keyCode);
+            readMessage(keyChar);
         } else {
-            readCommand(keyCode);
+            readCommand(keyChar);
         }
         return action;
+    }
+
+    private void readCommand(char keyChar) {
+        switch (keyChar) {
+            case 'w' : action = new ActionBuilder().setAction(ActionBuilder.Action.MOVE_UP).build(); break;
+            case 's': action = new ActionBuilder().setAction(ActionBuilder.Action.MOVE_DOWN).build(); break;
+            case 'a': action = new ActionBuilder().setAction(ActionBuilder.Action.MOVE_LEFT).build(); break;
+            case 'd': action = new ActionBuilder().setAction(ActionBuilder.Action.MOVE_RIGHT).build(); break;
+            case '\n': isWriting = true; break;
+            case '\b': System.exit(0);
+            default:
+                break;
+        }
+    }
+
+    private void readMessage(char keyChar) {
+        if (keyChar == '\n') {
+            action = new ActionBuilder()
+                    .setAction(ActionBuilder.Action.TEXT)
+                    .setMessage(buffer.toString())
+                    .build();
+            buffer = new StringBuilder();
+            isWriting = false;
+        } else {
+            if (keyChar == '\b')
+                buffer.deleteCharAt(buffer.length() - 1);
+            else if (isWritable(keyChar))
+                buffer.append(keyChar);
+        }
     }
 
     private void readCommand(int keyCode) {

@@ -4,22 +4,30 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MyPanel extends JPanel {
+    private final static int CELL_SIZE = 32;
+
     private Point point;
+    private Point windowPos;
 
     public void setPoint(Point point) {
         this.point = point;
     }
 
-    public MyPanel() {}
+    public MyPanel() {
+        windowPos = new Point(0, 0);
+        //point = windowPos;
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.blue);
-        if (point != null) {
-            g2.drawLine(point.x, point.y, point.x, point.y);
-            g2.drawRect(point.x - 10, point.y - 10, 20, 20);
-        }
+
+        windowPos.x = point.x * CELL_SIZE;
+        windowPos.y = point.y * CELL_SIZE;
+        g2.drawLine(windowPos.x + 16, windowPos.y + 16, windowPos.x + 16, windowPos.y + 16);
+        g2.drawRect(windowPos.x, windowPos.y, CELL_SIZE, CELL_SIZE);
+
     }
 }
