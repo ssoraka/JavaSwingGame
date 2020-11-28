@@ -41,6 +41,7 @@ public class MyPanel extends JPanel {
     private void printObject(Graphics2D g2, Place place, int x, int y){
         int size = 2;
 
+        // в перспективе тут должны быть отмечены свойства земли, на которой расположен объект
         switch (place.getType()) {
             case FLAME: g2.setColor(Color.RED); break;
             case GREEN: g2.setColor(GREEN_COLOR); break;

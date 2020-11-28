@@ -25,7 +25,7 @@ public class Main {
         controllers.add(new TalkController(model));
 
         SwingView view = new SwingView(model, controllers);
-        TerminalView view2 = new TerminalView(model);
+        TerminalView view2 = new TerminalView(model, controllers);
         ViewActivator activator = new ViewActivator(model);
         activator.registerView(view);
         activator.registerView(view2);

@@ -19,12 +19,17 @@ public class TerminalView implements MyView{
     private ModelView model;
     private Controller controllers;
 
-    public TerminalView(ModelView model) {
+    public TerminalView(ModelView model, Controller controllers) {
         this.model = model;
+        this.controllers = controllers;
 
         width = 15;
         height = 10;
         env = new Place[height][width];
+
+        Thread myThready = new Thread(new TerminalScanner(controllers));
+        myThready.setDaemon(true);
+        myThready.start();
     }
 
     @Override
