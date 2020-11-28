@@ -7,11 +7,13 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MyPanel extends JPanel {
-    public final static int CELL_SIZE = 32;
+    private final static int CELL_SIZE = 32;
 
     private SomeThing[][] env;
 
     public MyPanel(int width, int height) {
+        width = width / CELL_SIZE;
+        height = height / CELL_SIZE;
         env = new SomeThing[height][width];
     }
 

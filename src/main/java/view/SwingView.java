@@ -16,7 +16,7 @@ public class SwingView implements MyView{
         this.model = model;
         this.controllers = controllers;
 
-        frame = new MyFrame("Points",350, 250);
+        frame = new MyFrame("Points",600, 480);
         frame.addKeyListener(new KeyListener() {
 
             private CommandReader reader = new CommandReader();

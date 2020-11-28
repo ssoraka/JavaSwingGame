@@ -15,7 +15,7 @@ public class MyFrame extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        panel = new MyPanel(width / MyPanel.CELL_SIZE, height / MyPanel.CELL_SIZE);
+        panel = new MyPanel(width, height);
         add(panel);
     }
 

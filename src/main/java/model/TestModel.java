@@ -110,21 +110,22 @@ public class TestModel implements ModelController, ModelView {
     }
 
 
-    public void tryMoveObject(SomeThing object, Point shift) {
+    public boolean tryMoveObject(SomeThing object, Point shift) {
         Point pos = object.getPos();
         if (pos.x == 0 && shift.x == -1)
-            return;
+            return false;
         if (pos.x == WIDTH - 1 && shift.x == 1)
-            return;
+            return false;
         if (pos.y == 0 && shift.y == -1)
-            return;
+            return false;
         if (pos.y == HEIGHT - 1 && shift.y == 1)
-            return;
+            return false;
         if (map[pos.y + shift.y][pos.x + shift.x] != EMPTY)
-            return;
+            return false;
         map[pos.y][pos.x] = EMPTY;
         pos.translate(shift.x, shift.y);
         insertOnMap(object);
+        return true;
     }
 
     // реакции на контроллеры
