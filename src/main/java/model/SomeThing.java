@@ -22,4 +22,8 @@ public class SomeThing {
     public Point getPos() {
         return pos;
     }
+
+    public Types getTypes() {
+        return type;
+    }
 }

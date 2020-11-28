@@ -10,5 +10,5 @@ public interface ModelView {
     public void applayChanges();
     public Point getPlayerPos();
     public List<String> getMessages();
-//    public void
+    public void fillEnvironment(SomeThing[][] env);
 }

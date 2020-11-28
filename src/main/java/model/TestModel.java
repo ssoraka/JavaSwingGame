@@ -4,14 +4,18 @@ import view.MyView;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class TestModel implements ModelController, ModelView{
+public class TestModel implements ModelController, ModelView {
     final static public Point LEFT = new Point(-1, 0);
     final static public Point RIGHT = new Point(1, 0);
     final static public Point UP = new Point(0, -1);
     final static public Point DOWN = new Point(0, 1);
+
+    final static private SomeThing EMPTY = new SomeThing(Types.EMPTY, -1, -1);
+    final static private SomeThing BOUNDARY = new SomeThing(Types.BOUNDARY, -1, -1);
 
     final static private int WIDTH = 100;
     final static private int HEIGHT = 100;
@@ -26,20 +30,27 @@ public class TestModel implements ModelController, ModelView{
 
     public TestModel() {
         messages = new ArrayList<>();
-        player = new SomeThing(Types.PlAYER, 5, 5);
         hasChange = true;
 
         random = new Random();
-        map = new SomeThing[WIDTH][HEIGHT];
-        for (int i = 0; i < 100; i++) {
-            insertOnMap(new SomeThing(Types.STONE, random.nextInt(WIDTH), random.nextInt(HEIGHT)));
-            insertOnMap(new SomeThing(Types.TREE, random.nextInt(WIDTH), random.nextInt(HEIGHT)));
-        }
         animals = new ArrayList<>(100);
-        for (int i = 0; i < 10; i++) {
-            animals.add(new SomeThing(Types.TREE, random.nextInt(WIDTH), random.nextInt(HEIGHT)));
-            insertOnMap(animals.get(animals.size() - 1));
+        map = new SomeThing[WIDTH][HEIGHT];
+        for (int i = 0; i < HEIGHT; i++) {
+            for (int j = 0; j < WIDTH; j++) {
+                map[i][j] = EMPTY;
+                int tmp = random.nextInt(100);
+                if (tmp < 3) {
+                    animals.add(new SomeThing(Types.ANIMAL, j, i));
+                    insertOnMap(animals.get(animals.size() - 1));
+                } else if (tmp < 7) {
+                    insertOnMap(new SomeThing(Types.STONE, j, i));
+                } else if (tmp < 10) {
+                    insertOnMap(new SomeThing(Types.TREE, j, i));
+                }
+            }
         }
+        player = new SomeThing(Types.PlAYER, 5, 5);
+        insertOnMap(player);
     }
 
     private void insertOnMap(SomeThing object) {
@@ -79,6 +90,25 @@ public class TestModel implements ModelController, ModelView{
         return messages;
     }
 
+    @Override
+    public void fillEnvironment(SomeThing[][] env) {
+        int height = env.length;
+        int width = env[0].length;
+
+        Point center = getPlayerPos();
+
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                int y = center.y + i - height / 2;
+                int x = center.x + j - width / 2;
+                if (y >= 0 && y < HEIGHT && x >= 0 && x < WIDTH)
+                    env[i][j] = map[y][x];
+                else
+                    env[i][j] = BOUNDARY;
+            }
+        }
+    }
+
 
     public void tryMoveObject(SomeThing object, Point shift) {
         Point pos = object.getPos();
@@ -86,13 +116,13 @@ public class TestModel implements ModelController, ModelView{
             return;
         if (pos.x == WIDTH - 1 && shift.x == 1)
             return;
-        if (pos.y == 0 && shift.y == 1)
+        if (pos.y == 0 && shift.y == -1)
             return;
-        if (pos.y == HEIGHT - 1 && shift.y == -1)
+        if (pos.y == HEIGHT - 1 && shift.y == 1)
             return;
-        if (map[pos.y + shift.y][pos.x + shift.x] != null)
+        if (map[pos.y + shift.y][pos.x + shift.x] != EMPTY)
             return;
-        map[pos.y][pos.x] = null;
+        map[pos.y][pos.x] = EMPTY;
         pos.translate(shift.x, shift.y);
         insertOnMap(object);
     }
