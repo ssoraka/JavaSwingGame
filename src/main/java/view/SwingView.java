@@ -11,17 +11,12 @@ public class SwingView implements MyView{
     private Controller controllers;
 
     private MyFrame frame;
-    private MyPanel panel;
 
     public SwingView(ModelView model, Controller controllers) {
         this.model = model;
         this.controllers = controllers;
 
-        panel = new MyPanel();
-        panel.setPoint(model.getPlayerPos());
-
         frame = new MyFrame("Points",350, 250);
-        frame.add(panel);
         frame.addKeyListener(new KeyListener() {
 
             private CommandReader reader = new CommandReader();
@@ -45,6 +40,7 @@ public class SwingView implements MyView{
     }
 
     public void refresh() {
+        model.fillEnvironment(frame.getEnv());
         frame.repaint();
     }
 }
