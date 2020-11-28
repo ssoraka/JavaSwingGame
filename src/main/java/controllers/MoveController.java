@@ -3,8 +3,6 @@ package controllers;
 import model.Level;
 import model.ModelController;
 
-import java.awt.*;
-
 public class MoveController implements Controller {
     private ModelController model;
 

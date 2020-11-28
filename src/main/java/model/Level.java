@@ -13,7 +13,7 @@ public class Level {
 
     final static private SomeThing EMPTY = new SomeThing(Types.EMPTY, -1, -1);
     final static private SomeThing BOUNDARY = new SomeThing(Types.BOUNDARY, -1, -1);
-    final static private Place OUT = new Place(BOUNDARY);
+    final static private Place OUT = new Place(BOUNDARY, Types.BLACK);
 
 
     private int width;

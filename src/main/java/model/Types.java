@@ -8,5 +8,11 @@ public enum Types {
     STONE,
     TREE,
 
-    ANIMAL
+    ANIMAL,
+
+    FLAME,
+    WATER,
+    GREEN,
+    EARTH,
+    BLACK
 }

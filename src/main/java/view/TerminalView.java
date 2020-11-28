@@ -44,21 +44,6 @@ public class TerminalView implements MyView{
             }
             System.out.println("");
         }
-
-/*
-        Point pos = model.getPlayerPos();
-        model.fillEnvironment(env);
-
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                if (i == pos.y && j == pos.x)
-                    System.out.print('X');
-                else
-                    System.out.print(' ');
-            }
-            System.out.println("");
-        }
-*/
         System.out.printf("message = %s\n", model.getMessages());
     }
 
