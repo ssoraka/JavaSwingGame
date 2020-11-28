@@ -1,6 +1,6 @@
 package view;
 
-import model.SomeThing;
+import model.Place;
 import model.Types;
 
 import javax.swing.*;
@@ -9,15 +9,15 @@ import java.awt.*;
 public class MyPanel extends JPanel {
     private final static int CELL_SIZE = 32;
 
-    private SomeThing[][] env;
+    private Place[][] env;
 
     public MyPanel(int width, int height) {
         width = width / CELL_SIZE;
         height = height / CELL_SIZE;
-        env = new SomeThing[height][width];
+        env = new Place[height][width];
     }
 
-    public SomeThing[][] getEnv() {
+    public Place[][] getEnv() {
         return env;
     }
 
@@ -30,7 +30,7 @@ public class MyPanel extends JPanel {
 
         for (int i = 0; i < env.length; i++) {
             for (int j = 0; j < env[0].length; j++) {
-                printObject(g2, env[i][j].getTypes(), j * CELL_SIZE, i * CELL_SIZE);
+                printObject(g2, env[i][j].getObject().getTypes(), j * CELL_SIZE, i * CELL_SIZE);
             }
         }
     }

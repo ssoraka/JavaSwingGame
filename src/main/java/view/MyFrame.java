@@ -1,6 +1,6 @@
 package view;
 
-import model.SomeThing;
+import model.Place;
 
 import javax.swing.*;
 
@@ -19,7 +19,7 @@ public class MyFrame extends JFrame {
         add(panel);
     }
 
-    public SomeThing[][] getEnv() {
+    public Place[][] getEnv() {
         return panel.getEnv();
     }
 

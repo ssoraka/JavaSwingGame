@@ -6,18 +6,25 @@ import java.util.List;
 import java.util.Random;
 
 public class Level {
+    final static public Point LEFT = new Point(-1, 0);
+    final static public Point RIGHT = new Point(1, 0);
+    final static public Point UP = new Point(0, -1);
+    final static public Point DOWN = new Point(0, 1);
+
     final static private SomeThing EMPTY = new SomeThing(Types.EMPTY, -1, -1);
     final static private SomeThing BOUNDARY = new SomeThing(Types.BOUNDARY, -1, -1);
-    final static private Place OUT = new Place(EMPTY);
+    final static private Place OUT = new Place(BOUNDARY);
 
 
     private int width;
     private int height;
     private Place[][] map;
     private List<SomeThing> animals;
+    private SomeThing player;
 
     private Random random;
 
+    // надо сделать чтение карты с файла
     public Level(int width, int height) {
         this.width = width;
         this.height = height;
@@ -30,6 +37,16 @@ public class Level {
         }
         random = new Random();
         animals = new ArrayList<>();
+        initMapByRandomValue();
+    }
+
+    public SomeThing getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(SomeThing player) {
+        this.player = player;
+        insertOnMap(player);
     }
 
     public void initMapByRandomValue() {
@@ -48,17 +65,15 @@ public class Level {
         }
     }
 
-    public void insertOnMap(SomeThing object) {
-        int i = object.getY();
-        int j = object.getX();
-
-        if (i >= 0 && i < height && j >= 0 && j < width)
-            map[i][j].setObject(object);
-    }
-
-    public void insertOnMap(SomeThing object, int x, int y) {
+    private void insertOnMap(SomeThing object, int x, int y) {
         if (y >= 0 && y < height && x >= 0 && x < width)
             map[y][x].setObject(object);
+    }
+
+    public void insertOnMap(SomeThing object) {
+        int x = object.getX();
+        int y = object.getY();
+        insertOnMap(object, x, y);
     }
 
     public Place getPlace(int x, int y) {
@@ -67,9 +82,10 @@ public class Level {
         return OUT;
     }
 
-    public void fillEnvironment(Place[][] env, Point center) {
+    public void fillEnvironment(Place[][] env) {
         int height = env.length;
         int width = env[0].length;
+        Point center = player.getPos();
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -95,6 +111,19 @@ public class Level {
             insertOnMap(EMPTY, pos.x, pos.y);
             pos.translate(shift.x, shift.y);
             insertOnMap(object);
+        }
+    }
+
+    public void moveAnimals() {
+        for (SomeThing animal : animals) {
+            switch (random.nextInt(5)) {
+                case 0 : tryMoveObject(animal, UP); break;
+                case 1 : tryMoveObject(animal, DOWN); break;
+                case 2 : tryMoveObject(animal, LEFT); break;
+                case 3 : tryMoveObject(animal, RIGHT); break;
+                default:
+                    break;
+            }
         }
     }
 }

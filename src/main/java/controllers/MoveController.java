@@ -1,7 +1,7 @@
 package controllers;
 
+import model.Level;
 import model.ModelController;
-import model.TestModel;
 
 import java.awt.*;
 
@@ -15,10 +15,10 @@ public class MoveController implements Controller {
     @Override
     public void execute(ActionBuilder action) {
         switch (action.getAction()) {
-            case MOVE_DOWN : model.tryMovePlayer(TestModel.DOWN); break;
-            case MOVE_UP : model.tryMovePlayer(TestModel.UP); break;
-            case MOVE_LEFT: model.tryMovePlayer(TestModel.LEFT); break;
-            case MOVE_RIGHT: model.tryMovePlayer(TestModel.RIGHT); break;
+            case MOVE_DOWN : model.tryMovePlayer(Level.DOWN); break;
+            case MOVE_UP : model.tryMovePlayer(Level.UP); break;
+            case MOVE_LEFT: model.tryMovePlayer(Level.LEFT); break;
+            case MOVE_RIGHT: model.tryMovePlayer(Level.RIGHT); break;
             default:
                 break;
         }

@@ -8,7 +8,6 @@ import java.util.List;
 public interface ModelView {
     public boolean hasChange();
     public void applayChanges();
-    public Point getPlayerPos();
     public List<String> getMessages();
-    public void fillEnvironment(SomeThing[][] env);
+    public void fillEnvironment(Place[][] env);
 }
