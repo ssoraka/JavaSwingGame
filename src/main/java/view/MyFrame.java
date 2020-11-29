@@ -11,12 +11,17 @@ public class MyFrame extends JFrame {
     public MyFrame(String title, int width, int height) {
         setVisible(true);
         setTitle(title);
+//        setUndecorated(true);
         setSize(width, height);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         panel = new MyPanel(width, height);
         add(panel);
+
+
+//        setVisible(false);
+
     }
 
     public Place[][] getEnv() {
@@ -26,5 +31,6 @@ public class MyFrame extends JFrame {
     @Override
     public void repaint() {
         super.repaint();
+        setVisible(true);
     }
 }

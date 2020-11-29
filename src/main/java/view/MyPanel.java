@@ -1,10 +1,12 @@
 package view;
 
 import model.Place;
-import model.Types;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class MyPanel extends JPanel {
     private final static int CELL_SIZE = 32;
@@ -12,11 +14,33 @@ public class MyPanel extends JPanel {
     private static final Color GREEN_COLOR = new Color(105, 187, 106);
 
     private Place[][] env;
+    private TexturePaint tree;
+    private TexturePaint salamander;
+    private TexturePaint capybara;
+    private TexturePaint stone;
 
     public MyPanel(int width, int height) {
         width = width / CELL_SIZE;
         height = height / CELL_SIZE;
         env = new Place[height][width];
+        load();
+    }
+
+    private void load() {
+        try {
+            BufferedImage image = ImageIO.read(getClass().getResource("/tree.png"));
+            tree = new TexturePaint(image, new Rectangle(0, 0, 32, 32));
+            image = ImageIO.read(getClass().getResource("/stone.png"));
+            stone = new TexturePaint(image, new Rectangle(0, 0, 32, 32));
+            image = ImageIO.read(getClass().getResource("/capybara.png"));
+            capybara = new TexturePaint(image, new Rectangle(0, 0, 32, 32));
+            image = ImageIO.read(getClass().getResource("/salamander.png"));
+            salamander = new TexturePaint(image, new Rectangle(0, 0, 32, 32));
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Could not load images", "Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        }
+//        setOpaque(false);
     }
 
     public Place[][] getEnv() {
@@ -29,16 +53,16 @@ public class MyPanel extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
 
 //        g2.drawLine(windowPos.x + 16, windowPos.y + 16, windowPos.x + 16, windowPos.y + 16);
-
         for (int i = 0; i < env.length; i++) {
             for (int j = 0; j < env[0].length; j++) {
+                printPlane(g2, env[i][j], j * CELL_SIZE, i * CELL_SIZE);
                 printObject(g2, env[i][j], j * CELL_SIZE, i * CELL_SIZE);
             }
         }
     }
 
 
-    private void printObject(Graphics2D g2, Place place, int x, int y){
+    private void printPlane(Graphics2D g2, Place place, int x, int y){
         int size = 2;
 
         // в перспективе тут должны быть отмечены свойства земли, на которой расположен объект
@@ -53,14 +77,33 @@ public class MyPanel extends JPanel {
         }
         g2.drawRect(x + size / 2, y + size / 2, CELL_SIZE - size, CELL_SIZE - size);
         g2.fillRect(x + size / 2, y + size / 2, CELL_SIZE - size, CELL_SIZE - size);
+    }
 
+    private void printObject(Graphics2D g2, Place place, int x, int y){
+        int size = 2;
 
         switch (place.getObject().getTypes()) {
-            case STONE: g2.setColor(Color.gray); break;
-            case PlAYER: g2.setColor(Color.blue); size = 6; break;
-            case ANIMAL: g2.setColor(Color.red); size = 10; break;
+            case STONE: {
+                g2.setPaint(stone);
+                g2.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+                return;
+            }
+            case PlAYER: {
+                g2.setPaint(capybara);
+                g2.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+                return;
+            }
+            case ANIMAL: {
+                g2.setPaint(salamander);
+                g2.fillRect(x+2, y+2, 28, 28);
+                return;
+            }
             case BOUNDARY: g2.setColor(Color.black); break;
-            case TREE: g2.setColor(TREE_COLOR); break;
+            case TREE: {
+                g2.setPaint(tree);
+                g2.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+                return;
+            }
             default:
                 break;
         }
