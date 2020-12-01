@@ -132,7 +132,6 @@ public class Level {
         }
         if (warrior.isAlive()) {
             warrior.addExperience(enemy.getExperience());
-            animals.remove(enemy);
             insertOnMap(EMPTY, enemy.getX(), enemy.getY());
         } else {
             enemy.addExperience(warrior.getExperience());
@@ -150,6 +149,10 @@ public class Level {
                 default:
                     break;
             }
+        }
+        for (int i = animals.size(); i > 0 ; i--) {
+            if (!animals.get(i - 1).isAlive())
+                animals.remove(i - 1);
         }
     }
 }
