@@ -3,7 +3,6 @@ package model;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class TestModel implements ModelController, ModelView {
     final static private int WIDTH = 100;
@@ -13,14 +12,14 @@ public class TestModel implements ModelController, ModelView {
     private boolean hasChange;
 
     private Level level;
-    private SomeThing player;
+    private Warrior player;
 
     public TestModel() {
         messages = new ArrayList<>();
         hasChange = true;
         level = new Level(WIDTH, HEIGHT);
 
-        player = new SomeThing(Types.PlAYER, 5, 5);
+        player = new Warrior("capybara", Types.PlAYER, 5, 5);
         level.setPlayer(player);
     }
 

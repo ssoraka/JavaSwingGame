@@ -3,7 +3,6 @@ package view;
 import controllers.Controller;
 import model.ModelView;
 import model.Place;
-import model.SomeThing;
 
 public class TerminalView implements MyView{
     final static private String TREE = "\033[0;32mT\033[00m";

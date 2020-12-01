@@ -11,16 +11,16 @@ public class Level {
     final static public Point UP = new Point(0, -1);
     final static public Point DOWN = new Point(0, 1);
 
-    final static private SomeThing EMPTY = new SomeThing(Types.EMPTY, -1, -1);
-    final static private SomeThing BOUNDARY = new SomeThing(Types.BOUNDARY, -1, -1);
+    final static private Warrior EMPTY = new Warrior("empty", Types.EMPTY, -1, -1);
+    final static private Warrior BOUNDARY = new Warrior("boundary", Types.BOUNDARY, -1, -1);
     final static private Place OUT = new Place(BOUNDARY, Types.BLACK);
 
 
     private int width;
     private int height;
     private Place[][] map;
-    private List<SomeThing> animals;
-    private SomeThing player;
+    private List<Warrior> animals;
+    private Warrior player;
 
     private Random random;
 
@@ -40,37 +40,46 @@ public class Level {
         initMapByRandomValue();
     }
 
-    public SomeThing getPlayer() {
+    public Warrior getPlayer() {
         return player;
     }
 
-    public void setPlayer(SomeThing player) {
+    public void setPlayer(Warrior player) {
         this.player = player;
         insertOnMap(player);
+
+ /*       animals.add(new Warrior("salamander", Types.ANIMAL, 4, 4));
+        insertOnMap(animals.get(animals.size() - 1));
+        animals.add(new Warrior("salamander", Types.ANIMAL, 5, 4));
+        insertOnMap(animals.get(animals.size() - 1));
+
+        tryMoveObject(animals.get(animals.size() - 1), new Point(-1, 0));
+
+  */
     }
 
     public void initMapByRandomValue() {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 int tmp = random.nextInt(100);
-                if (tmp < 3) {
-                    animals.add(new SomeThing(Types.ANIMAL, j, i));
+                if (tmp < 1) {
+                    animals.add(new Warrior("salamander", Types.ANIMAL, j, i));
                     insertOnMap(animals.get(animals.size() - 1));
                 } else if (tmp < 7) {
-                    insertOnMap(new SomeThing(Types.STONE, j, i));
+                    insertOnMap(new Warrior("stone", Types.STONE, j, i));
                 } else if (tmp < 10) {
-                    insertOnMap(new SomeThing(Types.TREE, j, i));
+                    insertOnMap(new Warrior("tree", Types.TREE, j, i));
                 }
             }
         }
     }
 
-    private void insertOnMap(SomeThing object, int x, int y) {
+    private void insertOnMap(Warrior object, int x, int y) {
         if (y >= 0 && y < height && x >= 0 && x < width)
             map[y][x].setObject(object);
     }
 
-    public void insertOnMap(SomeThing object) {
+    public void insertOnMap(Warrior object) {
         int x = object.getX();
         int y = object.getY();
         insertOnMap(object, x, y);
@@ -97,25 +106,42 @@ public class Level {
         }
     }
 
-    public boolean isPlaceEmpty(int x, int y) {
+    public Warrior isGetWarrior(int x, int y) {
         if (y < 0 || y >= height || x < 0 || x >= width)
-            return false;
-        if (map[y][x].getObject() != EMPTY)
-            return false;
-        return true;
+            return BOUNDARY;
+        return map[y][x].getObject();
     }
 
-    public void tryMoveObject(SomeThing object, Point shift)  {
-        if (isPlaceEmpty(object.getX() + shift.x, object.getY() + shift.y)) {
+    public void tryMoveObject(Warrior object, Point shift)  {
+        Warrior current = isGetWarrior(object.getX() + shift.x, object.getY() + shift.y);
+        if (current == EMPTY) {
             Point pos = object.getPos();
             insertOnMap(EMPTY, pos.x, pos.y);
             pos.translate(shift.x, shift.y);
             insertOnMap(object);
+        } else if (current.getTypes() == Types.ANIMAL || current.getTypes() == Types.PlAYER) {
+            fight(object, current);
+        }
+    }
+
+    public void fight(Warrior warrior, Warrior enemy) {
+        while (enemy.isAlive() && warrior.isAlive()) {
+            enemy.takeDamage(warrior.attack());
+            if (enemy.isAlive())
+                warrior.takeDamage(enemy.attack());
+        }
+        if (warrior.isAlive()) {
+            warrior.addExperience(enemy.getExperience());
+            animals.remove(enemy);
+            insertOnMap(EMPTY, enemy.getX(), enemy.getY());
+        } else {
+            enemy.addExperience(warrior.getExperience());
+            insertOnMap(EMPTY, warrior.getX(), warrior.getY());
         }
     }
 
     public void moveAnimals() {
-        for (SomeThing animal : animals) {
+        for (Warrior animal : animals) {
             switch (random.nextInt(5)) {
                 case 0 : tryMoveObject(animal, UP); break;
                 case 1 : tryMoveObject(animal, DOWN); break;

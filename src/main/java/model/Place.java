@@ -1,26 +1,26 @@
 package model;
 
 public class Place {
-    private SomeThing object;
+    private Warrior object;
     private Types type;
     //тут будут эффекты местности и ее внешний вид...
 
 
-    public Place(SomeThing object) {
+    public Place(Warrior object) {
         this.object = object;
         this.type = Types.GREEN;
     }
 
-    public Place(SomeThing object, Types type) {
+    public Place(Warrior object, Types type) {
         this.object = object;
         this.type = type;
     }
 
-    public SomeThing getObject() {
+    public Warrior getObject() {
         return object;
     }
 
-    public void setObject(SomeThing object) {
+    public void setObject(Warrior object) {
         this.object = object;
     }
 
