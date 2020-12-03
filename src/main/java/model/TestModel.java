@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestModel implements ModelController, ModelView {
+    // надо удалить эту херь
     final static private int WIDTH = 100;
     final static private int HEIGHT = 100;
 
@@ -17,10 +18,10 @@ public class TestModel implements ModelController, ModelView {
     public TestModel() {
         messages = new ArrayList<>();
         hasChange = true;
-        level = new Level(WIDTH, HEIGHT);
 
-        player = new Warrior("capybara", Types.PlAYER, 5, 5);
-        level.setPlayer(player);
+
+        player = new Warrior("capybara", Types.PlAYER, 0, 0); // надо поправить конструктор
+        level = new Level(player);
     }
 
     @Override

@@ -22,8 +22,8 @@ public class TerminalView implements MyView{
         this.model = model;
         this.controllers = controllers;
 
-        width = 15;
-        height = 10;
+        width = 60;
+        height = 20;
         env = new Place[height][width];
 
         Thread myThready = new Thread(new TerminalScanner(controllers));

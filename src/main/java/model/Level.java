@@ -11,8 +11,8 @@ public class Level {
     final static public Point UP = new Point(0, -1);
     final static public Point DOWN = new Point(0, 1);
 
-    final static private Warrior EMPTY = new Warrior("empty", Types.EMPTY, -1, -1);
-    final static private Warrior BOUNDARY = new Warrior("boundary", Types.BOUNDARY, -1, -1);
+    final static private PlaceHolder EMPTY = new PlaceHolder(Types.EMPTY, -1, -1);
+    final static private PlaceHolder BOUNDARY = new PlaceHolder(Types.BOUNDARY, -1, -1);
     final static private Place OUT = new Place(BOUNDARY, Types.BLACK);
 
 
@@ -28,16 +28,21 @@ public class Level {
     public Level(int width, int height) {
         this.width = width;
         this.height = height;
+        initMap();
+    }
 
-        map = new Place[height][width];
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                map[i][j] = new Place(EMPTY);
-            }
-        }
-        random = new Random();
-        animals = new ArrayList<>();
-        initMapByRandomValue();
+    public Level(Warrior player) {
+        int size = getSize(player.getLevel());
+        this.width = size;
+        this.height = size;
+
+        initMap();
+        player.setXY(size / 2, size / 2);
+        setPlayer(player);
+    }
+
+    private int getSize(int level) {
+        return (level - 1) * 5 + 10 - (level % 2);
     }
 
     public Warrior getPlayer() {
@@ -58,34 +63,41 @@ public class Level {
   */
     }
 
-    public void initMapByRandomValue() {
+    private void initMap() {
+        random = new Random();
+        animals = new ArrayList<>();
+        map = new Place[height][width];
+
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
+                map[i][j] = new Place(EMPTY);
+                if (i == height / 2 && j == width / 2)
+                    continue;
                 int tmp = random.nextInt(100);
-                if (tmp < 1) {
+                if (tmp < 4) {
                     animals.add(new Warrior("salamander", Types.ANIMAL, j, i));
                     insertOnMap(animals.get(animals.size() - 1));
                 } else if (tmp < 7) {
-                    insertOnMap(new Warrior("stone", Types.STONE, j, i));
+                    insertOnMap(new PlaceHolder(Types.STONE, j, i));
                 } else if (tmp < 10) {
-                    insertOnMap(new Warrior("tree", Types.TREE, j, i));
+                    insertOnMap(new PlaceHolder(Types.TREE, j, i));
                 }
             }
         }
     }
 
-    private void insertOnMap(Warrior object, int x, int y) {
+    private void insertOnMap(PlaceHolder object, int x, int y) {
         if (y >= 0 && y < height && x >= 0 && x < width)
             map[y][x].setObject(object);
     }
 
-    public void insertOnMap(Warrior object) {
+    private void insertOnMap(PlaceHolder object) {
         int x = object.getX();
         int y = object.getY();
         insertOnMap(object, x, y);
     }
 
-    public Place getPlace(int x, int y) {
+    private Place getPlace(int x, int y) {
         if (y >= 0 && y < height && x >= 0 && x < width)
             return map[y][x];
         return OUT;
@@ -106,25 +118,25 @@ public class Level {
         }
     }
 
-    public Warrior isGetWarrior(int x, int y) {
+    private PlaceHolder getPlaceHolder(int x, int y) {
         if (y < 0 || y >= height || x < 0 || x >= width)
             return BOUNDARY;
         return map[y][x].getObject();
     }
 
     public void tryMoveObject(Warrior object, Point shift)  {
-        Warrior current = isGetWarrior(object.getX() + shift.x, object.getY() + shift.y);
+        PlaceHolder current = getPlaceHolder(object.getX() + shift.x, object.getY() + shift.y);
         if (current == EMPTY) {
             Point pos = object.getPos();
             insertOnMap(EMPTY, pos.x, pos.y);
             pos.translate(shift.x, shift.y);
             insertOnMap(object);
-        } else if (current.getTypes() == Types.ANIMAL || current.getTypes() == Types.PlAYER) {
-            fight(object, current);
+        } else if (current instanceof Warrior) {
+            fight(object, (Warrior) current);
         }
     }
 
-    public void fight(Warrior warrior, Warrior enemy) {
+    private void fight(Warrior warrior, Warrior enemy) {
         while (enemy.isAlive() && warrior.isAlive()) {
             enemy.takeDamage(warrior.attack());
             if (enemy.isAlive())

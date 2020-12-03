@@ -4,10 +4,8 @@ package model;
 import java.awt.*;
 import java.util.Random;
 
-public class Warrior {
+public class Warrior extends PlaceHolder{
     private String name;
-    private Types type;
-    private Point pos;
 
     private int helmet;
     private int attack;
@@ -24,9 +22,8 @@ public class Warrior {
     private Random random;
 
     public Warrior(String name, Types type, int x, int y) {
+        super(type, x, y);
         this.name = name;
-        this.type = type;
-        pos = new Point(x, y);
 
         helmet = 1;
         attack = 1;
@@ -46,22 +43,6 @@ public class Warrior {
         hp = helmet * power;
         maxHp = hp;
         experience = power * 500;
-    }
-
-    public int getX() {
-        return pos.x;
-    }
-
-    public int getY() {
-        return pos.y;
-    }
-
-    public Point getPos() {
-        return pos;
-    }
-
-    public Types getTypes() {
-        return type;
     }
 /*
     public Warrior setHelmet(int helmet) {
@@ -85,6 +66,10 @@ public class Warrior {
         experience = power * 500;
         return this;
     }*/
+
+    public int getLevel() {
+        return level;
+    }
 
     public boolean isAlive() {
         return (hp > 0);
