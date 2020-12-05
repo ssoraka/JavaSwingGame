@@ -67,7 +67,7 @@ public class MyPanel extends JPanel {
 
         // в перспективе тут должны быть отмечены свойства земли, на которой расположен объект
         switch (place.getType()) {
-            case FLAME: g2.setColor(Color.RED); break;
+            case BLOOD: g2.setColor(Color.RED); break;
             case GREEN: g2.setColor(GREEN_COLOR); break;
             case WATER: g2.setColor(Color.blue); break;
             case BLACK: g2.setColor(Color.black); break;

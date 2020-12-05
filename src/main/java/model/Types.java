@@ -3,14 +3,14 @@ package model;
 public enum Types {
     EMPTY,
     BOUNDARY,
-    PlAYER,
 
     STONE,
     TREE,
 
+    PlAYER,
     ANIMAL,
 
-    FLAME,
+    BLOOD,
     WATER,
     GREEN,
     EARTH,

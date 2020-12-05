@@ -6,6 +6,11 @@ public class PlaceHolder {
     private Types type;
     private Point pos;
 
+    public PlaceHolder(Types type) {
+        this.type = type;
+        pos = new Point(-1, -1);
+    }
+
     public PlaceHolder(Types type, int x, int y) {
         this.type = type;
         pos = new Point(x, y);

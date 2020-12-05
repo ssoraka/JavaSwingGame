@@ -11,8 +11,8 @@ public class Level {
     final static public Point UP = new Point(0, -1);
     final static public Point DOWN = new Point(0, 1);
 
-    final static private PlaceHolder EMPTY = new PlaceHolder(Types.EMPTY, -1, -1);
-    final static private PlaceHolder BOUNDARY = new PlaceHolder(Types.BOUNDARY, -1, -1);
+    final static private PlaceHolder EMPTY = new PlaceHolder(Types.EMPTY);
+    final static private PlaceHolder BOUNDARY = new PlaceHolder(Types.BOUNDARY);
     final static private Place OUT = new Place(BOUNDARY, Types.BLACK);
 
 
@@ -87,8 +87,12 @@ public class Level {
     }
 
     private void insertOnMap(PlaceHolder object, int x, int y) {
-        if (y >= 0 && y < height && x >= 0 && x < width)
+        if (y >= 0 && y < height && x >= 0 && x < width) {
             map[y][x].setObject(object);
+            if (object != EMPTY && object != BOUNDARY) {
+                object.setXY(x, y);
+            }
+        }
     }
 
     private void insertOnMap(PlaceHolder object) {
@@ -101,6 +105,10 @@ public class Level {
         if (y >= 0 && y < height && x >= 0 && x < width)
             return map[y][x];
         return OUT;
+    }
+
+    private PlaceHolder getPlaceHolder(int x, int y) {
+        return  getPlace(x, y).getObject();
     }
 
     public void fillEnvironment(Place[][] env) {
@@ -118,11 +126,7 @@ public class Level {
         }
     }
 
-    private PlaceHolder getPlaceHolder(int x, int y) {
-        if (y < 0 || y >= height || x < 0 || x >= width)
-            return BOUNDARY;
-        return map[y][x].getObject();
-    }
+
 
     public void tryMoveObject(Warrior object, Point shift)  {
         PlaceHolder current = getPlaceHolder(object.getX() + shift.x, object.getY() + shift.y);
@@ -142,17 +146,21 @@ public class Level {
             if (enemy.isAlive())
                 warrior.takeDamage(enemy.attack());
         }
+        insertOnMap(EMPTY, warrior.getX(), warrior.getY());
         if (warrior.isAlive()) {
             warrior.addExperience(enemy.getExperience());
-            insertOnMap(EMPTY, enemy.getX(), enemy.getY());
+            warrior.setXY(enemy.getX(), enemy.getY());
+            insertOnMap(warrior);
         } else {
             enemy.addExperience(warrior.getExperience());
-            insertOnMap(EMPTY, warrior.getX(), warrior.getY());
         }
+        getPlace(enemy.getX(), enemy.getY()).setType(Types.BLOOD);
     }
 
     public void moveAnimals() {
         for (Warrior animal : animals) {
+            if (!animal.isAlive())
+                continue;
             switch (random.nextInt(5)) {
                 case 0 : tryMoveObject(animal, UP); break;
                 case 1 : tryMoveObject(animal, DOWN); break;
