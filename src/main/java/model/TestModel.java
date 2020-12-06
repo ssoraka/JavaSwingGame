@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestModel implements ModelController, ModelView {
-    private DBChanger db;
+    private DbHandler db;
     private List<String> messages;
     private boolean hasChange;
 
@@ -13,7 +13,11 @@ public class TestModel implements ModelController, ModelView {
     private Warrior player;
 
     public TestModel() {
-        db = new DBChanger();
+        try {
+            db = new DbHandler();
+        } catch (Exception e) {
+            System.exit(0);
+        }
         messages = new ArrayList<>();
         hasChange = true;
 
