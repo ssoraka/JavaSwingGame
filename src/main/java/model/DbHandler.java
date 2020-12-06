@@ -1,11 +1,9 @@
 package model;
 
 import javafx.util.Pair;
-//import org.sqlite.JDBC;
+import org.sqlite.JDBC;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,10 +12,36 @@ public class DbHandler {
     // Константа, в которой хранится адрес подключения
     private static final String CON_STR = "jdbc:sqlite:D:/myfin.db";
 
+    //https://habr.com/en/sandbox/88039/
+    //https://alekseygulynin.ru/rabota-s-sqlite-v-java/
 
     // Используем шаблон одиночка, чтобы не плодить множество
     // экземпляров класса DbHandler
     private static DbHandler instance = null;
+
+    public static Connection conn;
+    public static Statement statmt;
+    public static ResultSet resSet;
+
+    // --------ПОДКЛЮЧЕНИЕ К БАЗЕ ДАННЫХ--------
+    public static void Conn() throws ClassNotFoundException, SQLException
+    {
+        conn = null;
+//        Class.forName("org.sqlite.JDBC");
+        DriverManager.registerDriver(new JDBC());
+        conn = DriverManager.getConnection("jdbc:sqlite:/Users/ssoraka/IdeaProjects/myGame/src/main/resources/database.db");
+
+        System.out.println("База Подключена!");
+    }
+
+    public static void CloseDB() throws ClassNotFoundException, SQLException
+    {
+        conn.close();
+//        statmt.close();
+//        resSet.close();
+
+        System.out.println("Соединения закрыты");
+    }
 
     public static synchronized DbHandler getInstance() throws SQLException {
         if (instance == null)

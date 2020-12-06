@@ -1,6 +1,7 @@
 package z_main;
 
 import controllers.*;
+import model.DbHandler;
 import model.TestModel;
 import view.SimpleGUI;
 import view.SwingView;
@@ -27,6 +28,12 @@ public class Main {
         controllers.add(new DBController(model));
 
 
+        try {
+            DbHandler.Conn();
+            DbHandler.CloseDB();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         SimpleGUI app = new SimpleGUI(model, controllers);
 
