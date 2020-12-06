@@ -5,6 +5,9 @@ public class ActionBuilder {
         NON,
         TEXT,
 
+        CREATE,
+        LOGIN,
+
         MOVE_LEFT,
         MOVE_RIGHT,
         MOVE_UP,
@@ -13,6 +16,8 @@ public class ActionBuilder {
 
     private Action action;
     private String message;
+    private String login;
+    private String password;
 
     public ActionBuilder() {
         this.action = Action.NON;
@@ -28,12 +33,30 @@ public class ActionBuilder {
         return this;
     }
 
+    public ActionBuilder setLogin(String login) {
+        this.login = login;
+        return this;
+    }
+
+    public ActionBuilder setPassword(String password) {
+        this.password = password;
+        return this;
+    }
+
     public Action getAction() {
         return action;
     }
 
     public String getMessage() {
         return message;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public String getPassword() {
+        return password;
     }
     
     public ActionBuilder build() {

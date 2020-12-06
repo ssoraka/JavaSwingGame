@@ -149,7 +149,6 @@ public class Level {
         insertOnMap(EMPTY, warrior.getX(), warrior.getY());
         if (warrior.isAlive()) {
             warrior.addExperience(enemy.getExperience());
-            warrior.setXY(enemy.getX(), enemy.getY());
             insertOnMap(warrior);
         } else {
             enemy.addExperience(warrior.getExperience());

@@ -2,6 +2,7 @@ package z_main;
 
 import controllers.*;
 import model.TestModel;
+import view.SimpleGUI;
 import view.SwingView;
 import view.TerminalView;
 import view.ViewActivator;
@@ -23,16 +24,22 @@ public class Main {
         MyController controllers = new MyController();
         controllers.add(new MoveController(model));
         controllers.add(new TalkController(model));
+        controllers.add(new DBController(model));
 
-        SwingView view = new SwingView(model, controllers);
-        TerminalView view2 = new TerminalView(model, controllers);
-        ViewActivator activator = new ViewActivator(model);
-        activator.registerView(view);
-        activator.registerView(view2);
 
-        Thread myThready = new Thread(activator);
-        myThready.setDaemon(true);
-        myThready.start();
+
+        SimpleGUI app = new SimpleGUI(model, controllers);
+
+
+//        SwingView view = new SwingView(model, controllers);
+//        TerminalView view2 = new TerminalView(model, controllers);
+//        ViewActivator activator = new ViewActivator(model);
+//        activator.registerView(view);
+//        activator.registerView(view2);
+//
+//        Thread myThready = new Thread(activator);
+//        myThready.setDaemon(true);
+//        myThready.start();
 
 
 

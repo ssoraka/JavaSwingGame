@@ -5,10 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestModel implements ModelController, ModelView {
-    // надо удалить эту херь
-    final static private int WIDTH = 100;
-    final static private int HEIGHT = 100;
-
+    private DBChanger db;
     private List<String> messages;
     private boolean hasChange;
 
@@ -16,6 +13,7 @@ public class TestModel implements ModelController, ModelView {
     private Warrior player;
 
     public TestModel() {
+        db = new DBChanger();
         messages = new ArrayList<>();
         hasChange = true;
 
@@ -57,6 +55,13 @@ public class TestModel implements ModelController, ModelView {
     public void printMessage(String message) {
         messages.add(message);
         hasChange = true;
+    }
+
+    @Override
+    public void createNewPersonAndStartGame(String login, String password) {
+        if (db.isLoginAndPasswordAlreadyExist(login, password))
+            throw new RuntimeException("Такое имя или пароль уже существует");
+        db.addNewPlayer(login, password);
     }
 
 

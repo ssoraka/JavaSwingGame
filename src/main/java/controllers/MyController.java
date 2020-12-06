@@ -18,11 +18,11 @@ public class MyController implements Controller{
     @Override
     public void execute(ActionBuilder action) {
         for (Controller controller : controllers) {
-            try {
+//            try {
                 controller.execute(action);
-            } catch (RuntimeException e) {
-                System.out.println(e.getMessage());
-            }
+//            } catch (RuntimeException e) {
+//                System.out.println(e.getMessage());
+//            }
         }
     }
 }
