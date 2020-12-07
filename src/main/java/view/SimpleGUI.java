@@ -49,7 +49,7 @@ public class SimpleGUI extends JFrame {
         buttonExit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.exit(0);
+                controllers.execute(new ActionBuilder().setAction(ActionBuilder.Action.EXIT).build());
             }
         });
         repaint();

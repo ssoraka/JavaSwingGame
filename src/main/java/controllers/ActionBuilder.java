@@ -7,6 +7,7 @@ public class ActionBuilder {
 
         CREATE,
         LOGIN,
+        EXIT,
 
         MOVE_LEFT,
         MOVE_RIGHT,
@@ -16,6 +17,7 @@ public class ActionBuilder {
 
     private Action action;
     private String message;
+    private String errorMessage;
     private String login;
     private String password;
 
@@ -30,6 +32,11 @@ public class ActionBuilder {
 
     public ActionBuilder setMessage(String message) {
         this.message = message;
+        return this;
+    }
+
+    public ActionBuilder setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
         return this;
     }
 
@@ -49,6 +56,10 @@ public class ActionBuilder {
 
     public String getMessage() {
         return message;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
     public String getLogin() {

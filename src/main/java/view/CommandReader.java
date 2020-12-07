@@ -46,7 +46,7 @@ public class CommandReader {
             case 'a': action = new ActionBuilder().setAction(ActionBuilder.Action.MOVE_LEFT).build(); break;
             case 'd': action = new ActionBuilder().setAction(ActionBuilder.Action.MOVE_RIGHT).build(); break;
             case END_LINE: isWriting = true; break;
-            case 'q': System.exit(0);
+            case 'q': action = new ActionBuilder().setAction(ActionBuilder.Action.EXIT).build(); break;
             default:
                 break;
         }
@@ -75,7 +75,7 @@ public class CommandReader {
             case KeyEvent.VK_A: action = new ActionBuilder().setAction(ActionBuilder.Action.MOVE_LEFT).build(); break;
             case KeyEvent.VK_D: action = new ActionBuilder().setAction(ActionBuilder.Action.MOVE_RIGHT).build(); break;
             case KeyEvent.VK_ENTER: isWriting = true; break;
-            case KeyEvent.VK_ESCAPE: System.exit(0);
+            case KeyEvent.VK_ESCAPE: new ActionBuilder().setAction(ActionBuilder.Action.EXIT).build(); break;
             default:
                 break;
         }

@@ -13,17 +13,16 @@ public class TestModel implements ModelController, ModelView {
     private Warrior player;
 
     public TestModel() {
-        try {
-            db = new DbHandler();
-        } catch (Exception e) {
-            System.exit(0);
-        }
         messages = new ArrayList<>();
         hasChange = true;
 
 
         player = new Warrior("capybara", Types.PlAYER, 0, 0); // надо поправить конструктор
         level = new Level(player);
+    }
+
+    public void setDb(DbHandler db) {
+        this.db = db;
     }
 
     @Override
@@ -65,7 +64,22 @@ public class TestModel implements ModelController, ModelView {
     public void createNewPersonAndStartGame(String login, String password) {
         if (db.isLoginAndPasswordAlreadyExist(login, password))
             throw new RuntimeException("Такое имя или пароль уже существует");
-        db.addNewPlayer(login, password);
+        db.addNewPlayer(login, password, player);
+    }
+
+    @Override
+    public void exit(String message) {
+        if (message != null)
+            System.out.println(message);
+        if (db != null) {
+            try {
+                db.CloseDB();
+                System.out.println("База отключена");
+            } catch (Exception e) {
+                ;
+            }
+        }
+        System.exit(0);
     }
 
 

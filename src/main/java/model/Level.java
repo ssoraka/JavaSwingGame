@@ -28,7 +28,6 @@ public class Level {
     public Level(int width, int height) {
         this.width = width;
         this.height = height;
-        initMap();
     }
 
     public Level(Warrior player) {
@@ -63,7 +62,7 @@ public class Level {
   */
     }
 
-    private void initMap() {
+    public void initMap() {
         random = new Random();
         animals = new ArrayList<>();
         map = new Place[height][width];

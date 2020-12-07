@@ -1,10 +1,12 @@
 package view;
 
+import controllers.ActionBuilder;
 import controllers.Controller;
 import model.ModelView;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
 
 public class SwingView implements MyView{
     private ModelView model;
@@ -16,7 +18,11 @@ public class SwingView implements MyView{
         this.model = model;
         this.controllers = controllers;
 
-        frame = new MyFrame("Points",800, 600);
+        try {
+            frame = new MyFrame("Points",800, 600);
+        } catch (IOException e) {
+            controllers.execute(new ActionBuilder().setAction(ActionBuilder.Action.EXIT).setErrorMessage(e.getMessage()).build());
+        }
         frame.addKeyListener(new KeyListener() {
 
             private CommandReader reader = new CommandReader();

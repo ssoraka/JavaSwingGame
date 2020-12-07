@@ -21,10 +21,19 @@ public class Warrior extends PlaceHolder{
     private int maxHp;
     private Random random;
 
+    public Warrior(String name, Types type) {
+        super(type);
+        this.name = name;
+        init();
+    }
+
     public Warrior(String name, Types type, int x, int y) {
         super(type, x, y);
         this.name = name;
+        init();
+    }
 
+    private void init(){
         helmet = 1;
         attack = 1;
         defence = 1;
@@ -34,38 +43,46 @@ public class Warrior extends PlaceHolder{
         level = 1;
         expNextLevel = experienceForNextLevel(1);
         random = new Random();
-
-        if (type == Types.PlAYER)
+        if (getTypes() == Types.PlAYER)
             power = 5;
         else
             power = 2;
-
         hp = helmet * power;
         maxHp = hp;
         experience = power * 500;
     }
-/*
-    public Warrior setHelmet(int helmet) {
+
+    public void setHelmet(int helmet) {
         this.helmet = helmet;
-        return this;
     }
 
-    public Warrior setAttack(int attack) {
+    public void setAttack(int attack) {
         this.attack = attack;
-        return this;
     }
 
-    public Warrior setDefence(int defence) {
+    public void setDefence(int defence) {
         this.defence = defence;
-        return this;
     }
 
-    public Warrior build() {
-        hp = helmet * power;
-        maxHp = hp;
-        experience = power * 500;
-        return this;
-    }*/
+    public void setExperience(int experience) {
+        this.experience = experience;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getAttack() {
+        return attack;
+    }
+
+    public int getHelmet() {
+        return helmet;
+    }
+
+    public int getDefence() {
+        return defence;
+    }
 
     public int getLevel() {
         return level;

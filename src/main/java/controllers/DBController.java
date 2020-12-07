@@ -13,6 +13,7 @@ public class DBController implements Controller {
     public void execute(ActionBuilder action) {
         switch (action.getAction()) {
             case CREATE: model.createNewPersonAndStartGame(action.getLogin(), action.getLogin()); break;
+            case EXIT: model.exit(action.getErrorMessage()); break;
             default:
                 break;
         }

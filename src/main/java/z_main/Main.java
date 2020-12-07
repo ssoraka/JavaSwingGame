@@ -20,20 +20,21 @@ public class Main {
 //        System.out.print("\033[H\033[2J");
 //        System.out.flush();
 
+        DbHandler db = null;
+        try {
+            db = new DbHandler();
+        } catch (Exception e) {
+            System.exit(0);
+        }
 
         TestModel model = new TestModel();
+        model.setDb(db);
+
         MyController controllers = new MyController();
         controllers.add(new MoveController(model));
         controllers.add(new TalkController(model));
         controllers.add(new DBController(model));
 
-
-        try {
-            DbHandler.Conn();
-            DbHandler.CloseDB();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         SimpleGUI app = new SimpleGUI(model, controllers);
 

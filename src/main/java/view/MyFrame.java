@@ -3,12 +3,13 @@ package view;
 import model.Place;
 
 import javax.swing.*;
+import java.io.IOException;
 
 public class MyFrame extends JFrame {
 
     private MyPanel panel;
 
-    public MyFrame(String title, int width, int height) {
+    public MyFrame(String title, int width, int height) throws IOException {
         setVisible(true);
         setTitle(title);
 //        setUndecorated(true);

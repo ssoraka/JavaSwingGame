@@ -1,64 +1,133 @@
 package model;
 
-import javafx.util.Pair;
+
 import org.sqlite.JDBC;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DbHandler {
-
-    // Константа, в которой хранится адрес подключения
-    private static final String CON_STR = "jdbc:sqlite:D:/myfin.db";
 
     //https://habr.com/en/sandbox/88039/
     //https://alekseygulynin.ru/rabota-s-sqlite-v-java/
 
-    // Используем шаблон одиночка, чтобы не плодить множество
-    // экземпляров класса DbHandler
-    private static DbHandler instance = null;
 
-    public static Connection conn;
-    public static Statement statmt;
-    public static ResultSet resSet;
+    private static Connection connection;
+    private static Statement statement;
+    private static ResultSet resSet;
+    private StringBuilder request;
 
     // --------ПОДКЛЮЧЕНИЕ К БАЗЕ ДАННЫХ--------
-    public static void Conn() throws ClassNotFoundException, SQLException
+    public synchronized void createConnection() throws SQLException
     {
-        conn = null;
-//        Class.forName("org.sqlite.JDBC");
-        DriverManager.registerDriver(new JDBC());
-        conn = DriverManager.getConnection("jdbc:sqlite:/Users/ssoraka/IdeaProjects/myGame/src/main/resources/database.db");
-
-        System.out.println("База Подключена!");
+        if (connection == null) {
+            DriverManager.registerDriver(new JDBC());
+            connection = DriverManager.getConnection("jdbc:sqlite:" + DbHandler.class.getResource("/database.db"));
+            statement = connection.createStatement();
+            System.out.println("База Подключена!");
+        }
     }
 
-    public static void CloseDB() throws ClassNotFoundException, SQLException
+    public void CloseDB() throws ClassNotFoundException, SQLException
     {
-        conn.close();
-//        statmt.close();
-//        resSet.close();
+        if (connection != null)
+            connection.close();
+        if (statement != null)
+            statement.close();
+        if (resSet != null)
+            resSet.close();
 
         System.out.println("Соединения закрыты");
     }
 
-    public static synchronized DbHandler getInstance() throws SQLException {
-        if (instance == null)
-            instance = new DbHandler();
-        return instance;
+    public void dropTable(String name) throws SQLException
+    {
+        statement.execute("DROP TABLE '" + name + "';");
     }
 
-    // Объект, в котором будет храниться соединение с БД
-    private Connection connection;
+    public void createDB() throws SQLException
+    {
+        statement.execute("CREATE TABLE if not exists 'players2' (" +
+                "'id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "'login' text, " +
+                "'password' text, " +
+                "'exp' INT, " +
+                "'hp' INT, " +
+                "'maxHp' INT, " +
+                "'level' INT);"
+        );
+        System.out.println("Таблица создана или уже существует.");
+    }
 
-    List<Pair<String, String>> db;
+    // --------Заполнение таблицы--------
+    public void initDB() throws SQLException
+    {
+        statement.execute("INSERT INTO 'players2' ('login', 'password', 'exp', 'hp', 'maxHp', 'level') VALUES ('1', '1', 100, 100, 200, 1); ");
+        statement.execute("INSERT INTO 'players2' ('login', 'password', 'exp', 'hp', 'maxHp', 'level') VALUES ('2', '2', 100, 100, 200, 1); ");
+        statement.execute("INSERT INTO 'players2' ('login', 'password', 'exp', 'hp', 'maxHp', 'level') VALUES ('3', '3', 100, 100, 200, 1); ");
+        System.out.println("Таблица заполнена");
+    }
+
+    // -------- Вывод таблицы--------
+    public void readDB() throws SQLException
+    {
+        resSet = statement.executeQuery("SELECT * FROM players2");
+
+        while(resSet.next())
+        {
+            int id = resSet.getInt("id");
+            String login = resSet.getString("login");
+            String password = resSet.getString("password");
+            int exp = resSet.getInt("exp");
+            int hp = resSet.getInt("hp");
+            int maxHp = resSet.getInt("maxHp");
+            int level = resSet.getInt("level");
+            System.out.printf("ID = %d, login = %s, pas = %s, exp = %d, hp = %d, maxHp = %d, level = %d",
+                    id, login, password, exp, hp, maxHp, level);
+            System.out.println();
+        }
+
+        System.out.println("Таблица выведена");
+    }
+
+    private void insertRequest(String field, String value) {
+        request = new StringBuilder("INSERT INTO 'players2' ( '")
+                .append(field)
+                .append("' ) VALUES ( '")
+                .append(value)
+                .append("' );");
+    }
+
+    private void insertRequest(String field, int value) {
+        request = new StringBuilder("INSERT INTO 'players2' ( '" + field + "' ) VALUES ( " + value + " );");
+    }
+
+    private void insertInRequest(String field, String value) {
+        int posField = request.indexOf(")") - 1;
+        int posValue = request.length() - 3;
+        request.insert(posValue, value);
+        request.insert(posField, field);
+    }
+
+    private void addArg(String field, String value) {
+        insertInRequest(", '", ", '");
+        insertInRequest(field, value);
+        insertInRequest("'", "'");
+    }
+
+    private void addArg(String field, int value) {
+        insertInRequest(", '", ", ");
+        insertInRequest(field, String.valueOf(value));
+        insertInRequest("'", "");
+    }
 
     public DbHandler() throws SQLException {
-        db = new ArrayList<>();
-        db.add(new Pair<>("1", "1"));
-        db.add(new Pair<>("2", "2"));
-        db.add(new Pair<>("3", "3"));
+
+        createConnection();
+//        dropTable("players");
+//        createDB();
+//        initDB();
+//        readDB();
+
 
         // Регистрируем драйвер, с которым будем работать
         // в нашем случае Sqlite
@@ -68,15 +137,38 @@ public class DbHandler {
     }
 
     public boolean isLoginAndPasswordAlreadyExist(String login, String password) {
-        for (Pair<String, String> pair :
-                db) {
-            if (pair.getKey().equals(login) || pair.getValue().equals(password))
-                return true;
-        }
         return false;
     }
 
-    public void addNewPlayer(String login, String password) {
-        db.add(new Pair<>(login, password));
+    public void addNewPlayer(String login, String password, Warrior warrior) {
+
+        try {
+            insertRequest("login", login);
+            addArg("password", password);
+            addArg("exp", warrior.getExperience());
+            addArg("hp", warrior.getHelmet());
+            addArg("maxHp", warrior.getAttack());
+            addArg("level", warrior.getLevel());
+            statement.execute(request.toString());
+            readDB();
+        } catch (Exception e) {
+            System.out.println("Не записалось в бд");
+        }
     }
+
+    public Warrior readPlayer(String login, String password) {
+
+        Warrior warrior = new Warrior(login, Types.PlAYER, -1, -1);
+        try {
+            resSet = statement.executeQuery("SELECT * FROM players2 WHERE login='" + login + "' AND password='" + password + "'");
+            warrior.setExperience(resSet.getInt("exp"));
+            warrior.setHelmet(resSet.getInt("hp"));
+            warrior.setLevel(resSet.getInt("level"));
+            warrior.setAttack(resSet.getInt("maxHp"));
+        } catch (Exception e) {
+            System.out.println("Не записалось в бд");
+        }
+        return warrior;
+    }
+
 }

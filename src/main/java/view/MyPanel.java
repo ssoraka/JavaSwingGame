@@ -19,14 +19,14 @@ public class MyPanel extends JPanel {
     private TexturePaint capybara;
     private TexturePaint stone;
 
-    public MyPanel(int width, int height) {
+    public MyPanel(int width, int height) throws IOException {
         width = width / CELL_SIZE;
         height = height / CELL_SIZE;
         env = new Place[height][width];
         load();
     }
 
-    private void load() {
+    private void load() throws IOException {
         try {
             BufferedImage image = ImageIO.read(getClass().getResource("/tree.png"));
             tree = new TexturePaint(image, new Rectangle(0, 0, 32, 32));
@@ -38,7 +38,7 @@ public class MyPanel extends JPanel {
             salamander = new TexturePaint(image, new Rectangle(0, 0, 32, 32));
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Could not load images", "Error", JOptionPane.ERROR_MESSAGE);
-            System.exit(1);
+            throw ex;
         }
 //        setOpaque(false);
     }
