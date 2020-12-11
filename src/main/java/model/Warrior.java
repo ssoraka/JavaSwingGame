@@ -72,6 +72,10 @@ public class Warrior extends PlaceHolder{
         this.level = level;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public int getAttack() {
         return attack;
     }

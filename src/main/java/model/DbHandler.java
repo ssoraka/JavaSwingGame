@@ -46,7 +46,7 @@ public class DbHandler {
 
     public void createDB() throws SQLException
     {
-        statement.execute("CREATE TABLE if not exists 'players2' (" +
+        statement.execute("CREATE TABLE if not exists 'players' (" +
                 "'id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "'login' text, " +
                 "'password' text, " +
@@ -61,16 +61,22 @@ public class DbHandler {
     // --------Заполнение таблицы--------
     public void initDB() throws SQLException
     {
-        statement.execute("INSERT INTO 'players2' ('login', 'password', 'exp', 'hp', 'maxHp', 'level') VALUES ('1', '1', 100, 100, 200, 1); ");
-        statement.execute("INSERT INTO 'players2' ('login', 'password', 'exp', 'hp', 'maxHp', 'level') VALUES ('2', '2', 100, 100, 200, 1); ");
-        statement.execute("INSERT INTO 'players2' ('login', 'password', 'exp', 'hp', 'maxHp', 'level') VALUES ('3', '3', 100, 100, 200, 1); ");
+        Warrior warrior = new Warrior("Name1", Types.PlAYER);
+        addNewPlayer(warrior.getName(), "_" + warrior.getName() + "_", warrior);
+
+        warrior = new Warrior("Name2", Types.ANIMAL);
+        addNewPlayer(warrior.getName(), "_" + warrior.getName() + "_", warrior);
+
+        warrior = new Warrior("Name3", Types.ANIMAL);
+        addNewPlayer(warrior.getName(), "_" + warrior.getName() + "_", warrior);
+
         System.out.println("Таблица заполнена");
     }
 
     // -------- Вывод таблицы--------
     public void readDB() throws SQLException
     {
-        resSet = statement.executeQuery("SELECT * FROM players2");
+        resSet = statement.executeQuery("SELECT * FROM players");
         while(resSet.next())
         {
             int id = resSet.getInt("id");
@@ -89,7 +95,7 @@ public class DbHandler {
     }
 
     private void insertRequest(String field, String value) {
-        request = new StringBuilder("INSERT INTO 'players2' ( '")
+        request = new StringBuilder("INSERT INTO 'players' ( '")
                 .append(field)
                 .append("' ) VALUES ( '")
                 .append(value)
@@ -97,7 +103,7 @@ public class DbHandler {
     }
 
 //    private void insertRequest(String field, int value) {
-//        request = new StringBuilder("INSERT INTO 'players2' ( '" + field + "' ) VALUES ( " + value + " );");
+//        request = new StringBuilder("INSERT INTO 'players' ( '" + field + "' ) VALUES ( " + value + " );");
 //    }
 
     private void insertInRequest(String field, String value) {
@@ -122,9 +128,9 @@ public class DbHandler {
     public DbHandler() throws SQLException {
 
         createConnection();
-//        dropTable("players2");
-//        createDB();
-//        initDB();
+        dropTable("players");
+        createDB();
+        initDB();
         readDB();
 
 
@@ -159,7 +165,7 @@ public class DbHandler {
 
         Warrior warrior = new Warrior(login, Types.PlAYER);
         try {
-            resSet = statement.executeQuery("SELECT * FROM players2 WHERE login='" + login + "' AND password='" + password + "'");
+            resSet = statement.executeQuery("SELECT * FROM players WHERE login='" + login + "' AND password='" + password + "'");
             warrior.setExperience(resSet.getInt("exp"));
             warrior.setHelmet(resSet.getInt("hp"));
             warrior.setLevel(resSet.getInt("level"));
