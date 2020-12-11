@@ -23,9 +23,12 @@ public class Main {
         DbHandler db = null;
         try {
             db = new DbHandler();
+            db.CloseDB();
         } catch (Exception e) {
             System.exit(0);
         }
+
+        System.exit(0);
 
         TestModel model = new TestModel();
         model.setDb(db);

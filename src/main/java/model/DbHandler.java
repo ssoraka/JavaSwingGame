@@ -71,7 +71,6 @@ public class DbHandler {
     public void readDB() throws SQLException
     {
         resSet = statement.executeQuery("SELECT * FROM players2");
-
         while(resSet.next())
         {
             int id = resSet.getInt("id");
@@ -97,9 +96,9 @@ public class DbHandler {
                 .append("' );");
     }
 
-    private void insertRequest(String field, int value) {
-        request = new StringBuilder("INSERT INTO 'players2' ( '" + field + "' ) VALUES ( " + value + " );");
-    }
+//    private void insertRequest(String field, int value) {
+//        request = new StringBuilder("INSERT INTO 'players2' ( '" + field + "' ) VALUES ( " + value + " );");
+//    }
 
     private void insertInRequest(String field, String value) {
         int posField = request.indexOf(")") - 1;
@@ -123,10 +122,10 @@ public class DbHandler {
     public DbHandler() throws SQLException {
 
         createConnection();
-//        dropTable("players");
+//        dropTable("players2");
 //        createDB();
 //        initDB();
-//        readDB();
+        readDB();
 
 
         // Регистрируем драйвер, с которым будем работать
@@ -158,7 +157,7 @@ public class DbHandler {
 
     public Warrior readPlayer(String login, String password) {
 
-        Warrior warrior = new Warrior(login, Types.PlAYER, -1, -1);
+        Warrior warrior = new Warrior(login, Types.PlAYER);
         try {
             resSet = statement.executeQuery("SELECT * FROM players2 WHERE login='" + login + "' AND password='" + password + "'");
             warrior.setExperience(resSet.getInt("exp"));
@@ -166,7 +165,7 @@ public class DbHandler {
             warrior.setLevel(resSet.getInt("level"));
             warrior.setAttack(resSet.getInt("maxHp"));
         } catch (Exception e) {
-            System.out.println("Не записалось в бд");
+            System.out.println("Нет такого в бд");
         }
         return warrior;
     }
