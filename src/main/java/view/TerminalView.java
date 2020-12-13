@@ -1,6 +1,6 @@
 package view;
 
-import controllers.Controller;
+import controllers.AllController;
 import model.ModelView;
 import model.Place;
 
@@ -16,9 +16,9 @@ public class TerminalView implements MyView{
     private int height;
 
     private ModelView model;
-    private Controller controllers;
+    private AllController controllers;
 
-    public TerminalView(ModelView model, Controller controllers) {
+    public TerminalView(ModelView model, AllController controllers) {
         this.model = model;
         this.controllers = controllers;
 

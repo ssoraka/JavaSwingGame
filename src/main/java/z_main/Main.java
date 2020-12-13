@@ -23,34 +23,35 @@ public class Main {
         DbHandler db = null;
         try {
             db = new DbHandler();
-            db.CloseDB();
+//            db.CloseDB();
         } catch (Exception e) {
             System.exit(0);
         }
 
-        System.exit(0);
+//        System.exit(0);
 
         TestModel model = new TestModel();
         model.setDb(db);
 
-        MyController controllers = new MyController();
-        controllers.add(new MoveController(model));
-        controllers.add(new TalkController(model));
-        controllers.add(new DBController(model));
+//        MyController controllers = new MyController();
+//        controllers.add(new MoveController(model));
+//        controllers.add(new TalkController(model));
+//        controllers.add(new DBController(model));
+        AllController controller = new AllController(model);
 
 
-        SimpleGUI app = new SimpleGUI(model, controllers);
+//        SimpleGUI app = new SimpleGUI(model, controller);
 
 
-//        SwingView view = new SwingView(model, controllers);
-//        TerminalView view2 = new TerminalView(model, controllers);
-//        ViewActivator activator = new ViewActivator(model);
-//        activator.registerView(view);
-//        activator.registerView(view2);
-//
-//        Thread myThready = new Thread(activator);
-//        myThready.setDaemon(true);
-//        myThready.start();
+        SwingView view = new SwingView(model, controller);
+        TerminalView view2 = new TerminalView(model, controller);
+        ViewActivator activator = new ViewActivator(model);
+        activator.registerView(view);
+        activator.registerView(view2);
+
+        Thread myThready = new Thread(activator);
+        myThready.setDaemon(true);
+        myThready.start();
 
 
 

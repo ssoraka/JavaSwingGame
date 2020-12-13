@@ -1,4 +1,4 @@
-package controllers;
+package zz_garbage;
 
 import model.Level;
 import model.ModelController;

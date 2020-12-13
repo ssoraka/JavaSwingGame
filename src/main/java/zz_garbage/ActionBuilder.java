@@ -1,4 +1,4 @@
-package controllers;
+package zz_garbage;
 
 public class ActionBuilder {
     public static enum Action {

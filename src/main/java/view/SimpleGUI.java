@@ -1,7 +1,6 @@
 package view;
 
-import controllers.ActionBuilder;
-import controllers.Controller;
+import controllers.AllController;
 import model.ModelView;
 
 import javax.swing.*;
@@ -11,9 +10,9 @@ import java.awt.event.ActionListener;
 
 public class SimpleGUI extends JFrame {
     private ModelView model;
-    private Controller controllers;
+    private AllController controllers;
 
-    public SimpleGUI(ModelView model, Controller controllers) {
+    public SimpleGUI(ModelView model, AllController controllers) {
         this.model = model;
         this.controllers = controllers;
         this.setBounds(100,100,400,400);
@@ -49,7 +48,7 @@ public class SimpleGUI extends JFrame {
         buttonExit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controllers.execute(new ActionBuilder().setAction(ActionBuilder.Action.EXIT).build());
+                controllers.exit(null);
             }
         });
         repaint();
@@ -78,11 +77,7 @@ public class SimpleGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    controllers.execute(new ActionBuilder()
-                            .setAction(ActionBuilder.Action.CREATE)
-                            .setLogin(login.getText())
-                            .setPassword(password.getText())
-                            .build());
+                    controllers.createNewPersonAndStartGame(login.getText(), password.getText());
                 } catch (RuntimeException ex) {
                     JOptionPane.showMessageDialog(null,
                             ex.getMessage(),
