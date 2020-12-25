@@ -15,7 +15,7 @@ class PushSwapPanel extends JPanel {
     private int max;
 
     public static int SCALE = 10;
-    public static int SHIFT = 10;
+    public static int SHIFT = 20;
 
     public PushSwapPanel(List<Integer> stackA, List<Integer> stackB, int max) {
         this.stackA = stackA;
@@ -33,12 +33,14 @@ class PushSwapPanel extends JPanel {
             int len = stackA.get(i) * SCALE;
             g2.drawRect(SHIFT, i * SCALE + SHIFT, len, 3);
             g2.fillRect(SHIFT, i * SCALE + SHIFT, len, 3);
+            g2.drawString(stackA.get(i).toString(), 0, i * SCALE + SHIFT + 5);
         }
 
         for (int i = 0; i < stackB.size(); i++) {
             int len = stackB.get(i) * SCALE;
             g2.drawRect(SHIFT * 2 + max * SCALE, i * SCALE + SHIFT, len, 3);
             g2.fillRect(SHIFT * 2 + max * SCALE, i * SCALE + SHIFT, len, 3);
+            g2.drawString(stackB.get(i).toString(), max * SCALE + SHIFT, i * SCALE + SHIFT + 5);
         }
     }
 }
@@ -53,13 +55,14 @@ class PushSwapFrame extends JFrame implements Runnable{
         this.stackB = stackB;
 
         int max = Stream.concat(stackA.stream(), stackB.stream()).max(Integer::compareTo).get();
+
         int width = max * 2 * PushSwapPanel.SCALE + PushSwapPanel.SHIFT * 3;
         int count = stackA.size() + stackB.size();
         int height = count * PushSwapPanel.SCALE + PushSwapPanel.SHIFT * 3 + 3;
 
         setVisible(true);
-        setSize(width, height);
         setTitle("PushSwap");
+        setSize(width, height);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
