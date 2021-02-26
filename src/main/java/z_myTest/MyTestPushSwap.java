@@ -4,9 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Stream;
 
 class PushSwapPanel extends JPanel {
@@ -127,8 +129,32 @@ public class MyTestPushSwap {
 
 
 
-        PushSwapFrame frame = new PushSwapFrame(stackA, stackB);
+//        PushSwapFrame frame = new PushSwapFrame(stackA, stackB);
 
+        List<String> commands = new ArrayList<>();
+
+        Scanner scanner = new Scanner(System.in);
+        while (scanner.hasNext()) {
+            String cmd = scanner.nextLine();
+            switch (cmd){
+                case "ra":
+                case "rb":
+                case "rr":
+                case "rra":
+                case "rrb":
+                case "rrr":
+                case "pa":
+                case "pb":
+                case "sa":
+                case "sb":
+                case "ss":
+                    commands.add(cmd); break;
+                default:
+                    System.err.println("Error");
+                    return;
+            }
+            System.out.println(cmd);
+        }
 //        Thread thread = new Thread(frame);
 //        thread.setDaemon(true);
 //        thread.start();

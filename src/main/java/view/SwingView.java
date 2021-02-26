@@ -24,17 +24,12 @@ public class SwingView implements MyView{
             controllers.exit(e.getMessage());
         }
         frame.addKeyListener(new KeyListener() {
-
-//            private CommandReader1 reader = new CommandReader1(controllers);
-
             @Override
             public void keyTyped(KeyEvent e) {
             }
 
             @Override
             public void keyPressed(KeyEvent e) {
-//                System.out.println(e.getKeyCode());
-//                reader.applyCommand(e);
                 controllers.executeCommand(Actions.getAction(e.getKeyChar()));
             }
 

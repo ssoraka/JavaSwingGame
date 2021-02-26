@@ -126,22 +126,21 @@ public class DbHandler {
     }
 
     public DbHandler() throws SQLException {
-
         createConnection();
         dropTable("players");
         createDB();
         initDB();
         readDB();
-
-
-        // Регистрируем драйвер, с которым будем работать
-        // в нашем случае Sqlite
-//        DriverManager.registerDriver(new JDBC());
-        // Выполняем подключение к базе данных
-//        this.connection = DriverManager.getConnection(CON_STR);
     }
 
     public boolean isLoginAndPasswordAlreadyExist(String login, String password) {
+        try {
+            resSet = statement.executeQuery("SELECT * FROM players WHERE login='" + login + "' OR password='" + password + "'");
+            if (resSet.next())
+                return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 

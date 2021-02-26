@@ -2,6 +2,8 @@ package view;
 
 import controllers.AllController;
 import model.ModelView;
+import model.Place;
+import z_main.Main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +13,7 @@ import java.awt.event.ActionListener;
 public class SimpleGUI extends JFrame {
     private ModelView model;
     private AllController controllers;
+//    private MyPanel panel;
 
     public SimpleGUI(ModelView model, AllController controllers) {
         this.model = model;
@@ -34,23 +37,8 @@ public class SimpleGUI extends JFrame {
         container.add(buttonContinue);
         container.add(buttonExit);
 
-        buttonCreate.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null,
-                        "персонаж создан, типа...",
-                        "Output",
-                        JOptionPane.PLAIN_MESSAGE);
-                loginMenu();
-            }
-        });
-
-        buttonExit.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controllers.exit(null);
-            }
-        });
+        buttonCreate.addActionListener(e -> loginMenu());
+        buttonExit.addActionListener(e -> controllers.exit(null));
         repaint();
         setVisible(true);
     }
@@ -73,6 +61,7 @@ public class SimpleGUI extends JFrame {
         container.add(buttonConfirm);
         container.add(buttonBack);
 
+        buttonBack.addActionListener(e -> startMenu());
         buttonConfirm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -85,20 +74,17 @@ public class SimpleGUI extends JFrame {
                             JOptionPane.PLAIN_MESSAGE);
                     return;
                 }
-                JOptionPane.showMessageDialog(null,
-                        "Подтверждено, начинаем игру ...",
-                        "Output",
-                        JOptionPane.PLAIN_MESSAGE);
+                closeMenu();
+                Main.startGame();
             }
         });
 
-        buttonBack.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                startMenu();
-            }
-        });
         repaint();
         setVisible(true);
+    }
+
+    private void closeMenu() {
+        startMenu();
+        setVisible(false);
     }
 }

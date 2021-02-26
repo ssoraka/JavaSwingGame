@@ -9,6 +9,11 @@ import view.TerminalView;
 import view.ViewActivator;
 
 public class Main {
+
+    private static TestModel model;
+    private static AllController controller;
+    private static SimpleGUI app; //menu
+
     public static void main(String[] args) {
 
 
@@ -30,28 +35,28 @@ public class Main {
 
 //        System.exit(0);
 
-        TestModel model = new TestModel();
+        model = new TestModel();
         model.setDb(db);
 
 //        MyController controllers = new MyController();
 //        controllers.add(new MoveController(model));
 //        controllers.add(new TalkController(model));
 //        controllers.add(new DBController(model));
-        AllController controller = new AllController(model);
+        controller = new AllController(model);
 
 
-//        SimpleGUI app = new SimpleGUI(model, controller);
+//        app = new SimpleGUI(model, controller);
+        openMenu();
 
 
-        SwingView view = new SwingView(model, controller);
-        TerminalView view2 = new TerminalView(model, controller);
-        ViewActivator activator = new ViewActivator(model);
-        activator.registerView(view);
-        activator.registerView(view2);
-
-        Thread myThready = new Thread(activator);
-        myThready.setDaemon(true);
-        myThready.start();
+//        SwingView view = new SwingView(model, controller);
+//        TerminalView view2 = new TerminalView(model, controller);
+//        ViewActivator activator = new ViewActivator(model);
+//        activator.registerView(view);
+//        activator.registerView(view2);
+//        Thread myThready = new Thread(activator);
+//        myThready.setDaemon(true);
+//        myThready.start();
 
 
 
@@ -75,4 +80,21 @@ public class Main {
 //        controllers.execute(talkAction2);
 //        controllers.execute(talkAction3);
     }
+
+    public static void openMenu() {
+        app = new SimpleGUI(model, controller);
+    }
+
+    public static void startGame() {
+        SwingView view = new SwingView(model, controller);
+        TerminalView view2 = new TerminalView(model, controller);
+        ViewActivator activator = new ViewActivator(model);
+        activator.registerView(view);
+        activator.registerView(view2);
+        Thread myThready = new Thread(activator);
+        myThready.setDaemon(true);
+        myThready.start();
+    }
+
+
 }
