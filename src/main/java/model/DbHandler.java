@@ -62,6 +62,8 @@ public class DbHandler {
     public void initDB() throws SQLException
     {
         Warrior warrior = new Warrior("Name1", Types.PlAYER);
+        warrior.setExperience(10000);
+        warrior.setLevel(10);
         addNewPlayer(warrior.getName(), "_" + warrior.getName() + "_", warrior);
 
         warrior = new Warrior("Name2", Types.ANIMAL);
@@ -133,9 +135,20 @@ public class DbHandler {
         readDB();
     }
 
-    public boolean isLoginAndPasswordAlreadyExist(String login, String password) {
+    public boolean isLoginOrPasswordAlreadyExist(String login, String password) {
         try {
             resSet = statement.executeQuery("SELECT * FROM players WHERE login='" + login + "' OR password='" + password + "'");
+            if (resSet.next())
+                return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isLoginAndPasswordAlreadyExist(String login, String password) {
+        try {
+            resSet = statement.executeQuery("SELECT * FROM players WHERE login='" + login + "' AND password='" + password + "'");
             if (resSet.next())
                 return true;
         } catch (SQLException e) {

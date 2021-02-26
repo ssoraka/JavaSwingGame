@@ -82,8 +82,18 @@ public class Main {
     }
 
     public static void openMenu() {
-        app = new SimpleGUI(model, controller);
+        app = new SimpleGUI(controller);
+        app.setVisible(true);
     }
+
+//    public static void Menu() {
+//        app.isVisible();
+//        app.setVisible(true);
+//    }
+//
+//    public static void hideMenu() {
+//        app.setVisible(false);
+//    }
 
     public static void startGame() {
         SwingView view = new SwingView(model, controller);

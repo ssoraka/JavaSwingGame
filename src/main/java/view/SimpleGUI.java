@@ -1,22 +1,18 @@
 package view;
 
 import controllers.AllController;
-import model.ModelView;
-import model.Place;
 import z_main.Main;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.function.BiConsumer;
 
 public class SimpleGUI extends JFrame {
-    private ModelView model;
     private AllController controllers;
-//    private MyPanel panel;
 
-    public SimpleGUI(ModelView model, AllController controllers) {
-        this.model = model;
+    public SimpleGUI(AllController controllers) {
         this.controllers = controllers;
         this.setBounds(100,100,400,400);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,13 +33,14 @@ public class SimpleGUI extends JFrame {
         container.add(buttonContinue);
         container.add(buttonExit);
 
-        buttonCreate.addActionListener(e -> loginMenu());
+        buttonCreate.addActionListener(e -> createOrContinueMenu(controllers::createNewPersonAndStartGame));
+        buttonContinue.addActionListener(e -> createOrContinueMenu(controllers::findPersonAndStartGame));
         buttonExit.addActionListener(e -> controllers.exit(null));
         repaint();
         setVisible(true);
     }
 
-    private void loginMenu() {
+    private void createOrContinueMenu(BiConsumer<String, String> consumer) {
         JTextField login = new JTextField("", 5);
         JTextField password = new JTextField("", 5);
         JLabel labelLogin = new JLabel("login:");
@@ -66,7 +63,7 @@ public class SimpleGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    controllers.createNewPersonAndStartGame(login.getText(), password.getText());
+                    consumer.accept(login.getText(), password.getText());
                 } catch (RuntimeException ex) {
                     JOptionPane.showMessageDialog(null,
                             ex.getMessage(),

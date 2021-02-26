@@ -17,8 +17,7 @@ public class TestModel implements ModelController, ModelView {
         hasChange = true;
 
 
-        player = new Warrior("capybara", Types.PlAYER, 0, 0); // надо поправить конструктор
-        level = new Level(player);
+        setPlayer(new Warrior("capybara", Types.PlAYER, 0, 0));
     }
 
     public void setDb(DbHandler db) {
@@ -45,6 +44,13 @@ public class TestModel implements ModelController, ModelView {
         level.fillEnvironment(env);
     }
 
+
+    private void setPlayer(Warrior warrior) {
+        player = warrior;
+        level = new Level(player);
+    }
+
+
     // реакции на контроллеры
 
     @Override
@@ -62,9 +68,16 @@ public class TestModel implements ModelController, ModelView {
 
     @Override
     public void createNewPersonAndStartGame(String login, String password) {
-        if (db.isLoginAndPasswordAlreadyExist(login, password))
+        if (db.isLoginOrPasswordAlreadyExist(login, password))
             throw new RuntimeException("Такое имя или пароль уже существует");
         db.addNewPlayer(login, password, player);
+    }
+
+    @Override
+    public void findPersonAndStartGame(String login, String password) {
+        if (!db.isLoginAndPasswordAlreadyExist(login, password))
+            throw new RuntimeException("Неверное имя или пароль");
+        setPlayer(db.readPlayer(login, password));
     }
 
     @Override

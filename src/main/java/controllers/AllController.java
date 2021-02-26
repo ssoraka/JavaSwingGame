@@ -15,6 +15,9 @@ public class AllController {
         model.createNewPersonAndStartGame(login, password);
     }
 
+    public void findPersonAndStartGame(String login, String password) {
+        model.findPersonAndStartGame(login, password);
+    }
 
     public void exit(String message) {
         model.exit(message);
