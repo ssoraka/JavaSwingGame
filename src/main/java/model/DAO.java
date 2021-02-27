@@ -74,7 +74,7 @@ public class DAO {
     }
 
     // --------Заполнение таблицы--------
-    public void initDB() throws SQLException {
+    public void initDB() {
         Warrior warrior = new Warrior("Name1", Types.PlAYER);
         warrior.setExperience(10000);
         warrior.setLevel(10);
@@ -170,13 +170,14 @@ public class DAO {
 
     public void createPlayer(String login, String password, Warrior warrior) {
 
+
+        insertRequest("login", login);
+        addArg("password", password);
+        addArg("exp", warrior.getExperience());
+        addArg("hp", warrior.getHelmet());
+        addArg("maxHp", warrior.getAttack());
+        addArg("level", warrior.getLevel());
         try {
-            insertRequest("login", login);
-            addArg("password", password);
-            addArg("exp", warrior.getExperience());
-            addArg("hp", warrior.getHelmet());
-            addArg("maxHp", warrior.getAttack());
-            addArg("level", warrior.getLevel());
             statement.execute(request.toString());
             readDB();
         } catch (Exception e) {
@@ -185,21 +186,19 @@ public class DAO {
     }
 
     public void updatePlayer(Warrior warrior) {
-
-        System.out.println("update");
+        request = new StringBuilder("UPDATE players SET")
+                .append("'exp'=")
+                .append(warrior.getExperience())
+                .append(",'hp'=")
+                .append(warrior.getHelmet())
+                .append(",'maxHp'=")
+                .append(warrior.getAttack())
+                .append(",'level'=")
+                .append(warrior.getLevel())
+                .append(" WHERE login='")
+                .append(warrior.getName())
+                .append("';");
         try {
-            request = new StringBuilder("UPDATE players SET")
-                    .append("'exp'=")
-                    .append(warrior.getExperience())
-                    .append(",'hp'=")
-                    .append(warrior.getHelmet())
-                    .append(",'maxHp'=")
-                    .append(warrior.getAttack())
-                    .append(",'level'=")
-                    .append(warrior.getLevel())
-                    .append(" WHERE login='")
-                    .append(warrior.getName())
-                    .append("';");
             statement.execute(request.toString());
             readDB();
         } catch (Exception e) {

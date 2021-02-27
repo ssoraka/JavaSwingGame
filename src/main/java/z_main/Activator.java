@@ -1,9 +1,7 @@
 package z_main;
 
 import controllers.*;
-import model.AppStatus;
 import model.DAO;
-import model.ModelView;
 import model.TestModel;
 import view.*;
 
@@ -18,8 +16,6 @@ public class Activator implements Runnable {
     private static Activator activator;
 
     private List<MyView> views = new ArrayList<>();
-    private boolean hasViews;
-
 
     public static void main(String[] args) {
 
@@ -51,7 +47,6 @@ public class Activator implements Runnable {
     }
 
     public static void openMenu() {
-        model.setStatus(AppStatus.GUI);
         app = new SimpleGUI(controller);
     }
 
@@ -63,8 +58,7 @@ public class Activator implements Runnable {
     }
 
     public static void startGame() {
-        model.setStatus(AppStatus.GAME);
-
+        app = null;
         SwingView view = new SwingView(model, controller);
         activator.registerView(view);
 
@@ -74,7 +68,6 @@ public class Activator implements Runnable {
 
     public void registerView(MyView view) {
         views.add(view);
-        hasViews = true;
     }
 
     public void unregisterViews() {
@@ -82,7 +75,6 @@ public class Activator implements Runnable {
             view.close();
         }
         views = new ArrayList<>();
-        hasViews = false;
         openMenu();
     }
 
@@ -95,16 +87,17 @@ public class Activator implements Runnable {
     @Override
     public void run() {
         while(true) {
-            if (hasViews && model.wasChanged())
-                refreshViews();
-            if (hasViews && model.getStatus() == AppStatus.GUI)
-                unregisterViews();
-
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            if (views.size() == 0)
+                continue;
+            if (model.wasChanged())
+                refreshViews();
+            if (!model.isGameRun())
+                unregisterViews();
         }
     }
 }

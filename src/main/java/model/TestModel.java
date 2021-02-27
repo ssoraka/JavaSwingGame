@@ -8,7 +8,7 @@ public class TestModel implements ModelController, ModelView {
     private DAO db;
     private List<String> messages;
     private boolean hasChange;
-    private AppStatus status;
+    private boolean runGame;
 
     private Level level;
     private Warrior player;
@@ -30,13 +30,9 @@ public class TestModel implements ModelController, ModelView {
         return false;
     }
 
-    public void setStatus(AppStatus status) {
-        this.status = status;
-    }
-
     @Override
-    public AppStatus getStatus() {
-        return status;
+    public boolean isGameRun() {
+        return runGame;
     }
 
     @Override
@@ -54,7 +50,6 @@ public class TestModel implements ModelController, ModelView {
         player = warrior;
         level = new Level(player);
     }
-
 
     // реакции на контроллеры
 
@@ -84,6 +79,7 @@ public class TestModel implements ModelController, ModelView {
 
         setPlayer(new Warrior(login, Types.PlAYER));
         db.createPlayer(login, password, player);
+        runGame = true;
     }
 
     @Override
@@ -91,6 +87,7 @@ public class TestModel implements ModelController, ModelView {
         if (!db.isLoginAndPasswordAlreadyExist(login, password))
             throw new RuntimeException("Неверное имя или пароль");
         setPlayer(db.readPlayer(login, password));
+        runGame = true;
     }
 
     @Override
@@ -101,7 +98,7 @@ public class TestModel implements ModelController, ModelView {
 
     @Override
     public void closeViews() {
-        status = AppStatus.GUI;
+        runGame = false;
     }
 
     @Override

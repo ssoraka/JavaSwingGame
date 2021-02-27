@@ -6,7 +6,7 @@ import java.awt.Point;
 import java.util.List;
 
 public interface ModelView {
-    public AppStatus getStatus();
+    public boolean isGameRun();
     public List<String> getMessages();
     public void fillEnvironment(Place[][] env);
 }
