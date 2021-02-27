@@ -1,7 +1,7 @@
 package view;
 
 import controllers.AllController;
-import z_main.Main;
+import z_main.Activator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,7 +35,7 @@ public class SimpleGUI extends JFrame {
 
         buttonCreate.addActionListener(e -> createOrContinueMenu(controllers::createNewPersonAndStartGame));
         buttonContinue.addActionListener(e -> createOrContinueMenu(controllers::findPersonAndStartGame));
-        buttonExit.addActionListener(e -> controllers.exit(null));
+        buttonExit.addActionListener(e -> controllers.exit());
         repaint();
         setVisible(true);
     }
@@ -72,7 +72,7 @@ public class SimpleGUI extends JFrame {
                     return;
                 }
                 closeMenu();
-                Main.startGame();
+                Activator.startGame();
             }
         });
 
@@ -81,7 +81,7 @@ public class SimpleGUI extends JFrame {
     }
 
     private void closeMenu() {
-        startMenu();
         setVisible(false);
+        dispose();
     }
 }

@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestModel implements ModelController, ModelView {
-    private DbHandler db;
+    private DAO db;
     private List<String> messages;
     private boolean hasChange;
+    private AppStatus status;
 
     private Level level;
     private Warrior player;
@@ -15,23 +16,27 @@ public class TestModel implements ModelController, ModelView {
     public TestModel() {
         messages = new ArrayList<>();
         hasChange = true;
-
-
-        setPlayer(new Warrior("capybara", Types.PlAYER, 0, 0));
     }
 
-    public void setDb(DbHandler db) {
+    public void setDb(DAO db) {
         this.db = db;
     }
 
-    @Override
-    public boolean hasChange() {
-        return hasChange;
+    public boolean wasChanged() {
+        if (hasChange) {
+            hasChange = false;
+            return true;
+        }
+        return false;
+    }
+
+    public void setStatus(AppStatus status) {
+        this.status = status;
     }
 
     @Override
-    public void applayChanges() {
-        hasChange = false;
+    public AppStatus getStatus() {
+        return status;
     }
 
     @Override
@@ -55,8 +60,14 @@ public class TestModel implements ModelController, ModelView {
 
     @Override
     public void tryMovePlayer(Point shift) {
+        if (level.isLeaveLevel(player, shift)) {
+            db.updatePlayer(player);
+            level = new Level(player);
+        }
         level.tryMoveObject(player, shift);
         level.moveAnimals();
+        if (!player.isAlive())
+            throw new DeadException();
         hasChange = true;
     }
 
@@ -70,7 +81,9 @@ public class TestModel implements ModelController, ModelView {
     public void createNewPersonAndStartGame(String login, String password) {
         if (db.isLoginOrPasswordAlreadyExist(login, password))
             throw new RuntimeException("Такое имя или пароль уже существует");
-        db.addNewPlayer(login, password, player);
+
+        setPlayer(new Warrior(login, Types.PlAYER));
+        db.createPlayer(login, password, player);
     }
 
     @Override
@@ -81,22 +94,16 @@ public class TestModel implements ModelController, ModelView {
     }
 
     @Override
-    public void exit(String message) {
-        if (message != null)
-            System.out.println(message);
-        if (db != null) {
-            try {
-                db.CloseDB();
-                System.out.println("База отключена");
-            } catch (Exception e) {
-                ;
-            }
-        }
+    public void exit() {
+        db.closeDB();
         System.exit(0);
     }
 
+    @Override
+    public void closeViews() {
+        status = AppStatus.GUI;
+    }
 
-    //надо отправлять какой-то интерфейс, чтоб вид мог себя обновить, пользуясь моделью
     @Override
     public String toString() {
         return "TestModel{" +

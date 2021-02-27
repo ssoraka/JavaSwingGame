@@ -1,8 +1,12 @@
 package view;
 
+import controllers.Actions;
 import controllers.AllController;
+import model.DeadException;
 import model.ModelView;
 import model.Place;
+
+import java.util.Scanner;
 
 public class TerminalView implements MyView{
     final static private String TREE = "\033[0;32mT\033[00m";
@@ -26,7 +30,24 @@ public class TerminalView implements MyView{
         height = 20;
         env = new Place[height][width];
 
-        Thread myThready = new Thread(new TerminalScanner(controllers));
+        runScanner();
+    }
+
+    private void runScanner() {
+        Thread myThready = new Thread(() -> {
+            Scanner scanner = new Scanner(System.in);
+
+            while (scanner.hasNext()) {
+                String text = scanner.nextLine();
+
+                try {
+                    controllers.executeCommand(Actions.getAction(text));
+                } catch (DeadException e) {
+                        deadMessage();
+                        controllers.closeViews();
+                }
+            }
+        });
         myThready.setDaemon(true);
         myThready.start();
     }
@@ -51,4 +72,12 @@ public class TerminalView implements MyView{
         System.out.printf("message = %s\n", model.getMessages());
     }
 
+    private void deadMessage() {
+        System.out.println("dead!!");
+    }
+
+    @Override
+    public void close() {
+        ;
+    }
 }

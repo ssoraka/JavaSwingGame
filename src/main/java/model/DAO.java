@@ -5,7 +5,7 @@ import org.sqlite.JDBC;
 
 import java.sql.*;
 
-public class DbHandler {
+public class DAO {
 
     //https://habr.com/en/sandbox/88039/
     //https://alekseygulynin.ru/rabota-s-sqlite-v-java/
@@ -17,35 +17,50 @@ public class DbHandler {
     private StringBuilder request;
 
     // --------ПОДКЛЮЧЕНИЕ К БАЗЕ ДАННЫХ--------
-    public synchronized void createConnection() throws SQLException
-    {
+    public synchronized void createConnection() throws SQLException {
         if (connection == null) {
             DriverManager.registerDriver(new JDBC());
-            connection = DriverManager.getConnection("jdbc:sqlite:" + DbHandler.class.getResource("/database.db"));
+            connection = DriverManager.getConnection("jdbc:sqlite:" + DAO.class.getResource("/database.db"));
             statement = connection.createStatement();
             System.out.println("База Подключена!");
         }
     }
 
-    public void CloseDB() throws ClassNotFoundException, SQLException
-    {
-        if (connection != null)
-            connection.close();
-        if (statement != null)
-            statement.close();
-        if (resSet != null)
-            resSet.close();
-
-        System.out.println("Соединения закрыты");
+    public DAO() throws SQLException {
+        createConnection();
+        dropTable("players");
+        createDB();
+        initDB();
+        readDB();
     }
 
-    public void dropTable(String name) throws SQLException
-    {
+    public void closeDB() {
+        try {
+            if (connection != null)
+                connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            if (statement != null)
+                statement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            if (resSet != null)
+                resSet.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Соединения закрыты, база отключена");
+    }
+
+    public void dropTable(String name) throws SQLException {
         statement.execute("DROP TABLE '" + name + "';");
     }
 
-    public void createDB() throws SQLException
-    {
+    public void createDB() throws SQLException {
         statement.execute("CREATE TABLE if not exists 'players' (" +
                 "'id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "'login' text, " +
@@ -59,28 +74,27 @@ public class DbHandler {
     }
 
     // --------Заполнение таблицы--------
-    public void initDB() throws SQLException
-    {
+    public void initDB() throws SQLException {
         Warrior warrior = new Warrior("Name1", Types.PlAYER);
         warrior.setExperience(10000);
         warrior.setLevel(10);
-        addNewPlayer(warrior.getName(), "_" + warrior.getName() + "_", warrior);
+        createPlayer(warrior.getName(), "_" + warrior.getName() + "_", warrior);
+        warrior.setExperience(10001);
+        updatePlayer(warrior);
 
         warrior = new Warrior("Name2", Types.ANIMAL);
-        addNewPlayer(warrior.getName(), "_" + warrior.getName() + "_", warrior);
+        createPlayer(warrior.getName(), "_" + warrior.getName() + "_", warrior);
 
         warrior = new Warrior("Name3", Types.ANIMAL);
-        addNewPlayer(warrior.getName(), "_" + warrior.getName() + "_", warrior);
+        createPlayer(warrior.getName(), "_" + warrior.getName() + "_", warrior);
 
         System.out.println("Таблица заполнена");
     }
 
     // -------- Вывод таблицы--------
-    public void readDB() throws SQLException
-    {
+    public void readDB() throws SQLException {
         resSet = statement.executeQuery("SELECT * FROM players");
-        while(resSet.next())
-        {
+        while (resSet.next()) {
             int id = resSet.getInt("id");
             String login = resSet.getString("login");
             String password = resSet.getString("password");
@@ -104,9 +118,13 @@ public class DbHandler {
                 .append("' );");
     }
 
-//    private void insertRequest(String field, int value) {
-//        request = new StringBuilder("INSERT INTO 'players' ( '" + field + "' ) VALUES ( " + value + " );");
-//    }
+    private void updateRequest(String field, String value) {
+        request = new StringBuilder("UPDATE 'players' ( '")
+                .append(field)
+                .append("' ) VALUES ( '")
+                .append(value)
+                .append("' );");
+    }
 
     private void insertInRequest(String field, String value) {
         int posField = request.indexOf(")") - 1;
@@ -125,14 +143,6 @@ public class DbHandler {
         insertInRequest(", '", ", ");
         insertInRequest(field, String.valueOf(value));
         insertInRequest("'", "");
-    }
-
-    public DbHandler() throws SQLException {
-        createConnection();
-        dropTable("players");
-        createDB();
-        initDB();
-        readDB();
     }
 
     public boolean isLoginOrPasswordAlreadyExist(String login, String password) {
@@ -157,7 +167,8 @@ public class DbHandler {
         return false;
     }
 
-    public void addNewPlayer(String login, String password, Warrior warrior) {
+
+    public void createPlayer(String login, String password, Warrior warrior) {
 
         try {
             insertRequest("login", login);
@@ -170,6 +181,29 @@ public class DbHandler {
             readDB();
         } catch (Exception e) {
             System.out.println("Не записалось в бд");
+        }
+    }
+
+    public void updatePlayer(Warrior warrior) {
+
+        System.out.println("update");
+        try {
+            request = new StringBuilder("UPDATE players SET")
+                    .append("'exp'=")
+                    .append(warrior.getExperience())
+                    .append(",'hp'=")
+                    .append(warrior.getHelmet())
+                    .append(",'maxHp'=")
+                    .append(warrior.getAttack())
+                    .append(",'level'=")
+                    .append(warrior.getLevel())
+                    .append(" WHERE login='")
+                    .append(warrior.getName())
+                    .append("';");
+            statement.execute(request.toString());
+            readDB();
+        } catch (Exception e) {
+            System.out.println("Не обновилась запись в бд");
         }
     }
 

@@ -88,7 +88,7 @@ public class Level {
     private void insertOnMap(PlaceHolder object, int x, int y) {
         if (y >= 0 && y < height && x >= 0 && x < width) {
             map[y][x].setObject(object);
-            if (object != EMPTY && object != BOUNDARY) {
+            if (object != EMPTY) {
                 object.setXY(x, y);
             }
         }
@@ -125,7 +125,9 @@ public class Level {
         }
     }
 
-
+    public boolean isLeaveLevel(Warrior object, Point shift) {
+        return getPlaceHolder(object.getX() + shift.x, object.getY() + shift.y) == BOUNDARY;
+    }
 
     public void tryMoveObject(Warrior object, Point shift)  {
         PlaceHolder current = getPlaceHolder(object.getX() + shift.x, object.getY() + shift.y);

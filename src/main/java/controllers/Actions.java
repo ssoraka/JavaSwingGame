@@ -8,6 +8,7 @@ public enum Actions {
     CREATE,
     LOGIN,
     EXIT,
+    CLOSE,
 
     MOVE_LEFT,
     MOVE_RIGHT,
@@ -21,7 +22,7 @@ public enum Actions {
             case 'a': return MOVE_LEFT;
             case 'd': return MOVE_RIGHT;
             case '\n': return ENTER;
-            case 'q': return EXIT;
+            case 'q': return CLOSE;
             default:
                 return NOTHING;
         }
@@ -47,7 +48,7 @@ public enum Actions {
             case "text":
             case "talk": return ENTER;
             case "quit":
-            case "exit": return EXIT;
+            case "exit": return CLOSE;
             default:
                 return NOTHING;
         }

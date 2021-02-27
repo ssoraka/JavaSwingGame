@@ -10,7 +10,6 @@ public class AllController {
         this.model = model;
     }
 
-
     public void createNewPersonAndStartGame(String login, String password) {
         model.createNewPersonAndStartGame(login, password);
     }
@@ -19,10 +18,12 @@ public class AllController {
         model.findPersonAndStartGame(login, password);
     }
 
-    public void exit(String message) {
-        model.exit(message);
+    public void exit() {
+        model.exit();
     }
-
+    public void closeViews() {
+        model.closeViews();
+    }
 
     public void talk(String message) {
         model.printMessage(message);
@@ -34,7 +35,8 @@ public class AllController {
             case MOVE_DOWN: model.tryMovePlayer(Level.DOWN); break;
             case MOVE_LEFT: model.tryMovePlayer(Level.LEFT); break;
             case MOVE_RIGHT: model.tryMovePlayer(Level.RIGHT); break;
-            case EXIT: exit(null); break;
+            case EXIT: exit(); break;
+            case CLOSE: closeViews(); break;
             default:
                 break;
         }
