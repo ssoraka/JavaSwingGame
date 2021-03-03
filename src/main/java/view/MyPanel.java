@@ -1,6 +1,8 @@
 package view;
 
 import model.Place;
+import model.PlaceHolder;
+import model.Types;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -12,6 +14,7 @@ public class MyPanel extends JPanel {
     private final static int CELL_SIZE = 32;
     private static final Color TREE_COLOR = new Color(15, 167, 136);
     private static final Color GREEN_COLOR = new Color(105, 187, 106);
+    private static final Place OUT = new Place(new PlaceHolder(Types.BOUNDARY), Types.BLACK);
 
     private Place[][] env;
     private TexturePaint tree;
@@ -23,6 +26,13 @@ public class MyPanel extends JPanel {
         width = width / CELL_SIZE;
         height = height / CELL_SIZE;
         env = new Place[height][width];
+
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                env[i][j] = OUT;
+            }
+        }
+
         load();
     }
 
@@ -62,7 +72,7 @@ public class MyPanel extends JPanel {
     }
 
 
-    private void printPlane(Graphics2D g2, Place place, int x, int y){
+    private void printPlane(Graphics2D g2, Place place, int x, int y) {
         int size = 2;
 
         // в перспективе тут должны быть отмечены свойства земли, на которой расположен объект
@@ -79,7 +89,7 @@ public class MyPanel extends JPanel {
         g2.fillRect(x + size / 2, y + size / 2, CELL_SIZE - size, CELL_SIZE - size);
     }
 
-    private void printObject(Graphics2D g2, Place place, int x, int y){
+    private void printObject(Graphics2D g2, Place place, int x, int y) {
         int size = 2;
 
         switch (place.getObject().getTypes()) {
@@ -95,7 +105,7 @@ public class MyPanel extends JPanel {
             }
             case ANIMAL: {
                 g2.setPaint(salamander);
-                g2.fillRect(x+2, y+2, 28, 28);
+                g2.fillRect(x + 2, y + 2, 28, 28);
                 return;
             }
             case BOUNDARY: g2.setColor(Color.black); break;

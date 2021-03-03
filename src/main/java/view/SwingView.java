@@ -4,6 +4,7 @@ import controllers.Actions;
 import controllers.AllController;
 import model.DeadException;
 import model.ModelView;
+import model.Warrior;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -12,13 +13,11 @@ import java.io.IOException;
 
 public class SwingView implements MyView{
     private ModelView model;
-    private AllController controllers;
 
     private MyFrame frame;
 
     public SwingView(ModelView model, AllController controllers) {
         this.model = model;
-        this.controllers = controllers;
 
         try {
             frame = new MyFrame("Points",800, 600);
@@ -27,8 +26,7 @@ public class SwingView implements MyView{
         }
         frame.addKeyListener(new KeyListener() {
             @Override
-            public void keyTyped(KeyEvent e) {
-            }
+            public void keyTyped(KeyEvent e) {}
 
             @Override
             public void keyPressed(KeyEvent e) {
@@ -36,17 +34,15 @@ public class SwingView implements MyView{
                     controllers.executeCommand(Actions.getAction(e.getKeyChar()));
                 } catch (DeadException ex) {
                     JOptionPane.showMessageDialog(null,
-                            ex.getMessage(),
-                            "Game Over\n Player is dead!!!",
+                            "Player is dead!!!",
+                            "Game Over",
                             JOptionPane.PLAIN_MESSAGE);
                     controllers.closeViews();
                 }
-
             }
 
             @Override
-            public void keyReleased(KeyEvent e) {
-            }
+            public void keyReleased(KeyEvent e) {}
         });
 
         refresh();
@@ -54,6 +50,12 @@ public class SwingView implements MyView{
 
     public void refresh() {
         model.fillEnvironment(frame.getEnv());
+        Warrior person = model.getPlayer();
+        frame.setPersonName(person.getName());
+        frame.setDefense(person.getDefence());
+        frame.setHelmet(person.getHelmet());
+        frame.setAttack(person.getAttack());
+        frame.setHp(person.getHp());
         frame.repaint();
     }
 

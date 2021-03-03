@@ -45,6 +45,11 @@ public class TestModel implements ModelController, ModelView {
         level.fillEnvironment(env);
     }
 
+    @Override
+    public Warrior getPlayer() {
+        return player;
+    }
+
 
     private void setPlayer(Warrior warrior) {
         player = warrior;

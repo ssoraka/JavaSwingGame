@@ -5,8 +5,15 @@ import model.DAO;
 import model.TestModel;
 import view.*;
 
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Activator implements Runnable {
 
@@ -16,6 +23,14 @@ public class Activator implements Runnable {
     private static Activator activator;
 
     private List<MyView> views = new ArrayList<>();
+
+
+
+    /*
+    надо сделать интерфейс для терминала
+    вывести параметры персонажа
+     */
+
 
     public static void main(String[] args) {
 
@@ -42,8 +57,12 @@ public class Activator implements Runnable {
 
         controller = new AllController(model);
 
-        openMenu();
+//        openMenu();
+
         startActivator();
+        controller.findPersonAndStartGame("Name1", "_Name1_");
+
+        startGame();
     }
 
     public static void openMenu() {

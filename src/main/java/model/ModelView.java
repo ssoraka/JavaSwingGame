@@ -9,4 +9,5 @@ public interface ModelView {
     public boolean isGameRun();
     public List<String> getMessages();
     public void fillEnvironment(Place[][] env);
+    public Warrior getPlayer();
 }
