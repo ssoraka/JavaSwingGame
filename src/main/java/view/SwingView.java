@@ -51,11 +51,12 @@ public class SwingView implements MyView{
     public void refresh() {
         model.fillEnvironment(frame.getEnv());
         Warrior person = model.getPlayer();
-        frame.setPersonName(person.getName());
-        frame.setDefense(person.getDefence());
-        frame.setHelmet(person.getHelmet());
-        frame.setAttack(person.getAttack());
-        frame.setHp(person.getHp());
+        frame.updateField(MyFrame.NAME, person.getName());
+        frame.updateField(MyFrame.HP, Integer.toString(person.getHp()));
+        frame.updateField(MyFrame.DEFENSE, Integer.toString(person.getDefence()));
+        frame.updateField(MyFrame.HELMET, Integer.toString(person.getHelmet()));
+        frame.updateField(MyFrame.ATTACK, Integer.toString(person.getAttack()));
+
         frame.repaint();
     }
 
