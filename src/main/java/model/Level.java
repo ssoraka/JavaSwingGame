@@ -149,9 +149,14 @@ public class Level {
         } else if (current instanceof Warrior) {
             if (current == player || object == player) {
                 logger(true);
+                logger.delete(0, logger.length());
             }
             fight(object, (Warrior) current);
             logger(false);
+            if (current == player || object == player) {
+                logger.insert(0, "<html>");
+                logger.append("</html>");
+            }
         }
     }
 
@@ -221,10 +226,6 @@ public class Level {
     }
 
     public String getFightLog() {
-        logger.insert(0, "<html>");
-        logger.append("</html>");
-        String log = logger.toString();
-        logger.delete(0, logger.length());
-        return log;
+        return logger.toString();
     }
 }
