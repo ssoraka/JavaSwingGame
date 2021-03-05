@@ -3,8 +3,8 @@ package model;
 import java.awt.*;
 
 public class PlaceHolder {
-    private Types type;
-    private Point pos;
+    protected Types type;
+    protected Point pos;
 
     public PlaceHolder(Types type) {
         this.type = type;

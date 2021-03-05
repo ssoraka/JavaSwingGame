@@ -7,6 +7,7 @@ import java.util.List;
 public class TestModel implements ModelController, ModelView {
     private DAO db;
     private List<String> messages;
+    private String log;
     private boolean hasChange;
     private boolean runGame;
 
@@ -15,6 +16,7 @@ public class TestModel implements ModelController, ModelView {
 
     public TestModel() {
         messages = new ArrayList<>();
+        log = "game start\n";
         hasChange = true;
     }
 
@@ -50,6 +52,10 @@ public class TestModel implements ModelController, ModelView {
         return player;
     }
 
+    @Override
+    public String getLog() {
+        return log;
+    }
 
     private void setPlayer(Warrior warrior) {
         player = warrior;
@@ -66,6 +72,7 @@ public class TestModel implements ModelController, ModelView {
         }
         level.tryMoveObject(player, shift);
         level.moveAnimals();
+        log = level.getFightLog();
         if (!player.isAlive())
             throw new DeadException();
         hasChange = true;

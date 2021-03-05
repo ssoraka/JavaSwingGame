@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static model.Warrior.*;
+
 
 public class MyFrame extends JFrame {
 
@@ -20,13 +22,7 @@ public class MyFrame extends JFrame {
     private static int TEXT_STEP_X = 100;
     private static int TEXT_STEP_Y = 30;
 
-    static String NAME = "name";
-    static String HP = "hp";
-    static String ATTACK = "attack";
-    static String DEFENSE = "defense";
-    static String HELMET = "helmet";
-
-    private static String[] LABELS = {NAME, HP, ATTACK, DEFENSE, HELMET};
+    private static String[] LABELS = {NAME, HP, LEVEL, EXP, "next exp", ATTACK, DEFENSE, HELMET};
 
     public MyFrame(String title, int width, int height) throws IOException {
         setVisible(true);
@@ -70,6 +66,11 @@ public class MyFrame extends JFrame {
 
             y += TEXT_STEP_Y;
         }
+
+        JLabel label = new JLabel("logger");
+        label.setBounds(width + 10, y, width + TEXT_STEP_X * 2, 300);
+        panel.add(label);
+        labels.put("logger", label);
 
         return  panel;
     }

@@ -11,6 +11,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
 
+import static model.Warrior.*;
+
 public class SwingView implements MyView{
     private ModelView model;
 
@@ -51,11 +53,15 @@ public class SwingView implements MyView{
     public void refresh() {
         model.fillEnvironment(frame.getEnv());
         Warrior person = model.getPlayer();
-        frame.updateField(MyFrame.NAME, person.getName());
-        frame.updateField(MyFrame.HP, Integer.toString(person.getHp()));
-        frame.updateField(MyFrame.DEFENSE, Integer.toString(person.getDefence()));
-        frame.updateField(MyFrame.HELMET, Integer.toString(person.getHelmet()));
-        frame.updateField(MyFrame.ATTACK, Integer.toString(person.getAttack()));
+        frame.updateField(NAME, person.getName());
+        frame.updateField(HP, Integer.toString(person.getHp()));
+        frame.updateField(LEVEL, Integer.toString(person.getLevel()));
+        frame.updateField(EXP, Integer.toString(person.getExperience()));
+        frame.updateField("next exp", Integer.toString(person.expNextLevel));
+        frame.updateField(DEFENSE, Integer.toString(person.getDefence()));
+        frame.updateField(HELMET, Integer.toString(person.getHelmet()));
+        frame.updateField(ATTACK, Integer.toString(person.getAttack()));
+        frame.updateField("logger", model.getLog());
 
         frame.repaint();
     }

@@ -5,6 +5,16 @@ import java.awt.*;
 import java.util.Random;
 
 public class Warrior extends PlaceHolder{
+
+    public static String NAME = "name";
+    public static String HP = "hp";
+    public static String ATTACK = "attack";
+    public static String DEFENSE = "defense";
+    public static String HELMET = "helmet";
+    public static String LEVEL = "level";
+    public static String EXP = "exp";
+    public static String TYPE = "type";
+
     private String name;
 
     private int helmet;
@@ -15,41 +25,45 @@ public class Warrior extends PlaceHolder{
 
     private int level;
     private int experience;
-    private int expNextLevel;
+    public int expNextLevel;
 
     private int hp;
-    private int maxHp;
     private Random random;
 
     public Warrior(String name, Types type) {
         super(type);
         this.name = name;
-        init();
+        init(1);
     }
 
     public Warrior(String name, Types type, int x, int y) {
         super(type, x, y);
         this.name = name;
-        init();
+        init(1);
     }
 
-    private void init(){
-        helmet = 1;
-        attack = 1;
-        defence = 1;
-        experience = 0;
-        hp = 1;
-        maxHp = 1;
-        level = 1;
-        expNextLevel = experienceForNextLevel(1);
+    public Warrior(String name, Types type, int x, int y, int level) {
+        super(type, x, y);
+        this.name = name;
+        init(level);
+    }
+
+    private void init(int level){
         random = new Random();
-        if (getTypes() == Types.PlAYER)
-            power = 5;
-        else
-            power = 2;
-        hp = helmet * power;
-        maxHp = hp;
-        experience = power * 500;
+        setLevel(level);
+
+        switch (type){
+            case PlAYER :
+                power = 5;
+                break;
+            default:
+                power = 2;
+                experience = expNextLevel / 10;
+        }
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
     }
 
     public void setHelmet(int helmet) {
@@ -70,6 +84,11 @@ public class Warrior extends PlaceHolder{
 
     public void setLevel(int level) {
         this.level = level;
+        helmet = level  + 1;
+        attack = level / 2  + 1;
+        defence = level / 2  + 1;
+        experienceForNextLevel();
+        hp = helmet;
     }
 
     public int getHp() {
@@ -101,7 +120,7 @@ public class Warrior extends PlaceHolder{
     }
 
     public int attack() {
-        return (random.nextInt(attack * power + 1) + attack * power);
+        return (random.nextInt(attack * power + 1));
     }
 
     public void takeDamage(int damage) {
@@ -116,13 +135,12 @@ public class Warrior extends PlaceHolder{
 
     public void addExperience(int exp) {
         experience += exp;
-        if (experience >= expNextLevel) {
-            level++;
-            expNextLevel = experienceForNextLevel(level);
+        while (experience >= expNextLevel) {
+            setLevel(++level);
         }
     }
 
-    private int experienceForNextLevel(int level) {
-        return (level * 1000 + (level - 1) ^ 2 * 450);
+    private void experienceForNextLevel() {
+        expNextLevel = ((level + 1) * 1000 + (level) ^ 2 * 450);
     }
 }

@@ -2,6 +2,7 @@ package model;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -18,26 +19,35 @@ public class Level {
 
     private int width;
     private int height;
+    private int level;
+
     private Place[][] map;
     private List<Warrior> animals;
     private Warrior player;
 
     private Random random;
 
+    private StringBuilder logger;
+    private boolean loggerOn;
+
     // надо сделать чтение карты с файла
     public Level(int width, int height) {
         this.width = width;
         this.height = height;
+        level = 1;
     }
 
     public Level(Warrior player) {
-        int size = getSize(player.getLevel());
+        level = player.getLevel();
+        int size = getSize(level);
         this.width = size;
         this.height = size;
 
         initMap();
         player.setXY(size / 2, size / 2);
         setPlayer(player);
+
+        logger = new StringBuilder("");
     }
 
     private int getSize(int level) {
@@ -74,7 +84,7 @@ public class Level {
                     continue;
                 int tmp = random.nextInt(100);
                 if (tmp < 4) {
-                    animals.add(new Warrior("salamander", Types.ANIMAL, j, i));
+                    animals.add(new Warrior("Salamander", Types.ANIMAL, j, i));
                     insertOnMap(animals.get(animals.size() - 1));
                 } else if (tmp < 7) {
                     insertOnMap(new PlaceHolder(Types.STONE, j, i));
@@ -137,15 +147,37 @@ public class Level {
             pos.translate(shift.x, shift.y);
             insertOnMap(object);
         } else if (current instanceof Warrior) {
+            if (current == player || object == player) {
+                logger(true);
+            }
             fight(object, (Warrior) current);
+            logger(false);
+        }
+    }
+
+    private void attack(Warrior warrior, Warrior enemy) {
+        int damage = warrior.attack();
+
+        if (loggerOn) {
+            logger(warrior.getName(), " attack ", enemy.getName(), "<br>");
+            logger("(hp=", String.valueOf(enemy.getHp()), " - ( ", String.valueOf(damage), " - ", String.valueOf(enemy.getDefence()), " ) = ");
+        }
+        enemy.takeDamage(damage);
+        if (!loggerOn) {
+            return;
+        }
+        logger( String.valueOf(enemy.getHp()), ")<br>");
+        if (!enemy.isAlive()) {
+            logger(warrior.getName(), " kill ", enemy.getName(), "!!!<br>");
         }
     }
 
     private void fight(Warrior warrior, Warrior enemy) {
+
         while (enemy.isAlive() && warrior.isAlive()) {
-            enemy.takeDamage(warrior.attack());
+            attack(warrior, enemy);
             if (enemy.isAlive())
-                warrior.takeDamage(enemy.attack());
+                attack(enemy, warrior);
         }
         insertOnMap(EMPTY, warrior.getX(), warrior.getY());
         if (warrior.isAlive()) {
@@ -174,5 +206,25 @@ public class Level {
             if (!animals.get(i - 1).isAlive())
                 animals.remove(i - 1);
         }
+    }
+
+    private void logger(boolean turn) {
+        loggerOn = turn;
+    }
+
+    private void logger(String ... test) {
+        if (!loggerOn)
+            return ;
+        for (String s : test) {
+            logger.append(s);
+        }
+    }
+
+    public String getFightLog() {
+        logger.insert(0, "<html>");
+        logger.append("</html>");
+        String log = logger.toString();
+        logger.delete(0, logger.length());
+        return log;
     }
 }

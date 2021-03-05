@@ -60,7 +60,7 @@ public class Activator implements Runnable {
 //        openMenu();
 
         startActivator();
-        controller.findPersonAndStartGame("Name1", "_Name1_");
+        controller.findPersonAndStartGame("Capybara", "_Capybara_");
 
         startGame();
     }

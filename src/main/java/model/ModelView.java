@@ -10,4 +10,5 @@ public interface ModelView {
     public List<String> getMessages();
     public void fillEnvironment(Place[][] env);
     public Warrior getPlayer();
+    public String getLog();
 }

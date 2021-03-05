@@ -5,11 +5,17 @@ import org.sqlite.JDBC;
 
 import java.sql.*;
 
+import static model.Warrior.*;
+
 public class DAO {
 
     //https://habr.com/en/sandbox/88039/
     //https://alekseygulynin.ru/rabota-s-sqlite-v-java/
 
+    private static String LOGIN = "login";
+    private static String PASSWORD = "password";
+    private static String ID = "id";
+    private static String TABLE_NAME = "players";
 
     private static Connection connection;
     private static Statement statement;
@@ -28,7 +34,7 @@ public class DAO {
 
     public DAO() throws SQLException {
         createConnection();
-        dropTable("players");
+        dropTable(TABLE_NAME);
         createDB();
         initDB();
         readDB();
@@ -57,30 +63,31 @@ public class DAO {
     }
 
     public void dropTable(String name) throws SQLException {
-        statement.execute("DROP TABLE '" + name + "';");
+        statement.execute("DROP TABLE if exists '" + name + "';");
     }
 
     public void createDB() throws SQLException {
-        statement.execute("CREATE TABLE if not exists 'players' (" +
-                "'id' INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "'login' text, " +
-                "'password' text, " +
-                "'exp' INT, " +
-                "'hp' INT, " +
-                "'maxHp' INT, " +
-                "'level' INT);"
+        statement.execute("CREATE TABLE if not exists '" + TABLE_NAME + "' (" +
+                "'" + ID + "' INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "'" + LOGIN + "' text, " +
+                "'" + PASSWORD + "' text, " +
+                "'" + EXP + "' INT, " +
+                "'" + HP + "' INT, " +
+                "'" + ATTACK + "' INT, " +
+                "'" + DEFENSE + "' INT, " +
+                "'" + HELMET + "' INT, " +
+                "'" + TYPE + "' text, " +
+                "'" + LEVEL + "' INT);"
         );
         System.out.println("Таблица создана или уже существует.");
     }
 
     // --------Заполнение таблицы--------
     public void initDB() {
-        Warrior warrior = new Warrior("Name1", Types.PlAYER);
-        warrior.setExperience(10000);
-        warrior.setLevel(10);
+        Warrior warrior = new Warrior("Capybara", Types.PlAYER);
+        warrior.setExperience(0);
+        warrior.setLevel(1);
         createPlayer(warrior.getName(), "_" + warrior.getName() + "_", warrior);
-        warrior.setExperience(10001);
-        updatePlayer(warrior);
 
         warrior = new Warrior("Name2", Types.ANIMAL);
         createPlayer(warrior.getName(), "_" + warrior.getName() + "_", warrior);
@@ -93,17 +100,20 @@ public class DAO {
 
     // -------- Вывод таблицы--------
     public void readDB() throws SQLException {
-        resSet = statement.executeQuery("SELECT * FROM players");
+        resSet = statement.executeQuery("SELECT * FROM " + TABLE_NAME);
         while (resSet.next()) {
-            int id = resSet.getInt("id");
-            String login = resSet.getString("login");
-            String password = resSet.getString("password");
-            int exp = resSet.getInt("exp");
-            int hp = resSet.getInt("hp");
-            int maxHp = resSet.getInt("maxHp");
-            int level = resSet.getInt("level");
-            System.out.printf("ID = %d, login = %s, pas = %s, exp = %d, hp = %d, maxHp = %d, level = %d",
-                    id, login, password, exp, hp, maxHp, level);
+            int id = resSet.getInt(ID);
+            String login = resSet.getString(LOGIN);
+            String password = resSet.getString(PASSWORD);
+            int exp = resSet.getInt(EXP);
+            int hp = resSet.getInt(HP);
+            int attack = resSet.getInt(ATTACK);
+            int def = resSet.getInt(DEFENSE);
+            int helmet = resSet.getInt(HELMET);
+            int level = resSet.getInt(LEVEL);
+            String type = resSet.getString(TYPE);
+            System.out.printf("ID = %d, login = %s, pas = %s, exp = %d, hp = %d, attack = %d, def = %d, helmet = %d, level = %d, type = %s",
+                    id, login, password, exp, hp, attack, def, helmet, level, type);
             System.out.println();
         }
 
@@ -111,7 +121,7 @@ public class DAO {
     }
 
     private void insertRequest(String field, String value) {
-        request = new StringBuilder("INSERT INTO 'players' ( '")
+        request = new StringBuilder("INSERT INTO '").append(TABLE_NAME).append("' ( '")
                 .append(field)
                 .append("' ) VALUES ( '")
                 .append(value)
@@ -119,7 +129,7 @@ public class DAO {
     }
 
     private void updateRequest(String field, String value) {
-        request = new StringBuilder("UPDATE 'players' ( '")
+        request = new StringBuilder("UPDATE '").append(TABLE_NAME).append("' ( '")
                 .append(field)
                 .append("' ) VALUES ( '")
                 .append(value)
@@ -147,36 +157,35 @@ public class DAO {
 
     public boolean isLoginOrPasswordAlreadyExist(String login, String password) {
         try {
-            resSet = statement.executeQuery("SELECT * FROM players WHERE login='" + login + "' OR password='" + password + "'");
-            if (resSet.next())
-                return true;
+
+            resSet = statement.executeQuery(String.format("SELECT * FROM %s WHERE %s='%s' OR %s='%s'", TABLE_NAME, LOGIN, login, PASSWORD, password));
+            return resSet.next();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return true;
     }
 
     public boolean isLoginAndPasswordAlreadyExist(String login, String password) {
         try {
-            resSet = statement.executeQuery("SELECT * FROM players WHERE login='" + login + "' AND password='" + password + "'");
-            if (resSet.next())
-                return true;
+            resSet = statement.executeQuery(String.format("SELECT * FROM %s WHERE %s='%s' AND %s='%s'", TABLE_NAME, LOGIN, login, PASSWORD, password));
+            return resSet.next();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return true;
     }
 
-
     public void createPlayer(String login, String password, Warrior warrior) {
-
-
-        insertRequest("login", login);
-        addArg("password", password);
-        addArg("exp", warrior.getExperience());
-        addArg("hp", warrior.getHelmet());
-        addArg("maxHp", warrior.getAttack());
-        addArg("level", warrior.getLevel());
+        insertRequest(LOGIN, login);
+        addArg(PASSWORD, password);
+        addArg(EXP, warrior.getExperience());
+        addArg(HP, warrior.getHelmet());
+        addArg(ATTACK, warrior.getAttack());
+        addArg(DEFENSE, warrior.getDefence());
+        addArg(HELMET, warrior.getHelmet());
+        addArg(LEVEL, warrior.getLevel());
+        addArg(TYPE, warrior.getTypes().name());
         try {
             statement.execute(request.toString());
             readDB();
@@ -186,16 +195,20 @@ public class DAO {
     }
 
     public void updatePlayer(Warrior warrior) {
-        request = new StringBuilder("UPDATE players SET")
-                .append("'exp'=")
+        request = new StringBuilder("UPDATE ").append(TABLE_NAME).append(" SET")
+                .append("'").append(EXP).append("'=")
                 .append(warrior.getExperience())
-                .append(",'hp'=")
+                .append(",'").append(HP).append("'=")
+                .append(warrior.getHp())
+                .append(",'").append(HELMET).append("'=")
                 .append(warrior.getHelmet())
-                .append(",'maxHp'=")
+                .append(",'").append(ATTACK).append("'=")
                 .append(warrior.getAttack())
-                .append(",'level'=")
+                .append(",'").append(DEFENSE).append("'=")
+                .append(warrior.getDefence())
+                .append(",'").append(LEVEL).append("'=")
                 .append(warrior.getLevel())
-                .append(" WHERE login='")
+                .append(" WHERE ").append(LOGIN).append("='")
                 .append(warrior.getName())
                 .append("';");
         try {
@@ -210,11 +223,15 @@ public class DAO {
 
         Warrior warrior = new Warrior(login, Types.PlAYER);
         try {
-            resSet = statement.executeQuery("SELECT * FROM players WHERE login='" + login + "' AND password='" + password + "'");
-            warrior.setExperience(resSet.getInt("exp"));
-            warrior.setHelmet(resSet.getInt("hp"));
-            warrior.setLevel(resSet.getInt("level"));
-            warrior.setAttack(resSet.getInt("maxHp"));
+            resSet = statement.executeQuery(String.format("SELECT * FROM %s WHERE %s='%s' AND %s='%s'", TABLE_NAME, LOGIN, login, PASSWORD, password));
+
+            warrior = new Warrior(login, Types.valueOf(resSet.getString(TYPE)));
+            warrior.setExperience(resSet.getInt(EXP));
+            warrior.setLevel(resSet.getInt(LEVEL));
+            warrior.setAttack(resSet.getInt(ATTACK));
+            warrior.setHelmet(resSet.getInt(HELMET));
+            warrior.setDefence(resSet.getInt(DEFENSE));
+            warrior.setHp(resSet.getInt(HP));
         } catch (Exception e) {
             System.out.println("Нет такого в бд");
         }
