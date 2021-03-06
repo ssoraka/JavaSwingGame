@@ -5,8 +5,11 @@ import controllers.AllController;
 import model.DeadException;
 import model.ModelView;
 import model.Place;
+import model.Warrior;
 
-import java.util.Scanner;
+import java.util.*;
+
+import static model.Warrior.*;
 
 public class TerminalView implements MyView{
     final static private String TREE = "\033[0;32mT\033[00m";
@@ -21,6 +24,11 @@ public class TerminalView implements MyView{
 
     private ModelView model;
     private AllController controllers;
+    private List<String> params;
+    private Warrior player;
+    private String[] logs;
+
+    private static List<String> LABELS = Arrays.asList(NAME, HP, LEVEL, EXP, ATTACK, DEFENSE, HELMET);
 
     public TerminalView(ModelView model, AllController controllers) {
         this.model = model;
@@ -29,6 +37,7 @@ public class TerminalView implements MyView{
         width = 60;
         height = 20;
         env = new Place[height][width];
+        params = new ArrayList<>();
 
         runScanner();
     }
@@ -54,6 +63,8 @@ public class TerminalView implements MyView{
 
     @Override
     public void refresh() {
+        player = model.getPlayer();
+        logs = player.getLog().replaceAll("<html>", "").replaceAll("</html>", "") .split("<br>");
         model.fillEnvironment(env);
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -67,9 +78,39 @@ public class TerminalView implements MyView{
                         System.out.print(' ');
                 }
             }
+            printParam(i);
             System.out.println("");
         }
         System.out.printf("message = %s\n", model.getMessages());
+    }
+
+    private void printParam(int i) {
+        if (i < LABELS.size()) {
+            String label = LABELS.get(i);
+            System.out.printf(" %s ", label);
+            switch (label) {
+                case NAME : System.out.print(player.getName()); break;
+                case HP : System.out.print(player.getHp()); break;
+                case LEVEL : System.out.print(player.getLevel()); break;
+                case EXP : System.out.print(player.getExperience()); break;
+                case DEFENSE : System.out.print(player.getDefence()); break;
+                case HELMET : System.out.print(player.getHelmet()); break;
+                case ATTACK : System.out.print(player.getAttack()); break;
+                default:
+                    break;
+            }
+        } else if (i < LABELS.size() + logs.length) {
+            i -= LABELS.size();
+            System.out.print(" ");
+            System.out.print(logs[i]);
+
+            if (i + LABELS.size() == height - 1) {
+                while (++i < logs.length) {
+                    System.out.print(" ");
+                    System.out.print(logs[i]);
+                }
+            }
+        }
     }
 
     private void deadMessage() {

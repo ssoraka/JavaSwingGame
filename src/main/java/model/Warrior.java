@@ -6,14 +6,14 @@ import java.util.Random;
 
 public class Warrior extends PlaceHolder{
 
-    public static String NAME = "name";
-    public static String HP = "hp";
-    public static String ATTACK = "attack";
-    public static String DEFENSE = "defense";
-    public static String HELMET = "helmet";
-    public static String LEVEL = "level";
-    public static String EXP = "exp";
-    public static String TYPE = "type";
+    public static final String NAME = "name";
+    public static final String HP = "hp";
+    public static final String ATTACK = "attack";
+    public static final String DEFENSE = "defense";
+    public static final String HELMET = "helmet";
+    public static final String LEVEL = "level";
+    public static final String EXP = "exp";
+    public static final String TYPE = "type";
 
     private String name;
 

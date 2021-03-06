@@ -22,7 +22,7 @@ public class MyFrame extends JFrame {
     private static int TEXT_STEP_X = 100;
     private static int TEXT_STEP_Y = 30;
 
-    private static String[] LABELS = {NAME, HP, LEVEL, EXP, "next exp", ATTACK, DEFENSE, HELMET};
+    private static final String[] LABELS = {NAME, HP, LEVEL, EXP, "next exp", ATTACK, DEFENSE, HELMET};
 
     public MyFrame(String title, int width, int height) throws IOException {
         setVisible(true);
