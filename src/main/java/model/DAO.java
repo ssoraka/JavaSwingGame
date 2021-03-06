@@ -86,7 +86,7 @@ public class DAO {
     public void initDB() {
         Warrior warrior = new Warrior("Capybara", Types.PlAYER);
         warrior.setExperience(0);
-        warrior.setLevel(1);
+        warrior.setLevel(5);
         createPlayer(warrior.getName(), "_" + warrior.getName() + "_", warrior);
 
         warrior = new Warrior("Name2", Types.ANIMAL);
@@ -157,7 +157,6 @@ public class DAO {
 
     public boolean isLoginOrPasswordAlreadyExist(String login, String password) {
         try {
-
             resSet = statement.executeQuery(String.format("SELECT * FROM %s WHERE %s='%s' OR %s='%s'", TABLE_NAME, LOGIN, login, PASSWORD, password));
             return resSet.next();
         } catch (SQLException e) {

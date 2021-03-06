@@ -30,6 +30,9 @@ public class Warrior extends PlaceHolder{
     private int hp;
     private Random random;
 
+    private StringBuilder logger;
+    private StringBuilder enemyLogger;
+
     public Warrior(String name, Types type) {
         super(type);
         this.name = name;
@@ -45,6 +48,7 @@ public class Warrior extends PlaceHolder{
     public Warrior(String name, Types type, int x, int y, int level) {
         super(type, x, y);
         this.name = name;
+        level = Math.max(level, 1);
         init(level);
     }
 
@@ -54,10 +58,11 @@ public class Warrior extends PlaceHolder{
 
         switch (type){
             case PlAYER :
-                power = 5;
+                power = 4;
+                logger = new StringBuilder();
                 break;
             default:
-                power = 2;
+                power = 1;
                 experience = expNextLevel / 10;
         }
     }
@@ -120,13 +125,14 @@ public class Warrior extends PlaceHolder{
     }
 
     public int attack() {
-        return (random.nextInt(attack * power + 1));
+        return (random.nextInt(attack + power + 1));
     }
 
     public void takeDamage(int damage) {
         damage -= defence;
-        if (damage > 0)
+        if (damage > 0) {
             hp -= damage;
+        }
     }
 
     public int getExperience() {
@@ -143,4 +149,67 @@ public class Warrior extends PlaceHolder{
     private void experienceForNextLevel() {
         expNextLevel = ((level + 1) * 1000 + (level) ^ 2 * 450);
     }
+
+    private void attack(Warrior enemy) {
+        int damage = attack();
+
+        log(name, " attack ", enemy.getName(), "<br>");
+        log("(hp=", String.valueOf(enemy.getHp()), " - ( ", String.valueOf(damage), " - ", String.valueOf(enemy.getDefence()), " ) = ");
+
+        enemy.takeDamage(damage);
+
+        log( String.valueOf(enemy.getHp()), ")<br>");
+    }
+
+    public Warrior fight(Warrior enemy) {
+        enemyLogger = enemy.logger;
+        clearLogger();
+        log("<html>");
+        while (isAlive() && enemy.isAlive()) {
+            attack(enemy);
+            if (enemy.isAlive())
+                enemy.attack(this);
+        }
+
+        Warrior winner;
+        if (isAlive()) {
+            log(name, " kill ", enemy.getName(), "!!!<br>");
+            addExperience(enemy.getExperience());
+            winner = this;
+        } else {
+            log(enemy.getName(), " kill ", name, "!!!<br>");
+            enemy.addExperience(getExperience());
+            winner = enemy;
+        }
+        log("</html>");
+        enemyLogger = null;
+        return winner;
+    }
+
+    private void clearLogger() {
+        if (logger != null){
+            logger.delete(0, logger.length());
+        }
+        if (enemyLogger != null){
+            enemyLogger.delete(0, enemyLogger.length());
+        }
+    }
+
+    private void log(String ... text) {
+        if (logger != null) {
+            for (String s : text) {
+                logger.append(s);
+            }
+        }
+        if (enemyLogger != null) {
+            for (String s : text) {
+                enemyLogger.append(s);
+            }
+        }
+    }
+
+    public String getLog() {
+        return logger.toString();
+    }
+
 }

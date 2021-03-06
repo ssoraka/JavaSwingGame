@@ -2,7 +2,6 @@ package model;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -84,7 +83,7 @@ public class Level {
                     continue;
                 int tmp = random.nextInt(100);
                 if (tmp < 4) {
-                    animals.add(new Warrior("Salamander", Types.ANIMAL, j, i));
+                    animals.add(new Warrior("Salamander", Types.ANIMAL, j, i, level - 2));
                     insertOnMap(animals.get(animals.size() - 1));
                 } else if (tmp < 7) {
                     insertOnMap(new PlaceHolder(Types.STONE, j, i));
@@ -139,59 +138,20 @@ public class Level {
         return getPlaceHolder(object.getX() + shift.x, object.getY() + shift.y) == BOUNDARY;
     }
 
-    public void tryMoveObject(Warrior object, Point shift)  {
-        PlaceHolder current = getPlaceHolder(object.getX() + shift.x, object.getY() + shift.y);
+    public void tryMoveObject(Warrior warrior, Point shift)  {
+        PlaceHolder current = getPlaceHolder(warrior.getX() + shift.x, warrior.getY() + shift.y);
         if (current == EMPTY) {
-            Point pos = object.getPos();
+            Point pos = warrior.getPos();
             insertOnMap(EMPTY, pos.x, pos.y);
             pos.translate(shift.x, shift.y);
-            insertOnMap(object);
+            insertOnMap(warrior);
         } else if (current instanceof Warrior) {
-            if (current == player || object == player) {
-                logger(true);
-                logger.delete(0, logger.length());
-            }
-            fight(object, (Warrior) current);
-            logger(false);
-            if (current == player || object == player) {
-                logger.insert(0, "<html>");
-                logger.append("</html>");
-            }
+            Warrior enemy = (Warrior) current;
+            insertOnMap(EMPTY, warrior.getX(), warrior.getY());
+            Warrior winner = warrior.fight(enemy);
+            insertOnMap(winner, enemy.getX(), enemy.getY());
+            getPlace(winner.getX(), winner.getY()).setType(Types.BLOOD);
         }
-    }
-
-    private void attack(Warrior warrior, Warrior enemy) {
-        int damage = warrior.attack();
-
-        if (loggerOn) {
-            logger(warrior.getName(), " attack ", enemy.getName(), "<br>");
-            logger("(hp=", String.valueOf(enemy.getHp()), " - ( ", String.valueOf(damage), " - ", String.valueOf(enemy.getDefence()), " ) = ");
-        }
-        enemy.takeDamage(damage);
-        if (!loggerOn) {
-            return;
-        }
-        logger( String.valueOf(enemy.getHp()), ")<br>");
-        if (!enemy.isAlive()) {
-            logger(warrior.getName(), " kill ", enemy.getName(), "!!!<br>");
-        }
-    }
-
-    private void fight(Warrior warrior, Warrior enemy) {
-
-        while (enemy.isAlive() && warrior.isAlive()) {
-            attack(warrior, enemy);
-            if (enemy.isAlive())
-                attack(enemy, warrior);
-        }
-        insertOnMap(EMPTY, warrior.getX(), warrior.getY());
-        if (warrior.isAlive()) {
-            warrior.addExperience(enemy.getExperience());
-            insertOnMap(warrior, enemy.getX(), enemy.getY());
-        } else {
-            enemy.addExperience(warrior.getExperience());
-        }
-        getPlace(enemy.getX(), enemy.getY()).setType(Types.BLOOD);
     }
 
     public void moveAnimals() {
@@ -211,21 +171,5 @@ public class Level {
             if (!animals.get(i - 1).isAlive())
                 animals.remove(i - 1);
         }
-    }
-
-    private void logger(boolean turn) {
-        loggerOn = turn;
-    }
-
-    private void logger(String ... test) {
-        if (!loggerOn)
-            return ;
-        for (String s : test) {
-            logger.append(s);
-        }
-    }
-
-    public String getFightLog() {
-        return logger.toString();
     }
 }

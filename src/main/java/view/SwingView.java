@@ -61,7 +61,7 @@ public class SwingView implements MyView{
         frame.updateField(DEFENSE, Integer.toString(person.getDefence()));
         frame.updateField(HELMET, Integer.toString(person.getHelmet()));
         frame.updateField(ATTACK, Integer.toString(person.getAttack()));
-        frame.updateField("logger", model.getLog());
+        frame.updateField("logger", person.getLog());
 
         frame.repaint();
     }
