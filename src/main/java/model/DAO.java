@@ -128,14 +128,6 @@ public class DAO {
                 .append("' );");
     }
 
-    private void updateRequest(String field, String value) {
-        request = new StringBuilder("UPDATE '").append(TABLE_NAME).append("' ( '")
-                .append(field)
-                .append("' ) VALUES ( '")
-                .append(value)
-                .append("' );");
-    }
-
     private void insertInRequest(String field, String value) {
         int posField = request.indexOf(")") - 1;
         int posValue = request.length() - 3;
@@ -194,7 +186,7 @@ public class DAO {
     }
 
     public void updatePlayer(Warrior warrior) {
-        request = new StringBuilder("UPDATE ").append(TABLE_NAME).append(" SET")
+        request = new StringBuilder("UPDATE ").append(TABLE_NAME).append(" SET ")
                 .append("'").append(EXP).append("'=")
                 .append(warrior.getExperience())
                 .append(",'").append(HP).append("'=")

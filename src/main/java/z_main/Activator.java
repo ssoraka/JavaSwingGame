@@ -33,7 +33,7 @@ public class Activator implements Runnable {
 
 
     public static void main(String[] args) {
-
+        startActivator();
 
 //        System.out.print("\033[H\033[2J");
 //        System.out.flush();
@@ -59,10 +59,12 @@ public class Activator implements Runnable {
 
 //        openMenu();
 
-        startActivator();
-        controller.findPersonAndStartGame("Capybara", "_Capybara_");
+        TerminalView view2 = new TerminalView(model, controller);
+        activator.registerView(view2);
 
-        startGame();
+//        controller.findPersonAndStartGame("Capybara", "_Capybara_");
+
+//        startGame();
     }
 
     public static void openMenu() {
@@ -72,12 +74,13 @@ public class Activator implements Runnable {
     public static void startActivator() {
         activator = new Activator();
         Thread myThready = new Thread(activator);
-        myThready.setDaemon(true);
+//        myThready.setDaemon(true);
         myThready.start();
     }
 
     public static void startGame() {
         app = null;
+
         SwingView view = new SwingView(model, controller);
         activator.registerView(view);
 
@@ -115,8 +118,9 @@ public class Activator implements Runnable {
                 continue;
             if (model.wasChanged())
                 refreshViews();
-            if (!model.isGameRun())
-                unregisterViews();
+            //надо это отладить, чтоб не убивало окна в начале игры
+//            if (!model.isGameRun())
+//                unregisterViews();
         }
     }
 }

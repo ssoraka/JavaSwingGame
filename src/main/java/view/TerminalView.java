@@ -11,12 +11,17 @@ import java.util.*;
 
 import static model.Warrior.*;
 
-public class TerminalView implements MyView{
-    final static private String TREE = "\033[0;32mT\033[00m";
-    final static private String ANIMAL = "\033[0;31mA\033[00m";
-    final static private String STONE = "\033[7;37mS\033[00m";
-    final static private String PlAYER = "\033[0;36mX\033[00m";
-    final static private String BOUNDARY = "\033[6;30mX\033[00m";
+enum Stage{
+    START, CREATE, CONTINUE, LOGIN, PASSWORD, PLAY, EXIT;
+}
+
+public class TerminalView implements MyView, Runnable{
+
+    private final static String TREE = "\033[0;32mT\033[00m";
+    private final static String ANIMAL = "\033[0;31mA\033[00m";
+    private final static String STONE = "\033[7;37mS\033[00m";
+    private final static String PlAYER = "\033[0;36mX\033[00m";
+    private final static String BOUNDARY = "\033[6;30mX\033[00m";
 
     private Place[][] env;
     private int width;
@@ -28,7 +33,11 @@ public class TerminalView implements MyView{
     private Warrior player;
     private String[] logs;
 
-    private static List<String> LABELS = Arrays.asList(NAME, HP, LEVEL, EXP, ATTACK, DEFENSE, HELMET);
+    private Stage stage;
+    private String login;
+    private String password;
+
+    private static String[] LABELS = {NAME, HP, LEVEL, EXP, ATTACK, DEFENSE, HELMET};
 
     public TerminalView(ModelView model, AllController controllers) {
         this.model = model;
@@ -39,30 +48,45 @@ public class TerminalView implements MyView{
         env = new Place[height][width];
         params = new ArrayList<>();
 
-        runScanner();
-    }
-
-    private void runScanner() {
-        Thread myThready = new Thread(() -> {
-            Scanner scanner = new Scanner(System.in);
-
-            while (scanner.hasNext()) {
-                String text = scanner.nextLine();
-
-                try {
-                    controllers.executeCommand(Actions.getAction(text));
-                } catch (DeadException e) {
-                        deadMessage();
-                        controllers.closeViews();
-                }
-            }
-        });
+        Thread myThready = new Thread(this);
         myThready.setDaemon(true);
         myThready.start();
+
+        changeStage(Stage.LOGIN);
+    }
+
+    private void changeStage(Stage newStage) {
+        if (stage == newStage)
+            return;
+        stage = newStage;
+        switch (stage) {
+            case START : {
+                System.out.println("Choose you destiny!!!");
+                System.out.println("1) start new game");
+                System.out.println("2) continue");
+                System.out.println("3) quit");
+                break;
+            }
+            case LOGIN :
+                System.out.println("Enter Your Login");
+                break;
+            case PASSWORD :
+                System.out.println("Enter Your Password");
+                break;
+            case PLAY :
+                System.out.println("Game Start");
+                refresh();
+                break;
+            case EXIT :
+                System.out.println("Game Over");
+                break;
+        }
     }
 
     @Override
     public void refresh() {
+        if (stage != Stage.PLAY)
+            return;
         player = model.getPlayer();
         logs = player.getLog().replaceAll("<html>", "").replaceAll("</html>", "") .split("<br>");
         model.fillEnvironment(env);
@@ -85,9 +109,9 @@ public class TerminalView implements MyView{
     }
 
     private void printParam(int i) {
-        if (i < LABELS.size()) {
-            String label = LABELS.get(i);
-            System.out.printf(" %s ", label);
+        if (i < LABELS.length) {
+            String label = LABELS[i];
+            System.out.printf(" %15s  ", label);
             switch (label) {
                 case NAME : System.out.print(player.getName()); break;
                 case HP : System.out.print(player.getHp()); break;
@@ -99,12 +123,12 @@ public class TerminalView implements MyView{
                 default:
                     break;
             }
-        } else if (i < LABELS.size() + logs.length) {
-            i -= LABELS.size();
+        } else if (i < LABELS.length + logs.length) {
+            i -= LABELS.length;
             System.out.print(" ");
             System.out.print(logs[i]);
 
-            if (i + LABELS.size() == height - 1) {
+            if (i + LABELS.length == height - 1) {
                 while (++i < logs.length) {
                     System.out.print(" ");
                     System.out.print(logs[i]);
@@ -121,4 +145,54 @@ public class TerminalView implements MyView{
     public void close() {
         ;
     }
+
+    @Override
+    public void run() {
+        Scanner scanner = new Scanner(System.in);
+
+        while (scanner.hasNext()) {
+            String text = scanner.nextLine();
+
+            if (stage == Stage.LOGIN) {
+                login = text;
+                changeStage(Stage.PASSWORD);
+            } else if (stage == Stage.PASSWORD) {
+                password = text;
+                changeStage(Stage.START);
+            } else if (stage == Stage.START) {
+                if (text.equals("1")) {
+                    try {
+                        controllers.createNewPersonAndStartGame(login, password);
+                        changeStage(Stage.PLAY);
+                    } catch (RuntimeException e) {
+                        System.out.println(e.getMessage());
+                        changeStage(Stage.LOGIN);
+                    }
+                } else if (text.equals("2")) {
+                    try {
+                        controllers.findPersonAndStartGame(login, password);
+                        changeStage(Stage.PLAY);
+                    } catch (RuntimeException e) {
+                        System.out.println(e.getMessage());
+                        changeStage(Stage.LOGIN);
+                    }
+                } else if (text.equals("3")) {
+                    controllers.exit();
+                } else {
+                    changeStage(Stage.LOGIN);
+                }
+            } else if (stage == Stage.PLAY) {
+                try {
+                    controllers.executeCommand(Actions.getAction(text));
+                } catch (DeadException e) {
+                    deadMessage();
+                    controllers.closeViews();
+                }
+            } else if (stage == Stage.EXIT) {
+                controllers.exit();
+            }
+        }
+    }
+
+
 }

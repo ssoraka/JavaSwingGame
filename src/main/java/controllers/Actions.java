@@ -47,8 +47,8 @@ public enum Actions {
             case "d": return MOVE_RIGHT;
             case "text":
             case "talk": return ENTER;
-            case "quit":
-            case "exit": return CLOSE;
+            case "quit": return CLOSE;
+            case "exit": return EXIT;
             default:
                 return NOTHING;
         }
