@@ -3,12 +3,8 @@ package controllers;
 public enum Actions {
     NOTHING,
     ENTER,
-    TEXT,
 
-    CREATE,
-    LOGIN,
     EXIT,
-    CLOSE,
 
     MOVE_LEFT,
     MOVE_RIGHT,
@@ -22,7 +18,7 @@ public enum Actions {
             case 'a': return MOVE_LEFT;
             case 'd': return MOVE_RIGHT;
             case '\n': return ENTER;
-            case 'q': return CLOSE;
+            case 'q': return EXIT;
             default:
                 return NOTHING;
         }
@@ -47,7 +43,9 @@ public enum Actions {
             case "d": return MOVE_RIGHT;
             case "text":
             case "talk": return ENTER;
-            case "quit": return CLOSE;
+            case "q":
+            case "e":
+            case "quit":
             case "exit": return EXIT;
             default:
                 return NOTHING;

@@ -21,13 +21,6 @@ public class AllController {
     public void exit() {
         model.exit();
     }
-    public void closeViews() {
-        model.closeViews();
-    }
-
-    public void talk(String message) {
-        model.printMessage(message);
-    }
 
     public void executeCommand(Actions action) {
         switch (action) {
@@ -36,7 +29,6 @@ public class AllController {
             case MOVE_LEFT: model.tryMovePlayer(Level.LEFT); break;
             case MOVE_RIGHT: model.tryMovePlayer(Level.RIGHT); break;
             case EXIT: exit(); break;
-            case CLOSE: closeViews(); break;
             default:
                 break;
         }

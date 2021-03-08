@@ -39,12 +39,6 @@ public class Warrior extends PlaceHolder{
         init(1);
     }
 
-    public Warrior(String name, Types type, int x, int y) {
-        super(type, x, y);
-        this.name = name;
-        init(1);
-    }
-
     public Warrior(String name, Types type, int x, int y, int level) {
         super(type, x, y);
         this.name = name;
@@ -63,7 +57,7 @@ public class Warrior extends PlaceHolder{
                 break;
             default:
                 power = 1;
-                experience = expNextLevel / 10;
+                experience = 105;
         }
     }
 
@@ -153,18 +147,17 @@ public class Warrior extends PlaceHolder{
     private void attack(Warrior enemy) {
         int damage = attack();
 
-        log(name, " attack ", enemy.getName(), "<br>");
+        log(name, " attack ", enemy.getName(), "\n");
         log("(hp=", String.valueOf(enemy.getHp()), " - ( ", String.valueOf(damage), " - ", String.valueOf(enemy.getDefence()), " ) = ");
 
         enemy.takeDamage(damage);
 
-        log( String.valueOf(enemy.getHp()), ")<br>");
+        log( String.valueOf(enemy.getHp()), ")\n");
     }
 
     public Warrior fight(Warrior enemy) {
         enemyLogger = enemy.logger;
         clearLogger();
-        log("<html>");
         while (isAlive() && enemy.isAlive()) {
             attack(enemy);
             if (enemy.isAlive())
@@ -173,15 +166,14 @@ public class Warrior extends PlaceHolder{
 
         Warrior winner;
         if (isAlive()) {
-            log(name, " kill ", enemy.getName(), "!!!<br>");
+            log(name, " kill ", enemy.getName(), "!!!\n");
             addExperience(enemy.getExperience());
             winner = this;
         } else {
-            log(enemy.getName(), " kill ", name, "!!!<br>");
+            log(enemy.getName(), " kill ", name, "!!!\n");
             enemy.addExperience(getExperience());
             winner = enemy;
         }
-        log("</html>");
         enemyLogger = null;
         return winner;
     }

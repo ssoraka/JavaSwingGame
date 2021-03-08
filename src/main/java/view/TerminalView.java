@@ -11,10 +11,6 @@ import java.util.*;
 
 import static model.Warrior.*;
 
-enum Stage{
-    START, CREATE, CONTINUE, LOGIN, PASSWORD, PLAY, EXIT;
-}
-
 public class TerminalView implements MyView, Runnable{
 
     private final static String TREE = "\033[0;32mT\033[00m";
@@ -49,7 +45,7 @@ public class TerminalView implements MyView, Runnable{
         params = new ArrayList<>();
 
         Thread myThready = new Thread(this);
-        myThready.setDaemon(true);
+//        myThready.setDaemon(true);
         myThready.start();
 
         changeStage(Stage.LOGIN);
@@ -88,7 +84,7 @@ public class TerminalView implements MyView, Runnable{
         if (stage != Stage.PLAY)
             return;
         player = model.getPlayer();
-        logs = player.getLog().replaceAll("<html>", "").replaceAll("</html>", "") .split("<br>");
+        logs = player.getLog().split("\n");
         model.fillEnvironment(env);
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -102,13 +98,12 @@ public class TerminalView implements MyView, Runnable{
                         System.out.print(' ');
                 }
             }
-            printParam(i);
+            printParamOrLogs(i);
             System.out.println("");
         }
-        System.out.printf("message = %s\n", model.getMessages());
     }
 
-    private void printParam(int i) {
+    private void printParamOrLogs(int i) {
         if (i < LABELS.length) {
             String label = LABELS[i];
             System.out.printf(" %15s  ", label);
@@ -139,11 +134,6 @@ public class TerminalView implements MyView, Runnable{
 
     private void deadMessage() {
         System.out.println("dead!!");
-    }
-
-    @Override
-    public void close() {
-        ;
     }
 
     @Override
@@ -179,14 +169,14 @@ public class TerminalView implements MyView, Runnable{
                 } else if (text.equals("3")) {
                     controllers.exit();
                 } else {
-                    changeStage(Stage.LOGIN);
+                    System.out.println("Enter the number 1-3");
                 }
             } else if (stage == Stage.PLAY) {
                 try {
                     controllers.executeCommand(Actions.getAction(text));
                 } catch (DeadException e) {
                     deadMessage();
-                    controllers.closeViews();
+                    controllers.exit();
                 }
             } else if (stage == Stage.EXIT) {
                 controllers.exit();

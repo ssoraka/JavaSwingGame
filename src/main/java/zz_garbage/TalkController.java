@@ -11,10 +11,10 @@ public class TalkController implements Controller {
 
     @Override
     public void execute(ActionBuilder action) {
-        switch (action.getAction()) {
-            case TEXT: model.printMessage(action.getMessage()); break;
-            default:
-                break;
-        }
+//        switch (action.getAction()) {
+//            case TEXT: model.printMessage(action.getMessage()); break;
+//            default:
+//                break;
+//        }
     }
 }

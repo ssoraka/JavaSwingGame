@@ -53,22 +53,9 @@ public class Level {
         return (level - 1) * 5 + 10 - (level % 2);
     }
 
-//    public Warrior getPlayer() {
-//        return player;
-//    }
-
     public void setPlayer(Warrior player) {
         this.player = player;
         insertOnMap(player);
-
- /*       animals.add(new Warrior("salamander", Types.ANIMAL, 4, 4));
-        insertOnMap(animals.get(animals.size() - 1));
-        animals.add(new Warrior("salamander", Types.ANIMAL, 5, 4));
-        insertOnMap(animals.get(animals.size() - 1));
-
-        tryMoveObject(animals.get(animals.size() - 1), new Point(-1, 0));
-
-  */
     }
 
     public void initMap() {

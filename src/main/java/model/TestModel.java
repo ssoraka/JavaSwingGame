@@ -6,15 +6,12 @@ import java.util.List;
 
 public class TestModel implements ModelController, ModelView {
     private DAO db;
-    private List<String> messages;
     private boolean hasChange;
-    private boolean runGame;
 
     private Level level;
     private Warrior player;
 
     public TestModel() {
-        messages = new ArrayList<>();
         hasChange = true;
     }
 
@@ -28,16 +25,6 @@ public class TestModel implements ModelController, ModelView {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public boolean isGameRun() {
-        return runGame;
-    }
-
-    @Override
-    public List<String> getMessages() {
-        return messages;
     }
 
     @Override
@@ -62,17 +49,12 @@ public class TestModel implements ModelController, ModelView {
         if (level.isLeaveLevel(player, shift)) {
             db.updatePlayer(player);
             level = new Level(player);
+        } else {
+            level.tryMoveObject(player, shift);
+            level.moveAnimals();
+            if (!player.isAlive())
+                throw new DeadException();
         }
-        level.tryMoveObject(player, shift);
-        level.moveAnimals();
-        if (!player.isAlive())
-            throw new DeadException();
-        hasChange = true;
-    }
-
-    @Override
-    public void printMessage(String message) {
-        messages.add(message);
         hasChange = true;
     }
 
@@ -83,7 +65,6 @@ public class TestModel implements ModelController, ModelView {
 
         setPlayer(new Warrior(login, Types.PlAYER));
         db.createPlayer(login, password, player);
-        runGame = true;
     }
 
     @Override
@@ -91,24 +72,11 @@ public class TestModel implements ModelController, ModelView {
         if (!db.isLoginAndPasswordAlreadyExist(login, password))
             throw new RuntimeException("Неверное имя или пароль");
         setPlayer(db.readPlayer(login, password));
-        runGame = true;
     }
 
     @Override
     public void exit() {
         db.closeDB();
         System.exit(0);
-    }
-
-    @Override
-    public void closeViews() {
-        runGame = false;
-    }
-
-    @Override
-    public String toString() {
-        return "TestModel{" +
-                ", messages=" + messages +
-                '}';
     }
 }
