@@ -157,6 +157,7 @@ public class Warrior extends PlaceHolder{
 
     public Warrior fight(Warrior enemy) {
         enemyLogger = enemy.logger;
+        enemy.enemyLogger = logger;
         clearLogger();
         while (isAlive() && enemy.isAlive()) {
             attack(enemy);
@@ -174,6 +175,7 @@ public class Warrior extends PlaceHolder{
             enemy.addExperience(getExperience());
             winner = enemy;
         }
+        enemy.enemyLogger = null;
         enemyLogger = null;
         return winner;
     }
