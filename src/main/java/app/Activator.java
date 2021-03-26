@@ -40,10 +40,10 @@ public class Activator implements Runnable {
         controller = new AllController(model);
 
         if (TERMINAL_MODE.equals(mode)) {
-            TerminalView view = new TerminalView(model, controller);
+            TerminalView view = new TerminalView(model, controller, new State(ViewType.TERMINAL));
             activator.registerView(view);
         } else if (SWING_MODE.equals(mode)) {
-            SwingView view = new SwingView(model, controller);
+            SwingView view = new SwingView(model, controller, new State(ViewType.SWING));
             activator.registerView(view);
         }
     }

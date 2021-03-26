@@ -1,5 +1,6 @@
 package model.war;
 
+import model.Dice;
 import model.Types;
 
 public class Player extends Warrior {
@@ -29,10 +30,15 @@ public class Player extends Warrior {
 
     @Override
     protected void attack(Warrior enemy) {
-        int damage = attack();
-
         log(getName(), " attack ", enemy.getName(), "\n");
-        log("(hp=", String.valueOf(enemy.getHp()), " - ( ", String.valueOf(damage), " - ", String.valueOf(enemy.getDefence()), " ) = ");
+
+        if (Dice.d20() < enemy.getDefence()) {
+            log("missing\n");
+            return;
+        }
+
+        int damage = attack();
+        log("(hp=", String.valueOf(enemy.getHp()), " - ", String.valueOf(enemy.getDefence()), " = ");
 
         enemy.takeDamageFrom(this, damage);
 

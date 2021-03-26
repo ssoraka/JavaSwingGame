@@ -5,7 +5,6 @@ import controllers.AllController;
 import model.DeadException;
 import model.ModelView;
 import model.war.Player;
-import model.war.Warrior;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,9 +19,9 @@ import static model.war.Warrior.*;
 
 public class SwingView extends JFrame implements MyView{
 
-    AllController controller;
-    ModelView model;
-    Stage stage;
+    private AllController controller;
+    private ModelView model;
+    private State state;
 
     private MyPanel gamePanel;
     private JPanel textPanel;
@@ -44,9 +43,10 @@ public class SwingView extends JFrame implements MyView{
     private static final int TEXT_PANEL_WIDTH = 300;
     private static final Dimension GAME_DIMENSIONS = new Dimension(GAME_PANEL_WIDTH + TEXT_PANEL_WIDTH, GAME_PANEL_HEIGHT);
 
-    public SwingView(ModelView model, AllController controller) {
+    public SwingView(ModelView model, AllController controller, State state) {
         this.controller = controller;
         this.model = model;
+        this.state = state;
 
         gamePanel = new MyPanel(GAME_PANEL_WIDTH, GAME_PANEL_HEIGHT);
         gamePanel.setBounds(0, 0, GAME_PANEL_WIDTH, GAME_PANEL_HEIGHT);
@@ -105,7 +105,7 @@ public class SwingView extends JFrame implements MyView{
     public void setStartView() {
         clearView();
 
-        stage = Stage.START;
+        state.setStage(Stage.START);
 
         setLayout(new GridLayout(10,1));
 
@@ -146,7 +146,9 @@ public class SwingView extends JFrame implements MyView{
         buttonBack.addActionListener(e -> setStartView());
         buttonConfirm.addActionListener(e -> {
             try {
-                consumer.accept(login.getText(), password.getText());
+                state.setLogin(login.getText());
+                state.setPassword(password.getText());
+                consumer.accept(state.getLogin(), state.getPassword());
                 setGameView();
             } catch (RuntimeException ex) {
                 JOptionPane.showMessageDialog(null,
@@ -161,7 +163,7 @@ public class SwingView extends JFrame implements MyView{
 
     public void setGameView() {
         clearView();
-        stage = Stage.PLAY;
+        state.setStage(Stage.PLAY);
 
         setBounds(0,0,GAME_PANEL_WIDTH + TEXT_PANEL_WIDTH, GAME_PANEL_HEIGHT);
         setSize(GAME_DIMENSIONS);
@@ -219,7 +221,7 @@ public class SwingView extends JFrame implements MyView{
 
     @Override
     public void refresh() {
-        if (stage != Stage.PLAY)
+        if (state.getStage() != Stage.PLAY)
             return;
 
         model.fillEnvironment(gamePanel.getEnv());

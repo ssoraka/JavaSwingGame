@@ -26,24 +26,21 @@ public class TerminalView implements MyView, Runnable{
 
     private ModelView model;
     private AllController controllers;
-    private List<String> params;
     private Player player;
     private String[] logs;
 
-    private Stage stage;
-    private String login;
-    private String password;
+    private State state;
 
     private static String[] LABELS = {NAME, HP, LEVEL, EXP, ATTACK, DEFENSE, HELMET};
 
-    public TerminalView(ModelView model, AllController controllers) {
+    public TerminalView(ModelView model, AllController controllers, State state) {
         this.model = model;
         this.controllers = controllers;
+        this.state = state;
 
         width = 60;
         height = 20;
         env = new Place[height][width];
-        params = new ArrayList<>();
 
         Thread myThready = new Thread(this);
 //        myThready.setDaemon(true);
@@ -52,10 +49,11 @@ public class TerminalView implements MyView, Runnable{
         changeStage(Stage.LOGIN);
     }
 
-    private void changeStage(Stage newStage) {
-        if (stage == newStage)
+    private void changeStage(Stage stage) {
+
+        if (state.changeStage(stage)) {
             return;
-        stage = newStage;
+        }
         switch (stage) {
             case START : {
                 System.out.println("Choose you destiny!!!");
@@ -82,7 +80,7 @@ public class TerminalView implements MyView, Runnable{
 
     @Override
     public void refresh() {
-        if (stage != Stage.PLAY)
+        if (state.getStage() != Stage.PLAY)
             return;
         player = model.getPlayer();
         logs = player.getLog().split("\n");
@@ -149,16 +147,16 @@ public class TerminalView implements MyView, Runnable{
         while (scanner.hasNext()) {
             String text = scanner.nextLine();
 
-            if (stage == Stage.LOGIN) {
-                login = text;
+            if (state.getStage() == Stage.LOGIN) {
+                state.setLogin(text);
                 changeStage(Stage.PASSWORD);
-            } else if (stage == Stage.PASSWORD) {
-                password = text;
+            } else if (state.getStage() == Stage.PASSWORD) {
+                state.setPassword(text);
                 changeStage(Stage.START);
-            } else if (stage == Stage.START) {
+            } else if (state.getStage() == Stage.START) {
                 if (text.equals("1")) {
                     try {
-                        controllers.createNewPersonAndStartGame(login, password);
+                        controllers.createNewPersonAndStartGame(state.getLogin(), state.getPassword());
                         changeStage(Stage.PLAY);
                     } catch (RuntimeException e) {
                         System.out.println(e.getMessage());
@@ -166,7 +164,7 @@ public class TerminalView implements MyView, Runnable{
                     }
                 } else if (text.equals("2")) {
                     try {
-                        controllers.findPersonAndStartGame(login, password);
+                        controllers.findPersonAndStartGame(state.getLogin(), state.getPassword());
                         changeStage(Stage.PLAY);
                     } catch (RuntimeException e) {
                         System.out.println(e.getMessage());
@@ -177,14 +175,14 @@ public class TerminalView implements MyView, Runnable{
                 } else {
                     System.out.println("Enter the number 1-3");
                 }
-            } else if (stage == Stage.PLAY) {
+            } else if (state.getStage() == Stage.PLAY) {
                 try {
                     controllers.executeCommand(Actions.getAction(text));
                 } catch (DeadException e) {
                     deadMessage();
                     controllers.exit();
                 }
-            } else if (stage == Stage.EXIT) {
+            } else if (state.getStage() == Stage.EXIT) {
                 controllers.exit();
             }
         }

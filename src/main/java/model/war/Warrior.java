@@ -125,7 +125,8 @@ public class Warrior extends PlaceHolder {
     }
 
     protected void takeDamageFrom(Warrior enemy, int damage) {
-        damage -= defence;
+//        if (Dice.d20() > defence && damage) {
+//        damage -= defence;
         if (damage > 0) {
             hp -= damage;
         }
@@ -147,6 +148,9 @@ public class Warrior extends PlaceHolder {
     }
 
     protected void attack(Warrior enemy) {
+        if (Dice.d20() < enemy.defence) {
+            return;
+        }
         int damage = attack();
         enemy.takeDamageFrom(this, damage);
     }

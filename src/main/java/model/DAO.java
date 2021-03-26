@@ -180,7 +180,7 @@ public class DAO {
         addArg(DEFENSE, warrior.getDefence());
         addArg(HELMET, warrior.getHelmet());
         addArg(LEVEL, warrior.getLevel());
-        addArg(TYPE, warrior.getTypes().name());
+        addArg(TYPE, warrior.getClazz().name());
         try {
             statement.execute(request.toString());
             readDB();
@@ -219,10 +219,9 @@ public class DAO {
         Player player = new Player(login);
         try {
             resSet = statement.executeQuery(String.format("SELECT * FROM %s WHERE %s='%s' AND %s='%s'", TABLE_NAME, LOGIN, login, PASSWORD, password));
-
             player = new Player(login, Clazz.valueOf(resSet.getString(TYPE)));
-            player.setExperience(resSet.getInt(EXP));
             player.setLevel(resSet.getInt(LEVEL));
+            player.setExperience(resSet.getInt(EXP));
             player.setAttack(resSet.getInt(ATTACK));
             player.setHelmet(resSet.getInt(HELMET));
             player.setDefence(resSet.getInt(DEFENSE));
