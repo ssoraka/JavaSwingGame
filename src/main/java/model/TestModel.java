@@ -1,15 +1,15 @@
 package model;
 
+import model.war.Player;
+
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TestModel implements ModelController, ModelView {
     private DAO db;
     private boolean hasChange;
 
     private Level level;
-    private Warrior player;
+    private Player player;
 
     public TestModel() {
         hasChange = true;
@@ -33,11 +33,11 @@ public class TestModel implements ModelController, ModelView {
     }
 
     @Override
-    public Warrior getPlayer() {
+    public Player getPlayer() {
         return player;
     }
 
-    private void setPlayer(Warrior warrior) {
+    private void setPlayer(Player warrior) {
         player = warrior;
         level = new Level(player);
     }
@@ -63,7 +63,7 @@ public class TestModel implements ModelController, ModelView {
         if (db.isLoginOrPasswordAlreadyExist(login, password))
             throw new RuntimeException("Такое имя или пароль уже существует");
 
-        setPlayer(new Warrior(login, Types.PlAYER));
+        setPlayer(new Player(login));
         db.createPlayer(login, password, player);
     }
 

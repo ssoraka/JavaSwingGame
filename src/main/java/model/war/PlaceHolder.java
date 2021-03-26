@@ -1,4 +1,6 @@
-package model;
+package model.war;
+
+import model.Types;
 
 import java.awt.*;
 

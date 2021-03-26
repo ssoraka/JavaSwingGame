@@ -1,5 +1,7 @@
 package model;
 
+import model.war.PlaceHolder;
+
 public class Place {
     private PlaceHolder object;
     private Types type;

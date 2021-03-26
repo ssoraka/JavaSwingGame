@@ -1,5 +1,9 @@
 package model;
 
+import model.war.Clazz;
+import model.war.PlaceHolder;
+import model.war.Warrior;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +74,7 @@ public class Level {
                     continue;
                 int tmp = random.nextInt(100);
                 if (tmp < 4) {
-                    animals.add(new Warrior("Salamander", Types.ANIMAL, j, i, level));
+                    animals.add(new Warrior("Salamander", Clazz.ANIMAL, j, i, level));
                     insertOnMap(animals.get(animals.size() - 1));
                 } else if (tmp < 7) {
                     insertOnMap(new PlaceHolder(Types.STONE, j, i));

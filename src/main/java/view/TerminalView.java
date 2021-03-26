@@ -5,11 +5,12 @@ import controllers.AllController;
 import model.DeadException;
 import model.ModelView;
 import model.Place;
-import model.Warrior;
+import model.war.Player;
+import model.war.Warrior;
 
 import java.util.*;
 
-import static model.Warrior.*;
+import static model.war.Warrior.*;
 
 public class TerminalView implements MyView, Runnable{
 
@@ -26,7 +27,7 @@ public class TerminalView implements MyView, Runnable{
     private ModelView model;
     private AllController controllers;
     private List<String> params;
-    private Warrior player;
+    private Player player;
     private String[] logs;
 
     private Stage stage;
@@ -90,9 +91,14 @@ public class TerminalView implements MyView, Runnable{
             for (int j = 0; j < width; j++) {
                 switch (env[i][j].getObject().getTypes()) {
                     case STONE: System.out.print(STONE); break;
-                    case ANIMAL: System.out.print(ANIMAL); break;
+                    case CREATURE: {
+                        switch (((Warrior)env[i][j].getObject()).getClazz()) {
+                            case PlAYER: System.out.print(PlAYER); break;
+                            case ANIMAL: System.out.print(ANIMAL); break;
+                        }
+                        break;
+                    }
                     case TREE: System.out.print(TREE); break;
-                    case PlAYER: System.out.print(PlAYER); break;
                     case BOUNDARY: System.out.print(BOUNDARY); break;
                     default:
                         System.out.print(' ');

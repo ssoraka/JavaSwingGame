@@ -4,22 +4,18 @@ import controllers.Actions;
 import controllers.AllController;
 import model.DeadException;
 import model.ModelView;
-import model.Place;
-import model.Warrior;
-import z_main.Activator;
+import model.war.Player;
+import model.war.Warrior;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-import static model.Warrior.*;
+import static model.war.Warrior.*;
 
 
 public class SwingView extends JFrame implements MyView{
@@ -227,7 +223,7 @@ public class SwingView extends JFrame implements MyView{
             return;
 
         model.fillEnvironment(gamePanel.getEnv());
-        Warrior person = model.getPlayer();
+        Player person = model.getPlayer();
         updateField(NAME, person.getName());
         updateField(HP, Integer.toString(person.getHp()));
         updateField(LEVEL, Integer.toString(person.getLevel()));

@@ -1,8 +1,9 @@
 package view;
 
 import model.Place;
-import model.PlaceHolder;
+import model.war.PlaceHolder;
 import model.Types;
+import model.war.Warrior;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -99,15 +100,19 @@ public class MyPanel extends JPanel {
                 g2.fillRect(x, y, CELL_SIZE, CELL_SIZE);
                 return;
             }
-            case PlAYER: {
-                g2.setPaint(capybara);
-                g2.fillRect(x, y, CELL_SIZE, CELL_SIZE);
-                return;
-            }
-            case ANIMAL: {
-                g2.setPaint(salamander);
-                g2.fillRect(x + 2, y + 2, 28, 28);
-                return;
+            case CREATURE: {
+                switch (((Warrior)place.getObject()).getClazz()) {
+                    case PlAYER: {
+                        g2.setPaint(capybara);
+                        g2.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+                        return;
+                    }
+                    case ANIMAL: {
+                        g2.setPaint(salamander);
+                        g2.fillRect(x + 2, y + 2, 28, 28);
+                        return;
+                    }
+                }
             }
             case BOUNDARY: g2.setColor(Color.black); break;
             case TREE: {

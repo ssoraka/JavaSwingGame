@@ -1,10 +1,10 @@
-package model;
+package model.war;
 
 
-import java.awt.*;
-import java.util.Random;
+import model.Dice;
+import model.Types;
 
-public class Warrior extends PlaceHolder{
+public class Warrior extends PlaceHolder {
 
     public static final String NAME = "name";
     public static final String HP = "hp";
@@ -21,43 +21,41 @@ public class Warrior extends PlaceHolder{
     private int attack;
     private int defence;
 
-    private int power;
+    protected int power;
 
     private int level;
     private int experience;
     public int expNextLevel;
 
     private int hp;
-    private Random random;
 
-    private StringBuilder logger;
-    private StringBuilder enemyLogger;
+    private Clazz clazz;
 
-    public Warrior(String name, Types type) {
-        super(type);
+    public Warrior(String name, Clazz clazz) {
+        super(Types.CREATURE);
         this.name = name;
+        this.clazz = clazz;
         init(1);
     }
 
-    public Warrior(String name, Types type, int x, int y, int level) {
-        super(type, x, y);
+    public Warrior(String name, Clazz clazz, int x, int y, int level) {
+        super(Types.CREATURE, x, y);
         this.name = name;
+        this.clazz = clazz;
         level = Math.max(level, 1);
         init(level);
     }
 
     private void init(int level){
-        random = new Random();
         setLevel(level);
 
-        switch (type){
+        switch (clazz){
             case PlAYER :
                 power = 4;
-                logger = new StringBuilder();
                 break;
             default:
                 power = 1;
-                experience = 105;
+                experience = 105 + level * 5;
         }
     }
 
@@ -114,15 +112,19 @@ public class Warrior extends PlaceHolder{
         return level;
     }
 
+    public Clazz getClazz() {
+        return clazz;
+    }
+
     public boolean isAlive() {
         return (hp > 0);
     }
 
     public int attack() {
-        return (random.nextInt(attack + power + 1));
+        return (Dice.d6() + attack + power);
     }
 
-    public void takeDamage(int damage) {
+    protected void takeDamageFrom(Warrior enemy, int damage) {
         damage -= defence;
         if (damage > 0) {
             hp -= damage;
@@ -144,21 +146,12 @@ public class Warrior extends PlaceHolder{
         expNextLevel = ((level + 1) * 1000 + (level) ^ 2 * 450);
     }
 
-    private void attack(Warrior enemy) {
+    protected void attack(Warrior enemy) {
         int damage = attack();
-
-        log(name, " attack ", enemy.getName(), "\n");
-        log("(hp=", String.valueOf(enemy.getHp()), " - ( ", String.valueOf(damage), " - ", String.valueOf(enemy.getDefence()), " ) = ");
-
-        enemy.takeDamage(damage);
-
-        log( String.valueOf(enemy.getHp()), ")\n");
+        enemy.takeDamageFrom(this, damage);
     }
 
     public Warrior fight(Warrior enemy) {
-        enemyLogger = enemy.logger;
-        enemy.enemyLogger = logger;
-        clearLogger();
         while (isAlive() && enemy.isAlive()) {
             attack(enemy);
             if (enemy.isAlive())
@@ -167,43 +160,13 @@ public class Warrior extends PlaceHolder{
 
         Warrior winner;
         if (isAlive()) {
-            log(name, " kill ", enemy.getName(), "!!!\n");
             addExperience(enemy.getExperience());
             winner = this;
         } else {
-            log(enemy.getName(), " kill ", name, "!!!\n");
             enemy.addExperience(getExperience());
             winner = enemy;
         }
-        enemy.enemyLogger = null;
-        enemyLogger = null;
         return winner;
-    }
-
-    private void clearLogger() {
-        if (logger != null){
-            logger.delete(0, logger.length());
-        }
-        if (enemyLogger != null){
-            enemyLogger.delete(0, enemyLogger.length());
-        }
-    }
-
-    private void log(String ... text) {
-        if (logger != null) {
-            for (String s : text) {
-                logger.append(s);
-            }
-        }
-        if (enemyLogger != null) {
-            for (String s : text) {
-                enemyLogger.append(s);
-            }
-        }
-    }
-
-    public String getLog() {
-        return logger.toString();
     }
 
 }

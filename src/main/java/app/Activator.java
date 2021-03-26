@@ -1,4 +1,4 @@
-package z_main;
+package app;
 
 import controllers.*;
 import model.DAO;

@@ -1,11 +1,15 @@
 package model;
 
 
+import model.war.Clazz;
+import model.war.Player;
+import model.war.Warrior;
 import org.sqlite.JDBC;
+import app.ApplicationProperties;
 
 import java.sql.*;
 
-import static model.Warrior.*;
+import static model.war.Warrior.*;
 
 public class DAO {
 
@@ -26,7 +30,7 @@ public class DAO {
     public synchronized void createConnection() throws SQLException {
         if (connection == null) {
             DriverManager.registerDriver(new JDBC());
-            connection = DriverManager.getConnection("jdbc:sqlite:" + DAO.class.getResource("/database.db"));
+            connection = DriverManager.getConnection("jdbc:sqlite:" + ApplicationProperties.getProperties("db_path"));
             statement = connection.createStatement();
             System.out.println("База Подключена!");
         }
@@ -84,16 +88,16 @@ public class DAO {
 
     // --------Заполнение таблицы--------
     public void initDB() {
-        Warrior warrior = new Warrior("Capybara", Types.PlAYER);
-        warrior.setExperience(0);
-        warrior.setLevel(5);
-        createPlayer(warrior.getName(), "_" + warrior.getName() + "_", warrior);
+        Player player = new Player("Capybara");
+        player.setExperience(0);
+        player.setLevel(5);
+        createPlayer(player.getName(), "_" + player.getName() + "_", player);
 
-        warrior = new Warrior("Name2", Types.ANIMAL);
-        createPlayer(warrior.getName(), "_" + warrior.getName() + "_", warrior);
+        player = new Player("Name2");
+        createPlayer(player.getName(), "_" + player.getName() + "_", player);
 
-        warrior = new Warrior("Name3", Types.ANIMAL);
-        createPlayer(warrior.getName(), "_" + warrior.getName() + "_", warrior);
+        player = new Player("Name3");
+        createPlayer(player.getName(), "_" + player.getName() + "_", player);
 
         System.out.println("Таблица заполнена");
     }
@@ -210,23 +214,23 @@ public class DAO {
         }
     }
 
-    public Warrior readPlayer(String login, String password) {
+    public Player readPlayer(String login, String password) {
 
-        Warrior warrior = new Warrior(login, Types.PlAYER);
+        Player player = new Player(login);
         try {
             resSet = statement.executeQuery(String.format("SELECT * FROM %s WHERE %s='%s' AND %s='%s'", TABLE_NAME, LOGIN, login, PASSWORD, password));
 
-            warrior = new Warrior(login, Types.valueOf(resSet.getString(TYPE)));
-            warrior.setExperience(resSet.getInt(EXP));
-            warrior.setLevel(resSet.getInt(LEVEL));
-            warrior.setAttack(resSet.getInt(ATTACK));
-            warrior.setHelmet(resSet.getInt(HELMET));
-            warrior.setDefence(resSet.getInt(DEFENSE));
-            warrior.setHp(resSet.getInt(HP));
+            player = new Player(login, Clazz.valueOf(resSet.getString(TYPE)));
+            player.setExperience(resSet.getInt(EXP));
+            player.setLevel(resSet.getInt(LEVEL));
+            player.setAttack(resSet.getInt(ATTACK));
+            player.setHelmet(resSet.getInt(HELMET));
+            player.setDefence(resSet.getInt(DEFENSE));
+            player.setHp(resSet.getInt(HP));
         } catch (Exception e) {
             System.out.println("Нет такого в бд");
         }
-        return warrior;
+        return player;
     }
 
 }

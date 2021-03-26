@@ -1,6 +1,8 @@
 package model;
 
+import model.war.Player;
+
 public interface ModelView {
     void fillEnvironment(Place[][] env);
-    Warrior getPlayer();
+    Player getPlayer();
 }
