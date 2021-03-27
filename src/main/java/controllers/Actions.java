@@ -6,6 +6,8 @@ public enum Actions {
 
     EXIT,
 
+    CHANGE_VIEW,
+
     MOVE_LEFT,
     MOVE_RIGHT,
     MOVE_UP,
@@ -19,6 +21,7 @@ public enum Actions {
             case 'd': return MOVE_RIGHT;
             case '\n': return ENTER;
             case 'q': return EXIT;
+            case 'z': return CHANGE_VIEW;
             default:
                 return NOTHING;
         }
@@ -47,6 +50,7 @@ public enum Actions {
             case "e":
             case "quit":
             case "exit": return EXIT;
+            case "z": return CHANGE_VIEW;
             default:
                 return NOTHING;
         }
