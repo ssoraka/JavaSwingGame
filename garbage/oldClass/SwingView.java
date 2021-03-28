@@ -1,7 +1,7 @@
 package view;
 
 import controllers.Actions;
-import controllers.AllController2;
+import controllers.AllController;
 import model.DeadException;
 import model.ModelView;
 import model.war.Player;
@@ -17,10 +17,11 @@ import java.util.function.BiConsumer;
 import static model.war.Warrior.*;
 
 
-public class SwingView2 extends JFrame implements MyView2{
+public class SwingView extends JFrame implements MyView{
 
-    private AllController2 controller;
+    private AllController controller;
     private ModelView model;
+    private State state;
 
     private MyPanel gamePanel;
     private JPanel textPanel;
@@ -42,9 +43,10 @@ public class SwingView2 extends JFrame implements MyView2{
     private static final int TEXT_PANEL_WIDTH = 300;
     private static final Dimension GAME_DIMENSIONS = new Dimension(GAME_PANEL_WIDTH + TEXT_PANEL_WIDTH, GAME_PANEL_HEIGHT);
 
-    public SwingView2(ModelView model, AllController2 controller) {
+    public SwingView(ModelView model, AllController controller, State state) {
         this.controller = controller;
         this.model = model;
+        this.state = state;
 
         gamePanel = new MyPanel(GAME_PANEL_WIDTH, GAME_PANEL_HEIGHT);
         gamePanel.setBounds(0, 0, GAME_PANEL_WIDTH, GAME_PANEL_HEIGHT);
@@ -60,7 +62,7 @@ public class SwingView2 extends JFrame implements MyView2{
             public void keyPressed(KeyEvent e) {
                 Actions action = Actions.getAction(e.getKeyChar());
                 if (action == Actions.EXIT) {
-                    controller.exit();
+                    setStartView();
                     return;
                 }
                 try {
@@ -70,13 +72,18 @@ public class SwingView2 extends JFrame implements MyView2{
                             "Player is dead!!!",
                             "Game Over",
                             JOptionPane.PLAIN_MESSAGE);
-                    controller.startMenu();
+                    setStartView();
                 }
             }
 
             @Override
             public void keyReleased(KeyEvent e) {}
         };
+
+        setStartView();
+
+//        controller.createNewPersonAndStartGame("1", "2");
+//        setGameView();
     }
 
     private void clearView() {
@@ -94,6 +101,80 @@ public class SwingView2 extends JFrame implements MyView2{
         setResizable(false);
         setVisible(true);
     }
+
+    public void setStartView() {
+        clearView();
+
+        state.setStage(Stage.START);
+
+        setLayout(new GridLayout(10,1));
+
+        setBounds(0,0,400,400);
+        setSize(400,400);
+
+        JButton buttonCreate = new JButton("Начать сначала");
+        JButton buttonContinue = new JButton("Продолжить");
+        JButton buttonExit = new JButton("Выход");
+        add(buttonCreate);
+        add(buttonContinue);
+        add(buttonExit);
+
+        buttonCreate.addActionListener(e -> createOrContinueMenu(controller::createNewPersonAndStartGame));
+        buttonContinue.addActionListener(e -> createOrContinueMenu(controller::findPersonAndStartGame));
+        buttonExit.addActionListener(e -> controller.exit());
+        repaint();
+    }
+
+    private void createOrContinueMenu(BiConsumer<String, String> consumer) {
+        clearView();
+
+        JTextField login = new JTextField("", 5);
+        JTextField password = new JTextField("", 5);
+        JLabel labelLogin = new JLabel("login:");
+        JLabel labelPassword = new JLabel("password:");
+        JButton buttonConfirm = new JButton("Подтвердить");
+        JButton buttonBack = new JButton("назад");
+
+        setLayout(new GridLayout(10,1));
+        add(labelLogin);
+        add(login);
+        add(labelPassword);
+        add(password);
+        add(buttonConfirm);
+        add(buttonBack);
+
+        buttonBack.addActionListener(e -> setStartView());
+        buttonConfirm.addActionListener(e -> {
+            try {
+                state.setLogin(login.getText());
+                state.setPassword(password.getText());
+                consumer.accept(state.getLogin(), state.getPassword());
+                setGameView();
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(null,
+                        ex.getMessage(),
+                        "Fatal error",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
+        });
+
+        repaint();
+    }
+
+    public void setGameView() {
+        clearView();
+        state.setStage(Stage.PLAY);
+
+        setBounds(0,0,GAME_PANEL_WIDTH + TEXT_PANEL_WIDTH, GAME_PANEL_HEIGHT);
+        setSize(GAME_DIMENSIONS);
+
+        add(gamePanel);
+        add(textPanel);
+        addKeyListener(listener);
+
+        refresh();
+    }
+
 
     private JPanel createTextPane() {
         JPanel panel = new JPanel(null);
@@ -138,96 +219,11 @@ public class SwingView2 extends JFrame implements MyView2{
         labels.get(name).setText(value);
     }
 
-
-    @Override
-    public void startMenu() {
-        clearView();
-
-        setLayout(new GridLayout(10,1));
-
-        setBounds(0,0,400,400);
-        setSize(400,400);
-
-        JButton buttonCreate = new JButton("Начать сначала");
-        JButton buttonContinue = new JButton("Продолжить");
-        JButton buttonExit = new JButton("Выход");
-        add(buttonCreate);
-        add(buttonContinue);
-        add(buttonExit);
-
-        buttonCreate.addActionListener(e -> controller.createMenu());
-        buttonContinue.addActionListener(e -> controller.continueGame());
-        buttonExit.addActionListener(e -> controller.exit());
-        repaint();
-    }
-
-    @Override
-    public void createMenu() {
-        clearView();
-
-        JTextField login = new JTextField("", 5);
-        JTextField password = new JTextField("", 5);
-        JLabel labelLogin = new JLabel("login:");
-        JLabel labelPassword = new JLabel("password:");
-        JButton buttonConfirm = new JButton("Подтвердить");
-        JButton buttonBack = new JButton("назад");
-
-        setLayout(new GridLayout(10,1));
-        add(labelLogin);
-        add(login);
-        add(labelPassword);
-        add(password);
-        add(buttonConfirm);
-        add(buttonBack);
-
-        buttonBack.addActionListener(e -> controller.startMenu());
-        buttonConfirm.addActionListener(e -> {
-            try {
-                controller.setLogin(login.getText());
-                controller.setPassword(password.getText());
-                controller.createNewPersonInGame();
-                controller.startGame();
-            } catch (RuntimeException ex) {
-                JOptionPane.showMessageDialog(null,
-                        ex.getMessage(),
-                        "Authentication error",
-                        JOptionPane.PLAIN_MESSAGE);
-            }
-        });
-
-        repaint();
-    }
-
-    @Override
-    public void continueGame() {
-        try {
-            controller.findPersonInGame();
-            controller.startGame();
-        } catch (RuntimeException ex) {
-            JOptionPane.showMessageDialog(null,
-                    ex.getMessage(),
-                    "Authentication error",
-                    JOptionPane.PLAIN_MESSAGE);
-        }
-    }
-
-    @Override
-    public void startGame() {
-        clearView();
-        controller.startGame();
-
-        setBounds(0,0,GAME_PANEL_WIDTH + TEXT_PANEL_WIDTH, GAME_PANEL_HEIGHT);
-        setSize(GAME_DIMENSIONS);
-
-        add(gamePanel);
-        add(textPanel);
-        addKeyListener(listener);
-
-        refresh();
-    }
-
     @Override
     public void refresh() {
+        if (state.getStage() != Stage.PLAY)
+            return;
+
         model.fillEnvironment(gamePanel.getEnv());
         Player person = model.getPlayer();
         updateField(NAME, person.getName());
@@ -241,11 +237,5 @@ public class SwingView2 extends JFrame implements MyView2{
         updateField("logger", "<html>".concat(person.getLog().replace("\n", "<br>").concat("</html>")));
 
         repaint();
-    }
-
-    @Override
-    public void destroy() {
-        clearView();
-        setVisible(false);
     }
 }

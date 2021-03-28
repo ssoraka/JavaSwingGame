@@ -2,17 +2,14 @@ package controllers;
 
 import model.Level;
 import model.ModelController;
-import view.View;
 
-public class AllController2 {
+public class AllController {
     private ModelController model;
-    private View view;
     private String login = "";
     private String password = "";
 
-    public AllController2(ModelController model, View view) {
+    public AllController(ModelController model) {
         this.model = model;
-        this.view = view;
     }
 
     public void setLogin(String login) {
@@ -23,17 +20,11 @@ public class AllController2 {
         this.password = password;
     }
 
-    public void createNewPersonInGame() {
-        if (password.isEmpty() || login.isEmpty()) {
-            throw new RuntimeException("Введите логин и пароль");
-        }
+    public void createNewPersonAndStartGame(String login, String password) {
         model.createNewPersonAndStartGame(login, password);
     }
 
-    public void findPersonInGame() {
-        if (password.isEmpty() || login.isEmpty()) {
-            throw new RuntimeException("Введите логин и пароль");
-        }
+    public void findPersonAndStartGame(String login, String password) {
         model.findPersonAndStartGame(login, password);
     }
 
@@ -51,21 +42,5 @@ public class AllController2 {
             default:
                 break;
         }
-    }
-
-    public void startMenu() {
-        view.startMenu();
-    }
-
-    public void createMenu() {
-        view.createMenu();
-    }
-
-    public void continueGame() {
-        view.continueGame();
-    }
-
-    public void startGame() {
-        view.startGame();
     }
 }

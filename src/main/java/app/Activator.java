@@ -14,6 +14,7 @@ public class Activator implements Runnable {
 
     private static TestModel model;
     private static AllController controller;
+    private static View view;
     private static Activator activator;
 
     private List<MyView> views = new ArrayList<>();
@@ -30,7 +31,7 @@ public class Activator implements Runnable {
 
 
     public static void main(String[] args) throws SQLException {
-        startActivator();
+
         String mode = getMode();
 
         DAO db = new DAO();
@@ -39,13 +40,16 @@ public class Activator implements Runnable {
 
         controller = new AllController(model);
 
-        if (TERMINAL_MODE.equals(mode)) {
-            TerminalView view = new TerminalView(model, controller, new State(ViewType.TERMINAL));
-            activator.registerView(view);
-        } else if (SWING_MODE.equals(mode)) {
-            SwingView view = new SwingView(model, controller, new State(ViewType.SWING));
-            activator.registerView(view);
+        if (SWING_MODE.equals(mode)) {
+            view = new View(ViewType.SWING, model, controller);
+        } else if (TERMINAL_MODE.equals(mode)) {
+            view = new View(ViewType.TERMINAL, model, controller);
         }
+
+        controller.setView(view);
+        controller.startMenu();
+
+        startActivator();
     }
 
     private static String getMode() {
@@ -91,9 +95,10 @@ public class Activator implements Runnable {
 //    }
 
     private void refreshViews() {
-        for (MyView view : views) {
-            view.refresh();
-        }
+        view.refresh();
+//        for (MyView view : views) {
+//            view.refresh();
+//        }
     }
 
     @Override
@@ -104,10 +109,11 @@ public class Activator implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if (views.size() == 0)
-                continue;
-            if (model.wasChanged())
+//            if (views.size() == 0)
+//                continue;
+            if (model.wasChanged()) {
                 refreshViews();
+            }
         }
     }
 }
