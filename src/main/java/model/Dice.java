@@ -17,8 +17,8 @@ public class Dice {
         return random.nextInt(6);
     }
 
-    public static int d2() {
-        return random.nextInt(2);
+    public static boolean d2() {
+        return random.nextInt(2) == 1;
     }
 
 //    public static boolean d2() {

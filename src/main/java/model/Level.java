@@ -14,6 +14,7 @@ public class Level {
     final static public Point RIGHT = new Point(1, 0);
     final static public Point UP = new Point(0, -1);
     final static public Point DOWN = new Point(0, 1);
+    final static public Point HERE = new Point(0, 0);
 
     final static private PlaceHolder EMPTY = new PlaceHolder(Types.EMPTY);
     final static private PlaceHolder BOUNDARY = new PlaceHolder(Types.BOUNDARY);
@@ -129,7 +130,11 @@ public class Level {
         return getPlaceHolder(object.getX() + shift.x, object.getY() + shift.y) == BOUNDARY;
     }
 
-    public void tryMoveObject(Warrior warrior, Point shift)  {
+    public void tryMoveObject(Warrior warrior, Point shift) {
+        if (shift.equals(HERE)) {
+            return ;
+        }
+
         PlaceHolder current = getPlaceHolder(warrior.getX() + shift.x, warrior.getY() + shift.y);
         if (current == EMPTY) {
             Point pos = warrior.getPos();
@@ -143,6 +148,11 @@ public class Level {
             insertOnMap(winner, enemy.getX(), enemy.getY());
             getPlace(winner.getX(), winner.getY()).setType(Types.BLOOD);
         }
+    }
+
+    public boolean isMeetEnemy(Warrior warrior, Point shift) {
+        PlaceHolder current = getPlaceHolder(warrior.getX() + shift.x, warrior.getY() + shift.y);
+        return (current instanceof Warrior);
     }
 
     public void moveAnimals() {

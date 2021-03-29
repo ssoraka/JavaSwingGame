@@ -59,6 +59,11 @@ public class TestModel implements ModelController, ModelView {
     }
 
     @Override
+    public boolean isMeetEnemy(Point shift) {
+        return level.isMeetEnemy(player, shift);
+    }
+
+    @Override
     public void createNewPersonAndStartGame(String login, String password) {
         if (db.isLoginOrPasswordAlreadyExist(login, password))
             throw new RuntimeException("Такое имя или пароль уже существует");

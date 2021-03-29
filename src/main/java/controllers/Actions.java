@@ -11,7 +11,8 @@ public enum Actions {
     MOVE_LEFT,
     MOVE_RIGHT,
     MOVE_UP,
-    MOVE_DOWN;
+    MOVE_DOWN,
+    DONT_MOVE;
 
     public static Actions getAction(char chr) {
         switch (chr) {

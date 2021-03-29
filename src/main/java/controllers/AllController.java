@@ -44,12 +44,24 @@ public class AllController {
         model.exit();
     }
 
+    public boolean isMeetEnemy(Actions action) {
+        switch (action) {
+            case MOVE_UP : return model.isMeetEnemy(Level.UP);
+            case MOVE_DOWN: return model.isMeetEnemy(Level.DOWN);
+            case MOVE_LEFT: return model.isMeetEnemy(Level.LEFT);
+            case MOVE_RIGHT: return model.isMeetEnemy(Level.RIGHT);
+            default:
+                return false;
+        }
+    }
+
     public void executeCommand(Actions action) {
         switch (action) {
             case MOVE_UP : model.tryMovePlayer(Level.UP); break;
             case MOVE_DOWN: model.tryMovePlayer(Level.DOWN); break;
             case MOVE_LEFT: model.tryMovePlayer(Level.LEFT); break;
             case MOVE_RIGHT: model.tryMovePlayer(Level.RIGHT); break;
+            case DONT_MOVE: model.tryMovePlayer(Level.HERE); break;
             case CHANGE_VIEW: view.changeView(); startGame(); break;
             case EXIT: exit(); break;
             default:

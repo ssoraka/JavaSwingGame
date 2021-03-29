@@ -3,6 +3,7 @@ package view;
 import controllers.Actions;
 import controllers.AllController;
 import model.DeadException;
+import model.Dice;
 import model.ModelView;
 import model.war.Player;
 
@@ -63,7 +64,13 @@ public class SwingView extends JFrame implements MyView {
                     return;
                 }
                 try {
-                    controller.executeCommand(action);
+                    if (controller.isMeetEnemy(action)
+                            && JOptionPane.showConfirmDialog(null, "Start fight?", "Fighting", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION
+                            && Dice.d2()) {
+                        controller.executeCommand(Actions.DONT_MOVE);
+                    } else {
+                        controller.executeCommand(action);
+                    }
                 } catch (DeadException ex) {
                     JOptionPane.showMessageDialog(null,
                             "Player is dead!!!",
