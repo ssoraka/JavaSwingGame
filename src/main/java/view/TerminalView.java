@@ -3,6 +3,7 @@ package view;
 import controllers.Actions;
 import controllers.AllController;
 import model.DeadException;
+import model.Dice;
 import model.ModelView;
 import model.Place;
 import model.war.Player;
@@ -26,7 +27,7 @@ public class TerminalView implements MyView, Runnable {
     private int height;
 
     private ModelView model;
-    private AllController controllers;
+    private AllController controller;
     private Player player;
     private String[] logs;
 
@@ -37,9 +38,9 @@ public class TerminalView implements MyView, Runnable {
 
     private static String[] LABELS = {NAME, HP, LEVEL, EXP, ATTACK, DEFENSE, HELMET};
 
-    public TerminalView(ModelView model, AllController controllers) {
+    public TerminalView(ModelView model, AllController controller) {
         this.model = model;
-        this.controllers = controllers;
+        this.controller = controller;
         func = DEFAULT_ACTION;
 
         width = 60;
@@ -155,14 +156,17 @@ public class TerminalView implements MyView, Runnable {
         System.out.println("2) continue");
         System.out.println("3) quit");
         func = s -> {
-            if (s.equals("1")) {
-                controllers.createMenu();
-            } else if (s.equals("2")) {
-                controllers.continueGame();
-            } else if (s.equals("3")) {
-                controllers.exit();
-            } else {
-                System.out.println("Enter the number 1-3");
+            switch (s) {
+                case "s" :
+                case "start" :
+                case "1" : controller.createMenu(); break;
+                case "c" :
+                case "continue" :
+                case "2" : controller.continueGame(); break;
+                case "q" :
+                case "quit" :
+                case "3" : controller.exit(); break;
+                default: System.out.println("Enter the number 1-3"); break;
             }
         };
     }
@@ -175,31 +179,53 @@ public class TerminalView implements MyView, Runnable {
 
         func = s -> {
             if (!start) {
-                controllers.setLogin(s);
+                controller.setLogin(s);
                 System.out.println("Enter Your Password");
                 start = true;
             } else {
-                controllers.setPassword(s);
+                controller.setPassword(s);
 
                 try {
-                    controllers.createNewPersonInGame();
-                    controllers.startGame();
+                    controller.createNewPersonInGame();
+                    controller.startGame();
                 } catch (RuntimeException ex) {
                     System.out.println(ex.getMessage());
-                    controllers.startMenu();
+                    controller.startMenu();
                 }
             }
         };
     }
 
+    private void identification(String login) {
+        System.out.println("Enter Your Password");
+        Scanner scanner = new Scanner(System.in);
+
+        while (scanner.hasNext()) {
+            String text = scanner.nextLine().trim();
+            if (text.isEmpty()) {
+                continue;
+            } else {
+                controller.setLogin(login);
+                controller.setPassword(text);
+                try {
+                    controller.createNewPersonInGame();
+                    controller.startGame();
+                } catch (RuntimeException ex) {
+                    System.out.println(ex.getMessage());
+                    controller.startMenu();
+                }
+            }
+        }
+    }
+
     @Override
     public void continueGame() {
         try {
-            controllers.findPersonInGame();
-            controllers.startGame();
+            controller.findPersonInGame();
+            controller.startGame();
         } catch (RuntimeException ex) {
             System.out.println(ex.getMessage());
-            controllers.startMenu();
+            controller.startMenu();
         }
     }
 
@@ -209,12 +235,42 @@ public class TerminalView implements MyView, Runnable {
         refresh();
         func = s -> {
             try {
-                controllers.executeCommand(Actions.getAction(s));
+                Actions action = Actions.getAction(s);
+                if (controller.isMeetEnemy(action) && !confirm("Do you want fight?") && Dice.d2()) {
+                    controller.executeCommand(Actions.DONT_MOVE);
+                } else {
+                    controller.executeCommand(action);
+                }
             } catch (DeadException e) {
-                deadMessage();
-                controllers.startMenu();
+                refresh();
+                if (confirm(e.getMessage() + "\nrestart level?")) {
+                    controller.continueGame();
+                } else {
+                    controller.startMenu();
+                }
             }
         };
+    }
+
+    private boolean confirm(String message) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println(message);
+        System.out.println("yes/no");
+        while (scanner.hasNext()) {
+            String text = scanner.nextLine().trim();
+
+            switch (text) {
+                case "y":
+                case "yes": return true;
+                case "n":
+                case "no": return false;
+                default:
+                    System.out.println("print \"yes\" or \"no\"");
+                    break;
+            }
+        }
+        return true;
     }
 
     @Override

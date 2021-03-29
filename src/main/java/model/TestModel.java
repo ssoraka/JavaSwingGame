@@ -53,7 +53,7 @@ public class TestModel implements ModelController, ModelView {
             level.tryMoveObject(player, shift);
             level.moveAnimals();
             if (!player.isAlive())
-                throw new DeadException();
+                throw new DeadException("Player is dead!!!");
         }
         hasChange = true;
     }

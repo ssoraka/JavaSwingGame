@@ -64,25 +64,28 @@ public class SwingView extends JFrame implements MyView {
                     return;
                 }
                 try {
-                    if (controller.isMeetEnemy(action)
-                            && JOptionPane.showConfirmDialog(null, "Start fight?", "Fighting", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION
-                            && Dice.d2()) {
+                    if (controller.isMeetEnemy(action) && !confirm("Start fight?") && Dice.d2()) {
                         controller.executeCommand(Actions.DONT_MOVE);
                     } else {
                         controller.executeCommand(action);
                     }
                 } catch (DeadException ex) {
-                    JOptionPane.showMessageDialog(null,
-                            "Player is dead!!!",
-                            "Game Over",
-                            JOptionPane.PLAIN_MESSAGE);
-                    controller.startMenu();
+                    refresh();
+                    if (confirm(ex.getMessage() + "\nrestart level?")) {
+                        controller.continueGame();
+                    } else {
+                        controller.startMenu();
+                    }
                 }
             }
 
             @Override
             public void keyReleased(KeyEvent e) {}
         };
+    }
+
+    private boolean confirm(String message) {
+        return JOptionPane.showConfirmDialog(null, message, "Warning", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
     }
 
     private void clearView() {

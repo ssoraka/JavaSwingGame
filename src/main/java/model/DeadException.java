@@ -1,5 +1,7 @@
 package model;
 
 public class DeadException extends RuntimeException{
-    public DeadException() {}
+    public DeadException(String message) {
+        super(message);
+    }
 }
