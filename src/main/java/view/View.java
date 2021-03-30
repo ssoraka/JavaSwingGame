@@ -52,5 +52,6 @@ public class View {
         if (isGameStarted) {
             view.refresh();
         }
+//        Thread.getAllStackTraces().keySet().forEach((t) -> System.out.println(t.getName()));
     }
 }

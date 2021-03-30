@@ -243,7 +243,7 @@ public class SwingView extends JFrame implements MyView {
         updateField(LEVEL, Integer.toString(person.getLevel()));
         updateField(EXP, Integer.toString(person.getExperience()));
         updateField("next exp", Integer.toString(person.expNextLevel));
-        updateField(DEFENSE, Integer.toString(person.getDefence()));
+        updateField(DEFENSE, Integer.toString(person.getDefense()));
         updateField(HELMET, Integer.toString(person.getHelmet()));
         updateField(ATTACK, Integer.toString(person.getAttack()));
         updateField("logger", "<html>".concat(person.getLog().replace("\n", "<br>").concat("</html>")));
@@ -255,5 +255,6 @@ public class SwingView extends JFrame implements MyView {
     public void destroy() {
         clearView();
         setVisible(false);
+//        enableEvents(WindowEvent.WINDOW_CLOSING);
     }
 }

@@ -17,8 +17,6 @@ public class Activator implements Runnable {
     private static View view;
     private static Activator activator;
 
-    private List<MyView> views = new ArrayList<>();
-
     private static final String TERMINAL_MODE = "terminal";
     private static final String SWING_MODE = "swing";
 
@@ -80,25 +78,8 @@ public class Activator implements Runnable {
         activator = new Activator();
         Thread myThready = new Thread(activator);
         myThready.setDaemon(true);
+        myThready.setName("Main");
         myThready.start();
-    }
-
-
-    public void registerView(MyView view) {
-        views.add(view);
-    }
-
-//    public void unregisterViews() {
-//        for (MyView view : views) {
-//            view.close();
-//        }
-//    }
-
-    private void refreshViews() {
-        view.refresh();
-//        for (MyView view : views) {
-//            view.refresh();
-//        }
     }
 
     @Override
@@ -109,10 +90,8 @@ public class Activator implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-//            if (views.size() == 0)
-//                continue;
             if (model.wasChanged()) {
-                refreshViews();
+                view.refresh();
             }
         }
     }

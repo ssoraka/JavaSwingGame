@@ -17,11 +17,17 @@ public class Warrior extends PlaceHolder {
 
     private String name;
 
-    private int helmet;
-    private int attack;
-    private int defence;
+    protected int startHelmet;
+    protected int startAttack;
+    protected int startDefense;
 
-    protected int power;
+    protected int helmet;
+    protected int attack;
+    protected int defense;
+
+    private Armor armor;
+    private Weapon weapon;
+    private Helmet helm;
 
     private int level;
     private int experience;
@@ -35,6 +41,11 @@ public class Warrior extends PlaceHolder {
         super(Types.CREATURE);
         this.name = name;
         this.clazz = clazz;
+
+        armor = new Armor(5);
+        weapon = new Weapon(5);
+        setHelm(new Helmet(5));
+
         init(1);
     }
 
@@ -42,21 +53,39 @@ public class Warrior extends PlaceHolder {
         super(Types.CREATURE, x, y);
         this.name = name;
         this.clazz = clazz;
+
+        armor = new Armor();
+        weapon = new Weapon();
+        setHelm(new Helmet());
+
         level = Math.max(level, 1);
         init(level);
     }
 
     private void init(int level){
-        setLevel(level);
+        startHelmet = Dice.d6();
+        startAttack = 1;
+        startDefense = 1;
 
         switch (clazz){
             case PlAYER :
-                power = 4;
+                startHelmet++;
+                startAttack++;
+                startDefense++;
                 break;
             default:
-                power = 1;
                 experience = 105 + level * 5;
         }
+        setLevel(level);
+        setMaxHp();
+    }
+
+    public void setHelm(Helmet helmet) {
+        helm = helmet;
+    }
+
+    public void setMaxHp() {
+        hp = helmet + helm.getHp();
     }
 
     public void setHp(int hp) {
@@ -71,8 +100,8 @@ public class Warrior extends PlaceHolder {
         this.attack = attack;
     }
 
-    public void setDefence(int defence) {
-        this.defence = defence;
+    public void setDefense(int defense) {
+        this.defense = defense;
     }
 
     public void setExperience(int experience) {
@@ -81,11 +110,11 @@ public class Warrior extends PlaceHolder {
 
     public void setLevel(int level) {
         this.level = level;
-        helmet = level  + 1;
-        attack = level / 2  + 1;
-        defence = level / 2  + 1;
         experienceForNextLevel();
-        hp = helmet;
+
+        helmet = startHelmet + level / 5 + 1;
+        attack = startAttack + level / 5 + 1;
+        defense = startDefense + level / 5 + 1;
     }
 
     public int getHp() {
@@ -104,8 +133,8 @@ public class Warrior extends PlaceHolder {
         return helmet;
     }
 
-    public int getDefence() {
-        return defence;
+    public int getDefense() {
+        return defense;
     }
 
     public int getLevel() {
@@ -121,7 +150,11 @@ public class Warrior extends PlaceHolder {
     }
 
     public int attack() {
-        return (Dice.d6() + attack + power);
+        return (weapon.getDamage());
+    }
+
+    public int defense() {
+        return (armor.getDefense());
     }
 
     protected void takeDamageFrom(Warrior enemy, int damage) {
@@ -140,15 +173,20 @@ public class Warrior extends PlaceHolder {
         experience += exp;
         while (experience >= expNextLevel) {
             setLevel(++level);
+            setMaxHp();
         }
     }
 
     private void experienceForNextLevel() {
-        expNextLevel = ((level + 1) * 1000 + (level) ^ 2 * 450);
+        expNextLevel = ((level + 1) * 1000 + ((level) ^ 2) * 450);
+    }
+
+    protected boolean isDodge(Warrior enemy) {
+        return Dice.d20() + enemy.attack > defense() + defense;
     }
 
     protected void attack(Warrior enemy) {
-        if (Dice.d20() < enemy.defence) {
+        if (enemy.isDodge(this)) {
             return;
         }
         int damage = attack();

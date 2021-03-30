@@ -47,8 +47,9 @@ public class TerminalView implements MyView, Runnable {
         height = 20;
         env = new Place[height][width];
 
-        new Thread(this).start();
-//        myThready.setDaemon(true);
+        Thread thread = new Thread(this);
+        thread.setName("Terminal");
+        thread.start();
     }
 
     @Override
@@ -106,7 +107,7 @@ public class TerminalView implements MyView, Runnable {
                     System.out.print(player.getExperience());
                     break;
                 case DEFENSE:
-                    System.out.print(player.getDefence());
+                    System.out.print(player.getDefense());
                     break;
                 case HELMET:
                     System.out.print(player.getHelmet());
@@ -196,27 +197,27 @@ public class TerminalView implements MyView, Runnable {
         };
     }
 
-    private void identification(String login) {
-        System.out.println("Enter Your Password");
-        Scanner scanner = new Scanner(System.in);
-
-        while (scanner.hasNext()) {
-            String text = scanner.nextLine().trim();
-            if (text.isEmpty()) {
-                continue;
-            } else {
-                controller.setLogin(login);
-                controller.setPassword(text);
-                try {
-                    controller.createNewPersonInGame();
-                    controller.startGame();
-                } catch (RuntimeException ex) {
-                    System.out.println(ex.getMessage());
-                    controller.startMenu();
-                }
-            }
-        }
-    }
+//    private void identification(String login) {
+//        System.out.println("Enter Your Password");
+//        Scanner scanner = new Scanner(System.in);
+//
+//        while (scanner.hasNext()) {
+//            String text = scanner.nextLine().trim();
+//            if (text.isEmpty()) {
+//                continue;
+//            } else {
+//                controller.setLogin(login);
+//                controller.setPassword(text);
+//                try {
+//                    controller.createNewPersonInGame();
+//                    controller.startGame();
+//                } catch (RuntimeException ex) {
+//                    System.out.println(ex.getMessage());
+//                    controller.startMenu();
+//                }
+//            }
+//        }
+//    }
 
     @Override
     public void continueGame() {

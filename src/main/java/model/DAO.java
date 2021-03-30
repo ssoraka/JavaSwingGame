@@ -177,7 +177,7 @@ public class DAO {
         addArg(EXP, warrior.getExperience());
         addArg(HP, warrior.getHelmet());
         addArg(ATTACK, warrior.getAttack());
-        addArg(DEFENSE, warrior.getDefence());
+        addArg(DEFENSE, warrior.getDefense());
         addArg(HELMET, warrior.getHelmet());
         addArg(LEVEL, warrior.getLevel());
         addArg(TYPE, warrior.getClazz().name());
@@ -200,7 +200,7 @@ public class DAO {
                 .append(",'").append(ATTACK).append("'=")
                 .append(warrior.getAttack())
                 .append(",'").append(DEFENSE).append("'=")
-                .append(warrior.getDefence())
+                .append(warrior.getDefense())
                 .append(",'").append(LEVEL).append("'=")
                 .append(warrior.getLevel())
                 .append(" WHERE ").append(LOGIN).append("='")
@@ -224,7 +224,7 @@ public class DAO {
             player.setExperience(resSet.getInt(EXP));
             player.setAttack(resSet.getInt(ATTACK));
             player.setHelmet(resSet.getInt(HELMET));
-            player.setDefence(resSet.getInt(DEFENSE));
+            player.setDefense(resSet.getInt(DEFENSE));
             player.setHp(resSet.getInt(HP));
         } catch (Exception e) {
             System.out.println("Нет такого в бд");
