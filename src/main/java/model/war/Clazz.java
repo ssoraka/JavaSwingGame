@@ -8,4 +8,4 @@ public enum Clazz {
     CAPYBARA,
     HONEY_BADGER,
     ALPACA
-    }
+}

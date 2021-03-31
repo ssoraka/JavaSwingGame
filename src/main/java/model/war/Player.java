@@ -17,8 +17,8 @@ public class Player extends Warrior {
 
     @Override
     protected void takeDamageFrom(Warrior enemy, int damage) {
-        log(enemy.getName(), " attack ", getName(), "\n");
-        log("(hp=", String.valueOf(getHp()), " - ( ", String.valueOf(damage), " - ", String.valueOf(getDefense()), " ) = ");
+        log(enemy.getName(), " attack ", getName(), ": ");
+        log("(hp=", String.valueOf(getHp()), " - ", String.valueOf(damage), " = ");
 
         super.takeDamageFrom(enemy, damage);
 
@@ -28,6 +28,7 @@ public class Player extends Warrior {
     @Override
     protected boolean isDodge(Warrior enemy) {
         if (super.isDodge(enemy)) {
+            log(enemy.getName(), " attack ", getName(), ": ");
             log("missing\n");
             return true;
         }
@@ -36,7 +37,7 @@ public class Player extends Warrior {
 
     @Override
     protected void attack(Warrior enemy) {
-        log(getName(), " attack ", enemy.getName(), "\n");
+        log(getName(), " attack ", enemy.getName(), ": ");
 
         if (enemy.isDodge(this)) {
             log("missing\n");
