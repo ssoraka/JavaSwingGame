@@ -2,23 +2,23 @@ package model.war;
 
 import model.Dice;
 
-public class Helmet {
-    private static String[] NAMES = {"empty", "diadem", "light helmet", "heavy helmet", "crown"};
-    private static int[] HEATH_POINTS = {0, 4, 6, 8, 10};
+public enum Helmet {
+    EMPTY("empty", 0),
+    DIADEM("diadem", 4),
+    LIGHT_HELMET("light helmet", 6),
+    HEAVY_HELMET("heavy helmet", 8),
+    CROWN("crown", 10);
 
     private String name;
     private int hp;
 
-    public Helmet() {
-        int num = Dice.rand(0, NAMES.length - 1);
-        name = NAMES[num];
-        hp = HEATH_POINTS[num];
+    Helmet(String name, int hp) {
+        this.name = name;
+        this.hp = hp;
     }
 
-    public Helmet(int level) {
-        level = Math.min(level, NAMES.length - 1);
-        name = NAMES[level];
-        hp = HEATH_POINTS[level];
+    public static Helmet randomHelmet() {
+        return Helmet.values()[Dice.rand(0, Helmet.values().length - 1)];
     }
 
     public String getName() {

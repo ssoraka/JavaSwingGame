@@ -1,5 +1,6 @@
 package model;
 
+import controllers.Actions;
 import model.war.Clazz;
 import model.war.PlaceHolder;
 import model.war.Warrior;
@@ -75,7 +76,7 @@ public class Level {
                     continue;
                 int tmp = random.nextInt(100);
                 if (tmp < 4) {
-                    animals.add(new Warrior("Salamander", Clazz.ANIMAL, j, i, level));
+                    animals.add(Warrior.randomWarrior(level, j, i));
                     insertOnMap(animals.get(animals.size() - 1));
                 } else if (tmp < 7) {
                     insertOnMap(new PlaceHolder(Types.STONE, j, i));

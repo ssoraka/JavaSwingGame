@@ -1,5 +1,6 @@
 package model;
 
+import model.war.Clazz;
 import model.war.Player;
 
 import java.awt.*;
@@ -49,6 +50,7 @@ public class TestModel implements ModelController, ModelView {
         if (level.isLeaveLevel(player, shift)) {
             db.updatePlayer(player);
             level = new Level(player);
+            player.heel();
         } else {
             level.tryMoveObject(player, shift);
             level.moveAnimals();
@@ -68,7 +70,7 @@ public class TestModel implements ModelController, ModelView {
         if (db.isLoginOrPasswordAlreadyExist(login, password))
             throw new RuntimeException("Такое имя или пароль уже существует");
 
-        setPlayer(new Player(login));
+        setPlayer(new Player(login, Clazz.CAPYBARA));
         db.createPlayer(login, password, player);
     }
 

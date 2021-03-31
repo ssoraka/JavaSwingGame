@@ -19,9 +19,12 @@ public class MyPanel extends JPanel {
 
     private Place[][] env;
     private TexturePaint tree;
+    private TexturePaint stone;
+
     private TexturePaint salamander;
     private TexturePaint capybara;
-    private TexturePaint stone;
+    private TexturePaint alpaca;
+    private TexturePaint honeyBadger;
 
     public MyPanel(int width, int height){
         setSize(width, height);
@@ -48,6 +51,10 @@ public class MyPanel extends JPanel {
             capybara = new TexturePaint(image, new Rectangle(0, 0, 32, 32));
             image = ImageIO.read(getClass().getResource("/salamander.png"));
             salamander = new TexturePaint(image, new Rectangle(0, 0, 32, 32));
+            image = ImageIO.read(getClass().getResource("/alpaca.png"));
+            alpaca = new TexturePaint(image, new Rectangle(0, 0, 32, 32));
+            image = ImageIO.read(getClass().getResource("/honey_badger.png"));
+            honeyBadger = new TexturePaint(image, new Rectangle(0, 0, 32, 32));
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Could not load images", "Error", JOptionPane.ERROR_MESSAGE);
             throw new RuntimeException(ex);
@@ -107,8 +114,23 @@ public class MyPanel extends JPanel {
                         g2.fillRect(x, y, CELL_SIZE, CELL_SIZE);
                         return;
                     }
-                    case ANIMAL: {
+                    case CAPYBARA: {
+                        g2.setPaint(capybara);
+                        g2.fillRect(x + 2, y + 2, 28, 28);
+                        return;
+                    }
+                    case SALAMANDER: {
                         g2.setPaint(salamander);
+                        g2.fillRect(x + 2, y + 2, 28, 28);
+                        return;
+                    }
+                    case ALPACA: {
+                        g2.setPaint(alpaca);
+                        g2.fillRect(x + 2, y + 2, 28, 28);
+                        return;
+                    }
+                    case HONEY_BADGER: {
+                        g2.setPaint(honeyBadger);
                         g2.fillRect(x + 2, y + 2, 28, 28);
                         return;
                     }

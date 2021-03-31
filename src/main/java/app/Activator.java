@@ -61,10 +61,12 @@ public class Activator implements Runnable {
             String text = scanner.nextLine();
             switch (text) {
                 case TERMINAL_MODE :
+                case "t" :
                 case "2" : return TERMINAL_MODE;
                 case SWING_MODE :
+                case "s" :
                 case "1" : return SWING_MODE;
-                default:
+                default :
                     System.out.println("Choose game mode:");
                     System.out.println("1 - \"swing\"");
                     System.out.println("2 - \"terminal\"");

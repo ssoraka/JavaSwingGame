@@ -2,23 +2,22 @@ package model.war;
 
 import model.Dice;
 
-public class Armor {
-    private static String[] NAMES = {"empty", "robe", "light armor", "heavy armor"};
-    private static int[] DEFENSE_LEVEL = {6, 10, 14, 16};
+public enum Armor {
+    EMPTY("empty", 6),
+    ROBE("robe", 10),
+    LIGHT_ARMOR("light armor", 14),
+    HEAVY_ARMOR("heavy armor", 16);
 
     private String name;
     private int defense;
 
-    public Armor() {
-        int num = Dice.rand(0, NAMES.length - 1);
-        name = NAMES[num];
-        defense = DEFENSE_LEVEL[num];
+    Armor(String name, int defense) {
+        this.name = name;
+        this.defense = defense;
     }
 
-    public Armor(int level) {
-        level = Math.min(level, NAMES.length - 1);
-        name = NAMES[level];
-        defense = DEFENSE_LEVEL[level];
+    public static Armor randomArmor() {
+        return Armor.values()[Dice.rand(0, Armor.values().length - 1)];
     }
 
     public String getName() {

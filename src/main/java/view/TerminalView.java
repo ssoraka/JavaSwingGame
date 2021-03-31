@@ -16,9 +16,15 @@ import static model.war.Warrior.*;
 
 public class TerminalView implements MyView, Runnable {
 
-    private final static String TREE = "\033[0;32mT\033[00m";
+    private final static String TREE = "\033[2;0;32mT\033[00m";
     private final static String ANIMAL = "\033[0;31mA\033[00m";
-    private final static String STONE = "\033[7;37mS\033[00m";
+    private final static String BLOOD = "\033[41;30m \033[00m";
+    private final static String EMPTY = " ";
+    private final static String SALAMANDER = "\033[2;45;30mS\033[00m";
+    private final static String CAPYBARA = "\033[2;41;30mC\033[00m";
+    private final static String ALPACA = "\033[2;42;30mA\033[00m";
+    private final static String HONEY_BADGER = "\033[2;44;30mH\033[00m";
+    private final static String STONE = "\033[7;37ms\033[00m";
     private final static String PlAYER = "\033[0;36mX\033[00m";
     private final static String BOUNDARY = "\033[6;30mX\033[00m";
 
@@ -30,6 +36,7 @@ public class TerminalView implements MyView, Runnable {
     private AllController controller;
     private Player player;
     private String[] logs;
+    private String emptyLine;
 
     private static Consumer<String> DEFAULT_ACTION = (s) -> {};
     private Consumer<String> func;
@@ -47,6 +54,13 @@ public class TerminalView implements MyView, Runnable {
         height = 20;
         env = new Place[height][width];
 
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < width + 1; i++) {
+            stringBuilder.append(" ");
+        }
+        emptyLine = stringBuilder.toString();
+
+
         Thread thread = new Thread(this);
         thread.setName("Terminal");
         thread.start();
@@ -60,32 +74,36 @@ public class TerminalView implements MyView, Runnable {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 switch (env[i][j].getObject().getTypes()) {
-                    case STONE:
-                        System.out.print(STONE);
-                        break;
+                    case BOUNDARY: System.out.print(BOUNDARY); break;
+                    case STONE: System.out.print(STONE); break;
+                    case TREE: System.out.print(TREE); break;
                     case CREATURE: {
                         switch (((Warrior) env[i][j].getObject()).getClazz()) {
-                            case PlAYER:
-                                System.out.print(PlAYER);
-                                break;
-                            case ANIMAL:
-                                System.out.print(ANIMAL);
-                                break;
+                            case PlAYER: System.out.print(PlAYER); break;
+                            case ANIMAL: System.out.print(ANIMAL); break;
+                            case SALAMANDER: System.out.print(SALAMANDER); break;
+                            case CAPYBARA: System.out.print(CAPYBARA); break;
+                            case ALPACA: System.out.print(ALPACA); break;
+                            case HONEY_BADGER: System.out.print(HONEY_BADGER); break;
                         }
                         break;
                     }
-                    case TREE:
-                        System.out.print(TREE);
-                        break;
-                    case BOUNDARY:
-                        System.out.print(BOUNDARY);
-                        break;
-                    default:
-                        System.out.print(' ');
+                    default: {
+                        switch (env[i][j].getType()) {
+                            case BLOOD: System.out.print(BLOOD);break;
+                            default:
+                                System.out.print(EMPTY);break;
+                        }
+                    }
+
                 }
             }
             printParamOrLogs(i);
             System.out.println("");
+        }
+        for (int i = height - LABELS.length; i < logs.length; i++) {
+            System.out.print(emptyLine);
+            System.out.println(logs[i]);
         }
     }
 
@@ -122,18 +140,7 @@ public class TerminalView implements MyView, Runnable {
             i -= LABELS.length;
             System.out.print(" ");
             System.out.print(logs[i]);
-
-            if (i + LABELS.length == height - 1) {
-                while (++i < logs.length) {
-                    System.out.print(" ");
-                    System.out.print(logs[i]);
-                }
-            }
         }
-    }
-
-    private void deadMessage() {
-        System.out.println("dead!!");
     }
 
     @Override

@@ -1,5 +1,8 @@
 package controllers;
 
+import model.Dice;
+import model.war.Clazz;
+
 public enum Actions {
     NOTHING,
     ENTER,
@@ -13,6 +16,10 @@ public enum Actions {
     MOVE_UP,
     MOVE_DOWN,
     DONT_MOVE;
+
+    public Actions randomMove() {
+        return Actions.values()[Dice.rand(Actions.MOVE_LEFT.ordinal(), Actions.DONT_MOVE.ordinal())];
+    }
 
     public static Actions getAction(char chr) {
         switch (chr) {

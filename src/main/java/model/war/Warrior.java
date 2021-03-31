@@ -42,10 +42,6 @@ public class Warrior extends PlaceHolder {
         this.name = name;
         this.clazz = clazz;
 
-        armor = new Armor(5);
-        weapon = new Weapon(5);
-        setHelm(new Helmet(5));
-
         init(1);
     }
 
@@ -54,12 +50,19 @@ public class Warrior extends PlaceHolder {
         this.name = name;
         this.clazz = clazz;
 
-        armor = new Armor();
-        weapon = new Weapon();
-        setHelm(new Helmet());
+        init(Math.max(level, 1));
+    }
 
-        level = Math.max(level, 1);
-        init(level);
+    public static Warrior randomWarrior(int level, int x, int y) {
+        Clazz clazz = Clazz.randomClass();
+        Warrior warrior = new Warrior(clazz.name(), clazz, x, y, level);
+        switch (Dice.rand(0, 4)) {
+            case 1 : warrior.setArmor(Armor.randomArmor()); break;
+            case 2 : warrior.setHelm(Helmet.randomHelmet()); break;
+            case 3 : warrior.setWeapon(Weapon.randomWeapon()); break;
+        }
+        warrior.setHp(warrior.maxHp());
+        return warrior;
     }
 
     private void init(int level){
@@ -67,25 +70,29 @@ public class Warrior extends PlaceHolder {
         startAttack = 1;
         startDefense = 1;
 
-        switch (clazz){
-            case PlAYER :
-                startHelmet++;
-                startAttack++;
-                startDefense++;
-                break;
-            default:
-                experience = 105 + level * 5;
-        }
+        setArmor(Armor.EMPTY);
+        setWeapon(Weapon.ARM);
+        setHelm(Helmet.EMPTY);
+
+        experience = 105 + level * 5;
         setLevel(level);
-        setMaxHp();
+        setHp(maxHp());
     }
 
     public void setHelm(Helmet helmet) {
         helm = helmet;
     }
 
-    public void setMaxHp() {
-        hp = helmet + helm.getHp();
+    public void setWeapon(Weapon weapon) {
+        this.weapon = weapon;
+    }
+
+    public void setArmor(Armor armor) {
+        this.armor = armor;
+    }
+
+    public int maxHp() {
+        return helmet + helm.getHp();
     }
 
     public void setHp(int hp) {
@@ -119,6 +126,10 @@ public class Warrior extends PlaceHolder {
 
     public int getHp() {
         return hp;
+    }
+
+    public void heel(int hp) {
+        this.hp = Math.min(this.hp + hp, maxHp());
     }
 
     public String getName() {
@@ -173,7 +184,7 @@ public class Warrior extends PlaceHolder {
         experience += exp;
         while (experience >= expNextLevel) {
             setLevel(++level);
-            setMaxHp();
+            setHp(maxHp());
         }
     }
 

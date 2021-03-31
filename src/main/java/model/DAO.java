@@ -88,15 +88,15 @@ public class DAO {
 
     // --------Заполнение таблицы--------
     public void initDB() {
-        Player player = new Player("Capybara");
+        Player player = new Player("Capybara", Clazz.CAPYBARA);
         player.setExperience(0);
         player.setLevel(5);
         createPlayer(player.getName(), "_" + player.getName() + "_", player);
 
-        player = new Player("Name2");
+        player = new Player("Name2", Clazz.ALPACA);
         createPlayer(player.getName(), "_" + player.getName() + "_", player);
 
-        player = new Player("Name3");
+        player = new Player("Name3", Clazz.HONEY_BADGER);
         createPlayer(player.getName(), "_" + player.getName() + "_", player);
 
         System.out.println("Таблица заполнена");
@@ -216,7 +216,7 @@ public class DAO {
 
     public Player readPlayer(String login, String password) {
 
-        Player player = new Player(login);
+        Player player = new Player("Capybara", Clazz.CAPYBARA);
         try {
             resSet = statement.executeQuery(String.format("SELECT * FROM %s WHERE %s='%s' AND %s='%s'", TABLE_NAME, LOGIN, login, PASSWORD, password));
             player = new Player(login, Clazz.valueOf(resSet.getString(TYPE)));

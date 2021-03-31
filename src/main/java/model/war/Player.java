@@ -5,14 +5,36 @@ import model.Dice;
 public class Player extends Warrior {
     private StringBuilder logger;
 
-    public Player(String name) {
-        super(name, Clazz.PlAYER);
+    public Player(String name, Clazz clazz) {
+        super(name, clazz);
+        switch (clazz){
+            case ALPACA:
+                startDefense += 2;
+                break;
+            case CAPYBARA:
+                startHelmet++;
+                startAttack++;
+                startDefense++;
+                break;
+            case SALAMANDER:
+                startAttack += 2;
+                break;
+            case HONEY_BADGER:
+                startHelmet += 2;
+                break;
+        }
+
+        setArmor(Armor.HEAVY_ARMOR);
+        setWeapon(Weapon.SPEAR);
+        setHelm(Helmet.HEAVY_HELMET);
+
+        setHp(maxHp());
+        setExperience(0);
         logger = new StringBuilder();
     }
 
-    public Player(String name, Clazz clazz) {
-        super(name, clazz);
-        logger = new StringBuilder();
+    public void heel() {
+        super.heel(Dice.rand(1, startHelmet));
     }
 
     @Override
