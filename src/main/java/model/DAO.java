@@ -1,9 +1,7 @@
 package model;
 
 
-import model.war.Clazz;
-import model.war.Player;
-import model.war.Warrior;
+import model.war.*;
 import org.sqlite.JDBC;
 import app.ApplicationProperties;
 
@@ -75,13 +73,16 @@ public class DAO {
                 "'" + ID + "' INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "'" + LOGIN + "' text, " +
                 "'" + PASSWORD + "' text, " +
+                "'" + TYPE + "' text, " +
+                "'" + LEVEL + "' INT, " +
                 "'" + EXP + "' INT, " +
                 "'" + HP + "' INT, " +
                 "'" + ATTACK + "' INT, " +
                 "'" + DEFENSE + "' INT, " +
                 "'" + HELMET + "' INT, " +
-                "'" + TYPE + "' text, " +
-                "'" + LEVEL + "' INT);"
+                "'" + WEAPON + "' text, " +
+                "'" + ARMOR + "' text, " +
+                "'" + HELM + "' text);"
         );
         System.out.println("Таблица создана или уже существует.");
     }
@@ -116,8 +117,11 @@ public class DAO {
             int helmet = resSet.getInt(HELMET);
             int level = resSet.getInt(LEVEL);
             String type = resSet.getString(TYPE);
-            System.out.printf("ID = %d, login = %s, pas = %s, exp = %d, hp = %d, attack = %d, def = %d, helmet = %d, level = %d, type = %s",
-                    id, login, password, exp, hp, attack, def, helmet, level, type);
+            String weapon = resSet.getString(WEAPON);
+            String armor = resSet.getString(ARMOR);
+            String helm = resSet.getString(HELM);
+            System.out.printf("ID = %d, login = %s, pas = %s, exp = %d, hp = %d, attack = %d, def = %d, helmet = %d, level = %d, type = %s, %s, %s, %s",
+                    id, login, password, exp, hp, attack, def, helmet, level, type, weapon, armor, helm);
             System.out.println();
         }
 
@@ -174,13 +178,17 @@ public class DAO {
     public void createPlayer(String login, String password, Warrior warrior) {
         insertRequest(LOGIN, login);
         addArg(PASSWORD, password);
+        addArg(TYPE, warrior.getClazz().name());
+        addArg(LEVEL, warrior.getLevel());
         addArg(EXP, warrior.getExperience());
         addArg(HP, warrior.getHelmet());
         addArg(ATTACK, warrior.getAttack());
         addArg(DEFENSE, warrior.getDefense());
         addArg(HELMET, warrior.getHelmet());
-        addArg(LEVEL, warrior.getLevel());
-        addArg(TYPE, warrior.getClazz().name());
+
+        addArg(WEAPON, warrior.getWeapon().getName());
+        addArg(ARMOR, warrior.getArmor().getName());
+        addArg(HELM, warrior.getHelm().getName());
         try {
             statement.execute(request.toString());
             readDB();
@@ -201,7 +209,15 @@ public class DAO {
                 .append(warrior.getAttack())
                 .append(",'").append(DEFENSE).append("'=")
                 .append(warrior.getDefense())
-                .append(",'").append(LEVEL).append("'=")
+
+                .append(",'").append(HELM).append("'='")
+                .append(warrior.getHelm().getName())
+                .append("','").append(WEAPON).append("'='")
+                .append(warrior.getWeapon().getName())
+                .append("','").append(ARMOR).append("'='")
+                .append(warrior.getArmor().getName())
+
+                .append("','").append(LEVEL).append("'=")
                 .append(warrior.getLevel())
                 .append(" WHERE ").append(LOGIN).append("='")
                 .append(warrior.getName())
@@ -225,6 +241,11 @@ public class DAO {
             player.setAttack(resSet.getInt(ATTACK));
             player.setHelmet(resSet.getInt(HELMET));
             player.setDefense(resSet.getInt(DEFENSE));
+
+            player.setWeapon(Weapon.valueOf(resSet.getString(WEAPON)));
+            player.setHelm(Helmet.valueOf(resSet.getString(HELM)));
+            player.setArmor(Armor.valueOf(resSet.getString(ARMOR)));
+
             player.setHp(resSet.getInt(HP));
         } catch (Exception e) {
             System.out.println("Нет такого в бд");

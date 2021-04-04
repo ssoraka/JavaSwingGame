@@ -15,6 +15,10 @@ public class Warrior extends PlaceHolder {
     public static final String EXP = "exp";
     public static final String TYPE = "type";
 
+    public static final String WEAPON = "weapon";
+    public static final String ARMOR = "armor";
+    public static final String HELM = "helm";
+
     private String name;
 
     protected int startHelmet;
@@ -129,7 +133,8 @@ public class Warrior extends PlaceHolder {
     }
 
     public void heel(int hp) {
-        this.hp = Math.min(this.hp + hp, maxHp());
+        this.hp = maxHp();
+//        this.hp = Math.min(this.hp + hp, maxHp());
     }
 
     public String getName() {
@@ -146,6 +151,18 @@ public class Warrior extends PlaceHolder {
 
     public int getDefense() {
         return defense;
+    }
+
+    public Armor getArmor() {
+        return armor;
+    }
+
+    public Weapon getWeapon() {
+        return weapon;
+    }
+
+    public Helmet getHelm() {
+        return helm;
     }
 
     public int getLevel() {
@@ -179,6 +196,9 @@ public class Warrior extends PlaceHolder {
     public int getExperience() {
         return experience;
     }
+    public int getExperienceForNextLevel() {
+        return expNextLevel;
+    }
 
     public void addExperience(int exp) {
         experience += exp;
@@ -189,7 +209,7 @@ public class Warrior extends PlaceHolder {
     }
 
     private void experienceForNextLevel() {
-        expNextLevel = ((level + 1) * 1000 + ((level) ^ 2) * 450);
+        expNextLevel = level * 1000 + (int)Math.pow(level - 1, 2) * 450;
     }
 
     protected boolean isDodge(Warrior enemy) {

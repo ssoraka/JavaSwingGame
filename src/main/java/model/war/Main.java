@@ -5,8 +5,10 @@ import model.Types;
 public class Main {
     public static void main(String[] args) {
 
-//        Player player = new Player("me", Clazz.CAPYBARA);
-//        player.setHp(20);
+        int i = 10;
+
+        Player player = new Player("me", Clazz.CAPYBARA);
+        player.setHp(20);
 //
 //        Warrior warrior = new Warrior("enemy", Clazz.ANIMAL);
 //        warrior.setHp(20);

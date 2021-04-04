@@ -242,7 +242,7 @@ public class SwingView extends JFrame implements MyView {
         updateField(HP, Integer.toString(person.getHp()));
         updateField(LEVEL, Integer.toString(person.getLevel()));
         updateField(EXP, Integer.toString(person.getExperience()));
-        updateField("next exp", Integer.toString(person.expNextLevel));
+        updateField("next exp", Integer.toString(person.getExperienceForNextLevel()));
         updateField(DEFENSE, Integer.toString(person.getDefense()));
         updateField(HELMET, Integer.toString(person.getHelmet()));
         updateField(ATTACK, Integer.toString(person.getAttack()));

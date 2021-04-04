@@ -9,6 +9,7 @@ import model.Place;
 import model.war.Player;
 import model.war.Warrior;
 
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
@@ -20,10 +21,10 @@ public class TerminalView implements MyView, Runnable {
     private final static String ANIMAL = "\033[0;31mA\033[00m";
     private final static String BLOOD = "\033[41;30m \033[00m";
     private final static String EMPTY = " ";
-    private final static String SALAMANDER = "\033[2;45;30mS\033[00m";
-    private final static String CAPYBARA = "\033[2;41;30mC\033[00m";
-    private final static String ALPACA = "\033[2;42;30mA\033[00m";
-    private final static String HONEY_BADGER = "\033[2;44;30mH\033[00m";
+    private final static String SALAMANDER = "\033[2;45;30ms\033[00m";
+    private final static String CAPYBARA = "\033[2;41;30mc\033[00m";
+    private final static String ALPACA = "\033[2;42;30ma\033[00m";
+    private final static String HONEY_BADGER = "\033[2;44;30mh\033[00m";
     private final static String STONE = "\033[7;37ms\033[00m";
     private final static String PlAYER = "\033[0;36mX\033[00m";
     private final static String BOUNDARY = "\033[6;30mX\033[00m";
@@ -66,37 +67,48 @@ public class TerminalView implements MyView, Runnable {
         thread.start();
     }
 
+    private String getText(int i, int j) {
+        switch (env[i][j].getObject().getTypes()) {
+            case BOUNDARY: return BOUNDARY;
+            case STONE: return STONE;
+            case TREE: return TREE;
+            case CREATURE: {
+                switch (((Warrior) env[i][j].getObject()).getClazz()) {
+                    case PlAYER: return PlAYER;
+                    case ANIMAL: return ANIMAL;
+                    case SALAMANDER: return SALAMANDER;
+                    case CAPYBARA: return CAPYBARA;
+                    case ALPACA: return ALPACA;
+                    case HONEY_BADGER: return HONEY_BADGER;
+                    default:
+                        return EMPTY;
+                }
+            }
+            default: {
+                switch (env[i][j].getType()) {
+                    case BLOOD: return BLOOD;
+                    default:
+                        return EMPTY;
+                }
+            }
+        }
+    }
+
     @Override
     public void refresh() {
         player = model.getPlayer();
         logs = player.getLog().split("\n");
         model.fillEnvironment(env);
+
+        String text = "";
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                switch (env[i][j].getObject().getTypes()) {
-                    case BOUNDARY: System.out.print(BOUNDARY); break;
-                    case STONE: System.out.print(STONE); break;
-                    case TREE: System.out.print(TREE); break;
-                    case CREATURE: {
-                        switch (((Warrior) env[i][j].getObject()).getClazz()) {
-                            case PlAYER: System.out.print(PlAYER); break;
-                            case ANIMAL: System.out.print(ANIMAL); break;
-                            case SALAMANDER: System.out.print(SALAMANDER); break;
-                            case CAPYBARA: System.out.print(CAPYBARA); break;
-                            case ALPACA: System.out.print(ALPACA); break;
-                            case HONEY_BADGER: System.out.print(HONEY_BADGER); break;
-                        }
-                        break;
-                    }
-                    default: {
-                        switch (env[i][j].getType()) {
-                            case BLOOD: System.out.print(BLOOD);break;
-                            default:
-                                System.out.print(EMPTY);break;
-                        }
-                    }
-
+                text = getText(i, j);
+                if (i == height / 2 && j == width / 2) {
+                    String c = text.charAt(10) + "";
+                    text = text.replace(c, c.toUpperCase());
                 }
+                System.out.print(text);
             }
             printParamOrLogs(i);
             System.out.println("");

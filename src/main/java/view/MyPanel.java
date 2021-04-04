@@ -78,6 +78,9 @@ public class MyPanel extends JPanel {
                 printObject(g2, env[i][j], j * CELL_SIZE, i * CELL_SIZE);
             }
         }
+        int i = env.length / 2;
+        int j = env[0].length / 2;
+        printWarrior(g2, env[i][j].getObject(), j * CELL_SIZE, i * CELL_SIZE, CELL_SIZE, CELL_SIZE);
     }
 
 
@@ -98,53 +101,37 @@ public class MyPanel extends JPanel {
         g2.fillRect(x + size / 2, y + size / 2, CELL_SIZE - size, CELL_SIZE - size);
     }
 
+    private void printWarrior(Graphics2D g2, PlaceHolder placeHolder, int x, int y, int width, int height) {
+        if (!(placeHolder instanceof Warrior)) {
+            return;
+        }
+
+        switch (((Warrior)placeHolder).getClazz()) {
+            case CAPYBARA: g2.setPaint(capybara); break;
+            case SALAMANDER: g2.setPaint(salamander); break;
+            case ALPACA: g2.setPaint(alpaca); break;
+            case HONEY_BADGER: g2.setPaint(honeyBadger); break;
+            default:
+                return;
+        }
+        g2.fillRect(x, y, width, height);
+    }
+
     private void printObject(Graphics2D g2, Place place, int x, int y) {
         int size = 2;
 
         switch (place.getObject().getTypes()) {
-            case STONE: {
-                g2.setPaint(stone);
-                g2.fillRect(x, y, CELL_SIZE, CELL_SIZE);
-                return;
-            }
+            case STONE: g2.setPaint(stone); break;
             case CREATURE: {
-                switch (((Warrior)place.getObject()).getClazz()) {
-                    case PlAYER: {
-                        g2.setPaint(capybara);
-                        g2.fillRect(x, y, CELL_SIZE, CELL_SIZE);
-                        return;
-                    }
-                    case CAPYBARA: {
-                        g2.setPaint(capybara);
-                        g2.fillRect(x + 2, y + 2, 28, 28);
-                        return;
-                    }
-                    case SALAMANDER: {
-                        g2.setPaint(salamander);
-                        g2.fillRect(x + 2, y + 2, 28, 28);
-                        return;
-                    }
-                    case ALPACA: {
-                        g2.setPaint(alpaca);
-                        g2.fillRect(x + 2, y + 2, 28, 28);
-                        return;
-                    }
-                    case HONEY_BADGER: {
-                        g2.setPaint(honeyBadger);
-                        g2.fillRect(x + 2, y + 2, 28, 28);
-                        return;
-                    }
-                }
-            }
-            case BOUNDARY: g2.setColor(Color.black); break;
-            case TREE: {
-                g2.setPaint(tree);
-                g2.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+                printWarrior(g2, place.getObject(), x + 2, y + 2, CELL_SIZE - 4,  CELL_SIZE - 4);
                 return;
             }
+            case TREE: g2.setPaint(tree); break;
             default:
-                break;
+//                g2.fillOval(x + size / 2, y + size / 2, CELL_SIZE - size, CELL_SIZE - size);
+                return;
         }
-        g2.fillOval(x + size / 2, y + size / 2, CELL_SIZE - size, CELL_SIZE - size);
+        g2.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+
     }
 }
