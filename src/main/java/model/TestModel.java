@@ -2,6 +2,8 @@ package model;
 
 import model.war.Clazz;
 import model.war.Player;
+import model.war.Warrior;
+import model.war.WarriorFabric;
 
 import java.awt.*;
 
@@ -10,7 +12,7 @@ public class TestModel implements ModelController, ModelView {
     private boolean hasChange;
 
     private Level level;
-    private Player player;
+    private Warrior player;
 
     public TestModel() {
         hasChange = true;
@@ -34,11 +36,11 @@ public class TestModel implements ModelController, ModelView {
     }
 
     @Override
-    public Player getPlayer() {
+    public Warrior getPlayer() {
         return player;
     }
 
-    private void setPlayer(Player warrior) {
+    private void setPlayer(Warrior warrior) {
         player = warrior;
         level = new Level(player);
     }
@@ -70,7 +72,7 @@ public class TestModel implements ModelController, ModelView {
         if (db.isLoginOrPasswordAlreadyExist(login, password))
             throw new RuntimeException("Такое имя или пароль уже существует");
 
-        setPlayer(new Player(login, Clazz.CAPYBARA));
+        setPlayer(WarriorFabric.createPlayer(login, Clazz.CAPYBARA)); //подумать, игрок есть в классе Fighting
         db.createPlayer(login, password, player);
     }
 

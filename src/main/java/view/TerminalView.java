@@ -6,6 +6,7 @@ import model.DeadException;
 import model.Dice;
 import model.ModelView;
 import model.Place;
+import model.war.Fighting;
 import model.war.Player;
 import model.war.Warrior;
 
@@ -35,7 +36,7 @@ public class TerminalView implements MyView, Runnable {
 
     private ModelView model;
     private AllController controller;
-    private Player player;
+    private Warrior player;
     private String[] logs;
     private String emptyLine;
 
@@ -97,7 +98,7 @@ public class TerminalView implements MyView, Runnable {
     @Override
     public void refresh() {
         player = model.getPlayer();
-        logs = player.getLog().split("\n");
+        logs = Fighting.getTextLog().split("\n");
         model.fillEnvironment(env);
 
         String text = "";

@@ -1,9 +1,7 @@
 package model;
 
 import controllers.Actions;
-import model.war.Clazz;
-import model.war.PlaceHolder;
-import model.war.Warrior;
+import model.war.*;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -76,7 +74,9 @@ public class Level {
                     continue;
                 int tmp = random.nextInt(100);
                 if (tmp < 4) {
-                    animals.add(Warrior.randomWarrior(level, j, i));
+                    Warrior enemy = WarriorFabric.randomWarrior(level);
+                    enemy.setXY(j, i);
+                    animals.add(enemy);
                     insertOnMap(animals.get(animals.size() - 1));
                 } else if (tmp < 7) {
                     insertOnMap(new PlaceHolder(Types.STONE, j, i));
@@ -132,7 +132,7 @@ public class Level {
     }
 
     public void tryMoveObject(Warrior warrior, Point shift) {
-        if (shift.equals(HERE)) {
+        if (shift.equals(HERE) || !warrior.isAlive()) {
             return ;
         }
 
@@ -142,12 +142,14 @@ public class Level {
             insertOnMap(EMPTY, pos.x, pos.y);
             pos.translate(shift.x, shift.y);
             insertOnMap(warrior);
-        } else if (current instanceof Warrior) {
-            Warrior enemy = (Warrior) current;
+        } else if (current instanceof Fighter) {
+            Fighter enemy = (Warrior) current;
             insertOnMap(EMPTY, warrior.getX(), warrior.getY());
-            Warrior winner = warrior.fight(enemy);
-            insertOnMap(winner, enemy.getX(), enemy.getY());
-            getPlace(winner.getX(), winner.getY()).setType(Types.BLOOD);
+            warrior.setXY(warrior.getX() + shift.x, warrior.getY() + shift.y);
+            getPlace(warrior.getX(), warrior.getY()).setType(Types.BLOOD);
+            if (Fighting.fight(warrior, enemy).equals(warrior)) {
+                insertOnMap(warrior);
+            }
         }
     }
 

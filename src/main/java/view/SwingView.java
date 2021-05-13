@@ -5,7 +5,9 @@ import controllers.AllController;
 import model.DeadException;
 import model.Dice;
 import model.ModelView;
+import model.war.Fighting;
 import model.war.Player;
+import model.war.Warrior;
 
 import javax.swing.*;
 import java.awt.*;
@@ -237,7 +239,7 @@ public class SwingView extends JFrame implements MyView {
     @Override
     public void refresh() {
         model.fillEnvironment(gamePanel.getEnv());
-        Player person = model.getPlayer();
+        Warrior person = model.getPlayer();
         updateField(NAME, person.getName());
         updateField(HP, Integer.toString(person.getHp()));
         updateField(LEVEL, Integer.toString(person.getLevel()));
@@ -246,7 +248,7 @@ public class SwingView extends JFrame implements MyView {
         updateField(DEFENSE, Integer.toString(person.getDefense()));
         updateField(HELMET, Integer.toString(person.getHelmet()));
         updateField(ATTACK, Integer.toString(person.getAttack()));
-        updateField("logger", "<html>".concat(person.getLog().replace("\n", "<br>").concat("</html>")));
+        updateField("logger", Fighting.getHtmlLog());
 
         repaint();
     }
