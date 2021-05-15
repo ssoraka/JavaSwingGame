@@ -2,6 +2,7 @@ package view;
 
 import controllers.Actions;
 import controllers.AllController;
+import javafx.scene.control.RadioButton;
 import model.DAOException;
 import model.DeadException;
 import model.Dice;
@@ -183,12 +184,23 @@ public class SwingView extends JFrame implements MyView {
         JLabel labelPassword = new JLabel("password:");
         JButton buttonConfirm = new JButton("Подтвердить");
         JButton buttonBack = new JButton("назад");
+        ButtonGroup race = new ButtonGroup();
 
         setLayout(new GridLayout(10,1));
         add(labelLogin);
         add(login);
         add(labelPassword);
         add(password);
+
+        for (Clazz c : Clazz.values()) {
+            JRadioButton cap = new JRadioButton(c.name());
+            cap.addActionListener(e -> controller.setClazz(c));
+            add(cap);
+            cap.setSelected(true);
+            race.add(cap);
+        }
+
+
         add(buttonConfirm);
         add(buttonBack);
 
@@ -197,7 +209,6 @@ public class SwingView extends JFrame implements MyView {
             try {
                 controller.setLogin(login.getText());
                 controller.setPassword(password.getText());
-                controller.setClazz(Clazz.CAPYBARA);
                 controller.createNewPersonInGame();
                 controller.startGame();
             } catch (DAOException ex) {

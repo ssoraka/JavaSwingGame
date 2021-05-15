@@ -69,8 +69,6 @@ public class TerminalView implements MyView, Runnable {
 
         if (env[i][j].hasWarrior()) {
             switch (env[i][j].getWarrior().getClazz()) {
-                case PlAYER: return PlAYER;
-                case ANIMAL: return ANIMAL;
                 case SALAMANDER: return SALAMANDER;
                 case CAPYBARA: return CAPYBARA;
                 case ALPACA: return ALPACA;
