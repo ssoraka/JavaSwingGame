@@ -3,6 +3,7 @@ package view;
 import controllers.Actions;
 import controllers.AllController;
 import model.*;
+import model.war.Clazz;
 import model.war.Fighting;
 import model.war.Warrior;
 
@@ -190,52 +191,23 @@ public class TerminalView implements MyView, Runnable {
         };
     }
 
-    boolean start;
     @Override
     public void createMenu() {
         System.out.println("Enter Your Login");
-        start = false;
-
         func = s -> {
-            if (!start) {
-                controller.setLogin(s);
-                System.out.println("Enter Your Password");
-                start = true;
-            } else {
-                controller.setPassword(s);
-                //надо добавить ввод класса
-                try {
-                    controller.createNewPersonInGame();
-                    controller.startGame();
-                } catch (DAOException ex) {
-                    System.out.println(ex.getMessage());
-                    controller.startMenu();
-                }
+            controller.setLogin(s);
+            System.out.println("Enter Your Password");
+            controller.setPassword(readLine());
+            controller.setClazz(readClass());
+            try {
+                controller.createNewPersonInGame();
+                controller.startGame();
+            } catch (DAOException ex) {
+                System.out.println(ex.getMessage());
+                controller.startMenu();
             }
         };
     }
-
-//    private void identification(String login) {
-//        System.out.println("Enter Your Password");
-//        Scanner scanner = new Scanner(System.in);
-//
-//        while (scanner.hasNext()) {
-//            String text = scanner.nextLine().trim();
-//            if (text.isEmpty()) {
-//                continue;
-//            } else {
-//                controller.setLogin(login);
-//                controller.setPassword(text);
-//                try {
-//                    controller.createNewPersonInGame();
-//                    controller.startGame();
-//                } catch (RuntimeException ex) {
-//                    System.out.println(ex.getMessage());
-//                    controller.startMenu();
-//                }
-//            }
-//        }
-//    }
 
     @Override
     public void continueGame() {
@@ -290,6 +262,48 @@ public class TerminalView implements MyView, Runnable {
             }
         }
         return true;
+    }
+
+    private String readLine() {
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextLine().trim();
+    }
+
+    private Clazz readClass() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter Your Class");
+        System.out.println("1) Capybara");
+        System.out.println("2) Honey badger");
+        System.out.println("3) Alpaca");
+        System.out.println("4) Salamander");
+        while (scanner.hasNext()) {
+            String text = scanner.nextLine().trim();
+
+            switch (text.toLowerCase()) {
+                case "1":
+                case "c":
+                case "capybara": return Clazz.CAPYBARA;
+                case "2":
+                case "h":
+                case "honey":
+                case "honey badger": return Clazz.HONEY_BADGER;
+                case "3":
+                case "a":
+                case "alpaca": return Clazz.ALPACA;
+                case "4":
+                case "s":
+                case "salamander": return Clazz.SALAMANDER;
+                default:
+                    System.out.println("Enter Your Class");
+                    System.out.println("1) Capybara");
+                    System.out.println("2) Honey badger");
+                    System.out.println("3) Alpaca");
+                    System.out.println("4) Salamander");
+            }
+
+        }
+        return Clazz.CAPYBARA;
     }
 
     @Override
