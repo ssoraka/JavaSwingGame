@@ -96,6 +96,7 @@ public class TerminalView implements MyView, Runnable {
 
     @Override
     public void refresh() {
+        System.out.println("\33c");
         player = model.getPlayer();
         logs = Fighting.getTextLog().split("\n");
         model.fillEnvironment(env);
