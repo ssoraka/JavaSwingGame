@@ -1,7 +1,6 @@
 package view;
 
 import model.Place;
-import model.war.PlaceHolder;
 import model.Types;
 import model.war.Warrior;
 
@@ -15,7 +14,6 @@ public class MyPanel extends JPanel {
     private final static int CELL_SIZE = 32;
     private static final Color TREE_COLOR = new Color(15, 167, 136);
     private static final Color GREEN_COLOR = new Color(105, 187, 106);
-    private static final Place OUT = new Place(new PlaceHolder(Types.BOUNDARY), Types.BLACK);
 
     private Place[][] env;
     private TexturePaint tree;
@@ -34,7 +32,7 @@ public class MyPanel extends JPanel {
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                env[i][j] = OUT;
+                env[i][j] = Place.OUT;
             }
         }
 
@@ -80,7 +78,7 @@ public class MyPanel extends JPanel {
         }
         int i = env.length / 2;
         int j = env[0].length / 2;
-        printWarrior(g2, env[i][j].getObject(), j * CELL_SIZE, i * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+        printWarrior(g2, env[i][j].getWarrior(), j * CELL_SIZE - 1, i * CELL_SIZE - 1, CELL_SIZE + 2, CELL_SIZE + 2);
     }
 
 
@@ -90,8 +88,11 @@ public class MyPanel extends JPanel {
         // в перспективе тут должны быть отмечены свойства земли, на которой расположен объект
         switch (place.getType()) {
             case BLOOD: g2.setColor(Color.RED); break;
+            case TREE:
+            case STONE:
             case GREEN: g2.setColor(GREEN_COLOR); break;
             case WATER: g2.setColor(Color.blue); break;
+            case BOUNDARY:
             case BLACK: g2.setColor(Color.black); break;
             case EARTH: g2.setColor(Color.darkGray); break;
             default:
@@ -101,12 +102,11 @@ public class MyPanel extends JPanel {
         g2.fillRect(x + size / 2, y + size / 2, CELL_SIZE - size, CELL_SIZE - size);
     }
 
-    private void printWarrior(Graphics2D g2, PlaceHolder placeHolder, int x, int y, int width, int height) {
-        if (!(placeHolder instanceof Warrior)) {
+    private void printWarrior(Graphics2D g2, Warrior warrior, int x, int y, int width, int height) {
+        if (warrior == null) {
             return;
         }
-
-        switch (((Warrior)placeHolder).getClazz()) {
+        switch (warrior.getClazz()) {
             case CAPYBARA: g2.setPaint(capybara); break;
             case SALAMANDER: g2.setPaint(salamander); break;
             case ALPACA: g2.setPaint(alpaca); break;
@@ -120,12 +120,13 @@ public class MyPanel extends JPanel {
     private void printObject(Graphics2D g2, Place place, int x, int y) {
         int size = 2;
 
-        switch (place.getObject().getTypes()) {
+        if (place.hasWarrior()) {
+            printWarrior(g2, place.getWarrior(), x + 2, y + 2, CELL_SIZE - 4,  CELL_SIZE - 4);
+            return;
+        }
+
+        switch (place.getType()) {
             case STONE: g2.setPaint(stone); break;
-            case CREATURE: {
-                printWarrior(g2, place.getObject(), x + 2, y + 2, CELL_SIZE - 4,  CELL_SIZE - 4);
-                return;
-            }
             case TREE: g2.setPaint(tree); break;
             default:
 //                g2.fillOval(x + size / 2, y + size / 2, CELL_SIZE - size, CELL_SIZE - size);

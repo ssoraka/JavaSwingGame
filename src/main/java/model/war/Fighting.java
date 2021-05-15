@@ -26,6 +26,25 @@ public class Fighting {
         log( String.valueOf(enemy.getHp()), ")\n");
     }
 
+    private static void reward(Fighter winner, Fighter loser) {
+        log(winner.getName(), " kill ", loser.getName(), "!!!\n");
+        log(winner.getName(), " get ", String.valueOf(loser.getExperience()), " experience !!!\n");
+        winner.addExperience(loser.getExperience());
+
+        if (loser.getArmor().getDefense() > winner.getArmor().getDefense()) {
+            log(winner.getName(), " get ", loser.getArmor().getName(), "!!!\n");
+            winner.setArmor(loser.getArmor());
+        }
+        if (loser.getHelm().getHp() > winner.getHelm().getHp()) {
+            log(winner.getName(), " get ", loser.getHelm().getName(), "!!!\n");
+            winner.setHelm(loser.getHelm());
+        }
+        if (loser.getWeapon().getDamage() > winner.getWeapon().getDamage()) {
+            log(winner.getName(), " get ", loser.getWeapon().getName(), "!!!\n");
+            winner.setWeapon(loser.getWeapon());
+        }
+    }
+
     public static Fighter fight(Fighter hero, Fighter enemy) {
         loggerOn = hero == player || enemy == player;
 
@@ -35,16 +54,9 @@ public class Fighting {
                 attack(enemy, hero);
         }
 
-        Fighter winner;
-        if (hero.isAlive()) {
-            hero.addExperience(enemy.getExperience());
-            winner = hero;
-            log(hero.getName(), " kill ", enemy.getName(), "!!!\n");
-        } else {
-            enemy.addExperience(hero.getExperience());
-            winner = enemy;
-            log(enemy.getName(), " kill ", hero.getName(), "!!!\n");
-        }
+        Fighter winner = hero.isAlive() ? hero : enemy;
+        Fighter loser = winner == hero ? enemy : hero;
+        reward(winner, loser);
 
         loggerOn = false;
         return winner;

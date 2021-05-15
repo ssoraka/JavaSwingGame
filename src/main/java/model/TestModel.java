@@ -1,7 +1,6 @@
 package model;
 
 import model.war.Clazz;
-import model.war.Player;
 import model.war.Warrior;
 import model.war.WarriorFabric;
 
@@ -49,12 +48,12 @@ public class TestModel implements ModelController, ModelView {
 
     @Override
     public void tryMovePlayer(Point shift) {
-        if (level.isLeaveLevel(player, shift)) {
+        if (level.isHeroLeaveLevel(shift)) {
             db.updatePlayer(player);
             level = new Level(player);
             player.heel();
         } else {
-            level.tryMoveObject(player, shift);
+            level.moveHero(shift);
             level.moveAnimals();
             if (!player.isAlive())
                 throw new DeadException("Player is dead!!!");
@@ -64,22 +63,22 @@ public class TestModel implements ModelController, ModelView {
 
     @Override
     public boolean isMeetEnemy(Point shift) {
-        return level.isMeetEnemy(player, shift);
+        return level.isHeroMeetEnemy(shift);
     }
 
     @Override
-    public void createNewPersonAndStartGame(String login, String password) {
+    public void createNewPersonAndStartGame(String login, String password, Clazz clazz) {
         if (db.isLoginOrPasswordAlreadyExist(login, password))
-            throw new RuntimeException("Такое имя или пароль уже существует");
+            throw new DAOException("Такое имя или пароль уже существует");
 
-        setPlayer(WarriorFabric.createPlayer(login, Clazz.CAPYBARA)); //подумать, игрок есть в классе Fighting
+        setPlayer(WarriorFabric.createPlayer(login, clazz)); //подумать, игрок есть в классе Fighting
         db.createPlayer(login, password, player);
     }
 
     @Override
     public void findPersonAndStartGame(String login, String password) {
         if (!db.isLoginAndPasswordAlreadyExist(login, password))
-            throw new RuntimeException("Неверное имя или пароль");
+            throw new DAOException("Неверное имя или пароль");
         setPlayer(db.readPlayer(login, password));
     }
 

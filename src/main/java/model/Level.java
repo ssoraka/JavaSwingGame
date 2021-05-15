@@ -4,9 +4,8 @@ import controllers.Actions;
 import model.war.*;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
 
 public class Level {
     final static public Point LEFT = new Point(-1, 0);
@@ -15,23 +14,16 @@ public class Level {
     final static public Point DOWN = new Point(0, 1);
     final static public Point HERE = new Point(0, 0);
 
-    final static private PlaceHolder EMPTY = new PlaceHolder(Types.EMPTY);
-    final static private PlaceHolder BOUNDARY = new PlaceHolder(Types.BOUNDARY);
-    final static private Place OUT = new Place(BOUNDARY, Types.BLACK);
-
-
     private int width;
     private int height;
     private int level;
 
     private Place[][] map;
-    private List<Warrior> animals;
+    private LinkedHashMap<Warrior, Point> enemy;
     private Warrior player;
+    private Point heroPos;
 
     private Random random;
-
-    private StringBuilder logger;
-    private boolean loggerOn;
 
     // надо сделать чтение карты с файла
     public Level(int width, int height) {
@@ -43,79 +35,54 @@ public class Level {
     public Level(Warrior player) {
         level = player.getLevel();
         int size = getSize(level);
-        this.width = size;
-        this.height = size;
+        width = size;
+        height = size;
+        map = new Place[height][width];
+        enemy = new LinkedHashMap<>();
+        random = new Random();
 
         initMap();
-        player.setXY(size / 2, size / 2);
-        setPlayer(player);
 
-        logger = new StringBuilder("");
+        heroPos = new Point(size / 2, size / 2);
+        this.player = player;
+        map[size / 2][size / 2].setWarrior(player);
     }
 
     private int getSize(int level) {
         return (level - 1) * 5 + 10 - (level % 2);
     }
 
-    public void setPlayer(Warrior player) {
-        this.player = player;
-        insertOnMap(player);
-    }
-
     public void initMap() {
-        random = new Random();
-        animals = new ArrayList<>();
-        map = new Place[height][width];
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Place place = new Place();
 
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                map[i][j] = new Place(EMPTY);
-                if (i == height / 2 && j == width / 2)
-                    continue;
-                int tmp = random.nextInt(100);
-                if (tmp < 4) {
-                    Warrior enemy = WarriorFabric.randomWarrior(level);
-                    enemy.setXY(j, i);
-                    animals.add(enemy);
-                    insertOnMap(animals.get(animals.size() - 1));
-                } else if (tmp < 7) {
-                    insertOnMap(new PlaceHolder(Types.STONE, j, i));
-                } else if (tmp < 10) {
-                    insertOnMap(new PlaceHolder(Types.TREE, j, i));
+                if (y != height / 2 && x != width / 2) {
+                    int rnd = random.nextInt(100);
+                    if (rnd < 4) {
+                        place.setWarrior(WarriorFabric.randomWarrior(level));
+                        enemy.put(place.getWarrior(), new Point(x, y));
+                    } else if (rnd < 7) {
+                        place.setType(Types.STONE);
+                    } else if (rnd < 10) {
+                        place.setType(Types.TREE);
+                    }
                 }
+                map[y][x] = place;
             }
         }
-    }
-
-    private void insertOnMap(PlaceHolder object, int x, int y) {
-        if (y >= 0 && y < height && x >= 0 && x < width) {
-            map[y][x].setObject(object);
-            if (object != EMPTY) {
-                object.setXY(x, y);
-            }
-        }
-    }
-
-    private void insertOnMap(PlaceHolder object) {
-        int x = object.getX();
-        int y = object.getY();
-        insertOnMap(object, x, y);
     }
 
     private Place getPlace(int x, int y) {
         if (y >= 0 && y < height && x >= 0 && x < width)
             return map[y][x];
-        return OUT;
-    }
-
-    private PlaceHolder getPlaceHolder(int x, int y) {
-        return  getPlace(x, y).getObject();
+        return Place.OUT;
     }
 
     public void fillEnvironment(Place[][] env) {
         int height = env.length;
         int width = env[0].length;
-        Point center = player.getPos();
+        Point center = heroPos;
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -127,53 +94,63 @@ public class Level {
         }
     }
 
-    public boolean isLeaveLevel(Warrior object, Point shift) {
-        return getPlaceHolder(object.getX() + shift.x, object.getY() + shift.y) == BOUNDARY;
+    public boolean isHeroLeaveLevel(Point shift) {
+        return getPlace(heroPos.x + shift.x, heroPos.y + shift.y) == Place.OUT;
     }
 
-    public void tryMoveObject(Warrior warrior, Point shift) {
+    public boolean isHeroMeetEnemy(Point shift) {
+        return getPlace(heroPos.x + shift.x, heroPos.y + shift.y).hasWarrior();
+    }
+
+    private void move(Warrior warrior, Point pos, Point shift) {
         if (shift.equals(HERE) || !warrior.isAlive()) {
             return ;
         }
 
-        PlaceHolder current = getPlaceHolder(warrior.getX() + shift.x, warrior.getY() + shift.y);
-        if (current == EMPTY) {
-            Point pos = warrior.getPos();
-            insertOnMap(EMPTY, pos.x, pos.y);
+        Place current = getPlace(pos.x + shift.x, pos.y + shift.y);
+        if (current.isEmpty()) {
+            getPlace(pos.x, pos.y).free();
             pos.translate(shift.x, shift.y);
-            insertOnMap(warrior);
-        } else if (current instanceof Fighter) {
-            Fighter enemy = (Warrior) current;
-            insertOnMap(EMPTY, warrior.getX(), warrior.getY());
-            warrior.setXY(warrior.getX() + shift.x, warrior.getY() + shift.y);
-            getPlace(warrior.getX(), warrior.getY()).setType(Types.BLOOD);
+            current.setWarrior(warrior);
+        } else if (current.hasWarrior()) {
+            Fighter enemy = current.getWarrior();
+            getPlace(pos.x, pos.y).free();
+            pos.translate(shift.x, shift.y);
+            current.setType(Types.BLOOD);
+
             if (Fighting.fight(warrior, enemy).equals(warrior)) {
-                insertOnMap(warrior);
+                current.setWarrior(warrior);
+                if (enemy.equals(player)) {
+                    int i = 1;
+                }
             }
         }
     }
 
-    public boolean isMeetEnemy(Warrior warrior, Point shift) {
-        PlaceHolder current = getPlaceHolder(warrior.getX() + shift.x, warrior.getY() + shift.y);
-        return (current instanceof Warrior);
+    public void moveHero(Point shift) {
+        move(player, heroPos, shift);
     }
 
     public void moveAnimals() {
-        for (Warrior animal : animals) {
-            if (!animal.isAlive())
+        List<Warrior> warriors = new ArrayList<>(enemy.keySet());
+        for (Warrior warrior : warriors) {
+            if (!enemy.containsKey(warrior)) {
                 continue;
+            }
+            Point pos = enemy.get(warrior);
+
             switch (random.nextInt(5)) {
-                case 0 : tryMoveObject(animal, UP); break;
-                case 1 : tryMoveObject(animal, DOWN); break;
-                case 2 : tryMoveObject(animal, LEFT); break;
-                case 3 : tryMoveObject(animal, RIGHT); break;
+                case 0 : move(warrior, pos, UP); break;
+                case 1 : move(warrior, pos, DOWN); break;
+                case 2 : move(warrior, pos, LEFT); break;
+                case 3 : move(warrior, pos, RIGHT); break;
                 default:
                     break;
             }
-        }
-        for (int i = animals.size(); i > 0 ; i--) {
-            if (!animals.get(i - 1).isAlive())
-                animals.remove(i - 1);
+
+            if (!warrior.isAlive()) {
+                enemy.remove(warrior);
+            }
         }
     }
 }

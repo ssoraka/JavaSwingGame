@@ -2,6 +2,7 @@ package controllers;
 
 import model.Level;
 import model.ModelController;
+import model.war.Clazz;
 import view.View;
 
 public class AllController {
@@ -9,6 +10,7 @@ public class AllController {
     private View view;
     private String login = "";
     private String password = "";
+    private Clazz clazz = Clazz.CAPYBARA;
 
     public AllController(ModelController model) {
         this.model = model;
@@ -26,11 +28,15 @@ public class AllController {
         this.password = password;
     }
 
+    public void setClazz(Clazz clazz) {
+        this.clazz = clazz;
+    }
+
     public void createNewPersonInGame() {
         if (password.isEmpty() || login.isEmpty()) {
             throw new RuntimeException("Ошибка: Введите логин и пароль");
         }
-        model.createNewPersonAndStartGame(login, password);
+        model.createNewPersonAndStartGame(login, password, clazz);
     }
 
     public void findPersonInGame() {

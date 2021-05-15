@@ -2,12 +2,8 @@ package view;
 
 import controllers.Actions;
 import controllers.AllController;
-import model.DeadException;
-import model.Dice;
-import model.ModelView;
-import model.Place;
+import model.*;
 import model.war.Fighting;
-import model.war.Player;
 import model.war.Warrior;
 
 import java.util.Locale;
@@ -69,22 +65,24 @@ public class TerminalView implements MyView, Runnable {
     }
 
     private String getText(int i, int j) {
-        switch (env[i][j].getObject().getTypes()) {
+
+        if (env[i][j].hasWarrior()) {
+            switch (env[i][j].getWarrior().getClazz()) {
+                case PlAYER: return PlAYER;
+                case ANIMAL: return ANIMAL;
+                case SALAMANDER: return SALAMANDER;
+                case CAPYBARA: return CAPYBARA;
+                case ALPACA: return ALPACA;
+                case HONEY_BADGER: return HONEY_BADGER;
+                default:
+                    return EMPTY;
+            }
+        }
+
+        switch (env[i][j].getType()) {
             case BOUNDARY: return BOUNDARY;
             case STONE: return STONE;
             case TREE: return TREE;
-            case CREATURE: {
-                switch (((Warrior) env[i][j].getObject()).getClazz()) {
-                    case PlAYER: return PlAYER;
-                    case ANIMAL: return ANIMAL;
-                    case SALAMANDER: return SALAMANDER;
-                    case CAPYBARA: return CAPYBARA;
-                    case ALPACA: return ALPACA;
-                    case HONEY_BADGER: return HONEY_BADGER;
-                    default:
-                        return EMPTY;
-                }
-            }
             default: {
                 switch (env[i][j].getType()) {
                     case BLOOD: return BLOOD;
@@ -205,11 +203,11 @@ public class TerminalView implements MyView, Runnable {
                 start = true;
             } else {
                 controller.setPassword(s);
-
+                //надо добавить ввод класса
                 try {
                     controller.createNewPersonInGame();
                     controller.startGame();
-                } catch (RuntimeException ex) {
+                } catch (DAOException ex) {
                     System.out.println(ex.getMessage());
                     controller.startMenu();
                 }

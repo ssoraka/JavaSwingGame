@@ -2,11 +2,12 @@ package view;
 
 import controllers.Actions;
 import controllers.AllController;
+import model.DAOException;
 import model.DeadException;
 import model.Dice;
 import model.ModelView;
+import model.war.Clazz;
 import model.war.Fighting;
-import model.war.Player;
 import model.war.Warrior;
 
 import javax.swing.*;
@@ -196,9 +197,10 @@ public class SwingView extends JFrame implements MyView {
             try {
                 controller.setLogin(login.getText());
                 controller.setPassword(password.getText());
+                controller.setClazz(Clazz.CAPYBARA);
                 controller.createNewPersonInGame();
                 controller.startGame();
-            } catch (RuntimeException ex) {
+            } catch (DAOException ex) {
                 JOptionPane.showMessageDialog(null,
                         ex.getMessage(),
                         "Authentication error",

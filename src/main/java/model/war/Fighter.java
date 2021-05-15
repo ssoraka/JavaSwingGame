@@ -13,4 +13,12 @@ public interface Fighter {
 
     int getExperience();
     void addExperience(int exp);
+
+    Armor getArmor();
+    Weapon getWeapon();
+    Helmet getHelm();
+
+    void setHelm(Helmet helmet);
+    void setWeapon(Weapon weapon);
+    void setArmor(Armor armor);
 }

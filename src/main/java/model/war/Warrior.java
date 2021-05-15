@@ -4,7 +4,7 @@ package model.war;
 import model.Dice;
 import model.Types;
 
-public class Warrior extends PlaceHolder implements Fighter{
+public class Warrior implements Fighter{
 
     public static final String NAME = "name";
     public static final String HP = "hp";
@@ -42,7 +42,6 @@ public class Warrior extends PlaceHolder implements Fighter{
     private Clazz clazz;
 
     public Warrior(String name, Clazz clazz) {
-        super(Types.CREATURE);
         this.name = name;
         this.clazz = clazz;
 

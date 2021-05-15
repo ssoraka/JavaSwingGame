@@ -20,6 +20,7 @@ public class DAO {
     private static String TABLE_NAME = "players";
 
     private static Connection connection;
+//    private static PreparedStatement statement;
     private static Statement statement;
     private static ResultSet resSet;
     private StringBuilder request;
@@ -186,9 +187,9 @@ public class DAO {
         addArg(DEFENSE, warrior.getDefense());
         addArg(HELMET, warrior.getHelmet());
 
-        addArg(WEAPON, warrior.getWeapon().getName());
-        addArg(ARMOR, warrior.getArmor().getName());
-        addArg(HELM, warrior.getHelm().getName());
+        addArg(WEAPON, warrior.getWeapon().name());
+        addArg(ARMOR, warrior.getArmor().name());
+        addArg(HELM, warrior.getHelm().name());
         try {
             statement.execute(request.toString());
             readDB();
@@ -211,11 +212,11 @@ public class DAO {
                 .append(warrior.getDefense())
 
                 .append(",'").append(HELM).append("'='")
-                .append(warrior.getHelm().getName())
+                .append(warrior.getHelm().name())
                 .append("','").append(WEAPON).append("'='")
-                .append(warrior.getWeapon().getName())
+                .append(warrior.getWeapon().name())
                 .append("','").append(ARMOR).append("'='")
-                .append(warrior.getArmor().getName())
+                .append(warrior.getArmor().name())
 
                 .append("','").append(LEVEL).append("'=")
                 .append(warrior.getLevel())
@@ -233,7 +234,7 @@ public class DAO {
     public Warrior readPlayer(String login, String password) {
 
 //        Warrior player = new Player("Capybara", Clazz.CAPYBARA);
-        Warrior player = WarriorFabric.createPlayer("Capybara", Clazz.CAPYBARA);
+        Warrior player = WarriorFabric.createPlayer(login, Clazz.CAPYBARA);
         try {
             resSet = statement.executeQuery(String.format("SELECT * FROM %s WHERE %s='%s' AND %s='%s'", TABLE_NAME, LOGIN, login, PASSWORD, password));
             player = WarriorFabric.createPlayer(login, Clazz.valueOf(resSet.getString(TYPE)));
