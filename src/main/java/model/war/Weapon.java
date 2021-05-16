@@ -37,7 +37,7 @@ public enum Weapon {
         return damage;
     }
 
-    public static Weapon getBetter(Weapon w1, Weapon w2) {
-        return w1.maxAttack > w2.maxAttack ? w1 : w2;
+    public boolean isBetterThen(Weapon other) {
+        return maxAttack * attackCount >= other.maxAttack * other.attackCount;
     }
 }

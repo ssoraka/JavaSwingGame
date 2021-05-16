@@ -19,22 +19,7 @@ public abstract class WarriorFabric {
 
     public static Warrior createPlayer(String name, Clazz clazz) {
         Warrior player = new Warrior(name, clazz);
-        switch (clazz){
-            case ALPACA:
-                player.setStartDefense(3);
-                break;
-            case CAPYBARA:
-                player.setStartHelmet(Dice.d6() + 1);
-                player.setStartAttack(2);
-                player.setStartDefense(2);
-                break;
-            case SALAMANDER:
-                player.setStartAttack(3);
-                break;
-            case HONEY_BADGER:
-                player.setStartHelmet(Dice.d6() + 2);
-                break;
-        }
+        player.giveHeroStats();
 
         player.setArmor(Armor.HEAVY_ARMOR);
         player.setWeapon(Weapon.SPEAR);

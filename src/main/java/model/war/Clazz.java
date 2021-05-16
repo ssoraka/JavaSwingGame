@@ -9,7 +9,7 @@ public enum Clazz {
     SALAMANDER;
 
     public static Clazz randomClass() {
-        return Clazz.values()[Dice.rand(2, Clazz.values().length - 1)];
+        return Clazz.values()[Dice.rand(0, Clazz.values().length - 1)];
     }
 
 }

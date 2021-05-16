@@ -45,15 +45,35 @@ public class Warrior implements Fighter{
         this.name = name;
         this.clazz = clazz;
 
-        setStartHelmet(Dice.d6());
-        setStartAttack(1);
-        setStartDefense(1);
+        startHelmet = 5;
+        startAttack = 1;
+        startDefense = 1;
 
         setArmor(Armor.EMPTY);
         setWeapon(Weapon.ARM);
         setHelm(Helmet.EMPTY);
 
         setLevel(1);
+    }
+
+    public void giveHeroStats() {
+        switch (clazz){
+            case ALPACA:
+                startDefense = 3;
+                break;
+            case CAPYBARA:
+                startHelmet = 6;
+                startAttack = 2;
+                startDefense = 2;
+                break;
+            case SALAMANDER:
+                startAttack = 3;
+                break;
+            case HONEY_BADGER:
+                startHelmet = 7;
+                break;
+        }
+        heel();
     }
 
     public void setStartHelmet(int startHelmet) {

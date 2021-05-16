@@ -78,7 +78,9 @@ public class MyPanel extends JPanel {
         }
         int i = env.length / 2;
         int j = env[0].length / 2;
-        printWarrior(g2, env[i][j].getWarrior(), j * CELL_SIZE - 1, i * CELL_SIZE - 1, CELL_SIZE + 2, CELL_SIZE + 2);
+        if(env[i][j].hasWarrior()) {
+            printWarrior(g2, env[i][j].getWarrior(), j * CELL_SIZE - 1, i * CELL_SIZE - 1, CELL_SIZE + 2, CELL_SIZE + 2);
+        }
     }
 
 
@@ -103,9 +105,6 @@ public class MyPanel extends JPanel {
     }
 
     private void printWarrior(Graphics2D g2, Warrior warrior, int x, int y, int width, int height) {
-        if (warrior == null) {
-            return;
-        }
         switch (warrior.getClazz()) {
             case CAPYBARA: g2.setPaint(capybara); break;
             case SALAMANDER: g2.setPaint(salamander); break;

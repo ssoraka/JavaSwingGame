@@ -28,7 +28,7 @@ public enum Armor {
         return defense;
     }
 
-    public static Armor getBetter(Armor a1, Armor a2) {
-        return a1.defense > a2.defense ? a1 : a2;
+    public boolean isBetterThen(Armor other) {
+        return this.defense > other.defense;
     }
 }

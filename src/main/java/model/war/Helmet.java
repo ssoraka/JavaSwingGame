@@ -29,7 +29,7 @@ public enum Helmet {
         return hp;
     }
 
-    public static Helmet getBetter(Helmet h1, Helmet h2) {
-        return h1.hp > h2.hp ? h1 : h2;
+    public boolean isBetterThen(Helmet other) {
+        return this.hp > other.hp;
     }
 }

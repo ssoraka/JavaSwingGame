@@ -232,8 +232,6 @@ public class DAO {
     }
 
     public Warrior readPlayer(String login, String password) {
-
-//        Warrior player = new Player("Capybara", Clazz.CAPYBARA);
         Warrior player = WarriorFabric.createPlayer(login, Clazz.CAPYBARA);
         try {
             resSet = statement.executeQuery(String.format("SELECT * FROM %s WHERE %s='%s' AND %s='%s'", TABLE_NAME, LOGIN, login, PASSWORD, password));
@@ -249,6 +247,7 @@ public class DAO {
             player.setArmor(Armor.valueOf(resSet.getString(ARMOR)));
 
             player.setHp(resSet.getInt(HP));
+            player.heel();
         } catch (Exception e) {
             System.out.println("Нет такого в бд");
         }

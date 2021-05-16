@@ -31,15 +31,15 @@ public class Fighting {
         log(winner.getName(), " get ", String.valueOf(loser.getExperience()), " experience !!!\n");
         winner.addExperience(loser.getExperience());
 
-        if (loser.getArmor().getDefense() > winner.getArmor().getDefense()) {
+        if (loser.getArmor().isBetterThen(winner.getArmor())) {
             log(winner.getName(), " get ", loser.getArmor().getName(), "!!!\n");
             winner.setArmor(loser.getArmor());
         }
-        if (loser.getHelm().getHp() > winner.getHelm().getHp()) {
+        if (loser.getHelm().isBetterThen(winner.getHelm())) {
             log(winner.getName(), " get ", loser.getHelm().getName(), "!!!\n");
             winner.setHelm(loser.getHelm());
         }
-        if (loser.getWeapon().getDamage() > winner.getWeapon().getDamage()) {
+        if (loser.getWeapon().isBetterThen(winner.getWeapon())) {
             log(winner.getName(), " get ", loser.getWeapon().getName(), "!!!\n");
             winner.setWeapon(loser.getWeapon());
         }
@@ -62,7 +62,7 @@ public class Fighting {
         return winner;
     }
 
-    public static void log(String... text) {
+    private static void log(String... text) {
         if (!loggerOn) {
             return;
         }
