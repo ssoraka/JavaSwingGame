@@ -1,5 +1,9 @@
 package model.war;
 
+import model.items.Armor;
+import model.items.Helmet;
+import model.items.Weapon;
+
 public interface Fighter {
     String getName();
     boolean isAlive();

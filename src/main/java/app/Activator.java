@@ -2,17 +2,15 @@ package app;
 
 import controllers.*;
 import model.DAO;
-import model.TestModel;
+import model.MyModel;
 import view.*;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Activator implements Runnable {
 
-    private static TestModel model;
+    private static MyModel model;
     private static AllController controller;
     private static View view;
     private static Activator activator;
@@ -33,7 +31,7 @@ public class Activator implements Runnable {
         String mode = getMode();
 
         DAO db = new DAO();
-        model = new TestModel();
+        model = new MyModel();
         model.setDb(db);
 
         controller = new AllController(model);

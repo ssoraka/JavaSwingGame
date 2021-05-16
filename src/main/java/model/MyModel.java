@@ -6,14 +6,14 @@ import model.war.WarriorFabric;
 
 import java.awt.*;
 
-public class TestModel implements ModelController, ModelView {
+public class MyModel implements ModelController, ModelView {
     private DAO db;
     private boolean hasChange;
 
     private Level level;
     private Warrior player;
 
-    public TestModel() {
+    public MyModel() {
         hasChange = true;
     }
 

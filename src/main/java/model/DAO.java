@@ -1,11 +1,20 @@
 package model;
 
 
+import model.items.Armor;
+import model.items.Helmet;
+import model.items.Weapon;
 import model.war.*;
 import org.sqlite.JDBC;
 import app.ApplicationProperties;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import java.io.IOException;
 import java.sql.*;
+import java.util.Set;
 
 import static model.war.Warrior.*;
 
@@ -235,6 +244,7 @@ public class DAO {
         Warrior player = WarriorFabric.createPlayer(login, Clazz.CAPYBARA);
         try {
             resSet = statement.executeQuery(String.format("SELECT * FROM %s WHERE %s='%s' AND %s='%s'", TABLE_NAME, LOGIN, login, PASSWORD, password));
+
             player = WarriorFabric.createPlayer(login, Clazz.valueOf(resSet.getString(TYPE)));
             player.setLevel(resSet.getInt(LEVEL));
             player.setExperience(resSet.getInt(EXP));
@@ -248,9 +258,21 @@ public class DAO {
 
             player.setHp(resSet.getInt(HP));
             player.heel();
-        } catch (Exception e) {
-            System.out.println("Нет такого в бд");
+
+            ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+            Validator validator = factory.getValidator();
+            Set<ConstraintViolation<Warrior>> violations = validator.validate(player);
+            if (!violations.isEmpty()) {
+                StringBuilder log = new StringBuilder();
+                for (ConstraintViolation<Warrior> errors : violations) {
+                    log.append(errors.getMessage()).append("\n");
+                }
+                throw new DAOException(log.toString());
+            }
+        } catch (SQLException e) {
+            throw new DAOException("Нет такого в бд");
         }
+
         return player;
     }
 

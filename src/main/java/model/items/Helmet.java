@@ -1,4 +1,4 @@
-package model.war;
+package model.items;
 
 import model.Dice;
 

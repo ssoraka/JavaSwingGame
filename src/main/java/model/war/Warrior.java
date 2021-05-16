@@ -2,7 +2,11 @@ package model.war;
 
 
 import model.Dice;
-import model.Types;
+import model.items.Armor;
+import model.items.Helmet;
+import model.items.Weapon;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 public class Warrior implements Fighter{
 
@@ -25,20 +29,29 @@ public class Warrior implements Fighter{
     private int startAttack;
     private int startDefense;
 
+    @Min(value = 1, message = "Parameter helmet should not be less than 1")
     private int helmet;
+    @Min(value = 1, message = "Parameter attack should not be less than 1")
     private int attack;
+    @Min(value = 1, message = "Parameter defense should not be less than 1")
     private int defense;
 
+    @NotNull(message = "Armor cannot be null")
     private Armor armor;
+    @NotNull(message = "Weapon cannot be null")
     private Weapon weapon;
+    @NotNull(message = "Helmet cannot be null")
     private Helmet helm;
 
+    @Min(value = 1, message = "Level should not be less than 1")
     private int level;
+    @Min(value = 0, message = "Level should not be less than 1")
     private int experience;
     public int expNextLevel;
 
     private int hp;
 
+    @NotNull(message = "Class cannot be null")
     private Clazz clazz;
 
     public Warrior(String name, Clazz clazz) {
@@ -74,18 +87,6 @@ public class Warrior implements Fighter{
                 break;
         }
         heel();
-    }
-
-    public void setStartHelmet(int startHelmet) {
-        this.startHelmet = startHelmet;
-    }
-
-    public void setStartAttack(int startAttack) {
-        this.startAttack = startAttack;
-    }
-
-    public void setStartDefense(int startDefense) {
-        this.startDefense = startDefense;
     }
 
     public void setHelm(Helmet helmet) {
@@ -229,6 +230,5 @@ public class Warrior implements Fighter{
 
     public void heel() {
         hp = maxHp();
-//        this.hp = Math.min(this.hp + hp, maxHp());
     }
 }

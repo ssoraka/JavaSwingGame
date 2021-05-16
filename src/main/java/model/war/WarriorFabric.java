@@ -1,6 +1,9 @@
 package model.war;
 
 import model.Dice;
+import model.items.Armor;
+import model.items.Helmet;
+import model.items.Weapon;
 
 public abstract class WarriorFabric {
 
