@@ -8,12 +8,11 @@ import view.*;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-public class Activator implements Runnable {
+public class Activator {
 
     private static MyModel model;
     private static AllController controller;
     private static View view;
-    private static Activator activator;
 
     private static final String TERMINAL_MODE = "terminal";
     private static final String SWING_MODE = "swing";
@@ -24,6 +23,20 @@ public class Activator implements Runnable {
 //        System.out.print("dsadasdadas");
 //        System.out.print("\033[H\033[2J");
 //        System.out.flush();
+
+    /*
+
+    -надо убедиться, что всегда будет путь к выходу (маркировать клетки)
+    -надо в бое кидать исключение с предложением забрать оружие
+    -убрать вывод базы в терминал, очищение базы в самом начале
+    -увеличить размер экрана, чтоб лог влезал в экран всегда или добавить возможность прокрутки окна с логом
+    -надо попробовать убрать ворнинг
+    May 16, 2021 7:13:20 PM org.hibernate.validator.internal.util.Version <clinit>
+    INFO: HV000001: Hibernate Validator 6.0.13.Final
+
+
+     */
+
 
 
     public static void main(String[] args) throws SQLException {
@@ -44,8 +57,6 @@ public class Activator implements Runnable {
 
         controller.setView(view);
         controller.startMenu();
-
-        startActivator();
     }
 
     private static String getMode() {
@@ -72,27 +83,5 @@ public class Activator implements Runnable {
             }
         }
         return SWING_MODE;
-    }
-
-    public static void startActivator() {
-        activator = new Activator();
-        Thread myThready = new Thread(activator);
-        myThready.setDaemon(true);
-        myThready.setName("Main");
-        myThready.start();
-    }
-
-    @Override
-    public void run() {
-        while(true) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if (model.wasChanged()) {
-                view.refresh();
-            }
-        }
     }
 }

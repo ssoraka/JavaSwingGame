@@ -7,6 +7,7 @@ import model.DAOException;
 import model.DeadException;
 import model.Dice;
 import model.ModelView;
+import model.items.Item;
 import model.war.Clazz;
 import model.war.Fighting;
 import model.war.Warrior;
@@ -69,9 +70,14 @@ public class SwingView extends JFrame implements MyView {
                 }
                 try {
                     if (controller.isMeetEnemy(action) && !confirm("Start fight?") && Dice.d2()) {
-                        controller.executeCommand(Actions.DONT_MOVE);
+                        return;
                     } else {
-                        controller.executeCommand(action);
+                        if (controller.executeCommand(action)) {
+                            getReward();
+                            controller.moveWorld();
+                            getReward();
+                        }
+                        refresh();
                     }
                 } catch (DeadException ex) {
                     refresh();
@@ -86,6 +92,15 @@ public class SwingView extends JFrame implements MyView {
             @Override
             public void keyReleased(KeyEvent e) {}
         };
+    }
+
+    private void getReward() {
+        while (model.hasItems()) {
+            Item item = model.getItem();
+            if (confirm("Do you want equip " + item.getName() + "?")) {
+                item.equip(model.getPlayer());
+            }
+        }
     }
 
     private boolean confirm(String message) {
@@ -249,7 +264,6 @@ public class SwingView extends JFrame implements MyView {
         refresh();
     }
 
-    @Override
     public void refresh() {
         model.fillEnvironment(gamePanel.getEnv());
         Warrior person = model.getPlayer();

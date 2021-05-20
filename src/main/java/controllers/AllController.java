@@ -61,18 +61,22 @@ public class AllController {
         }
     }
 
-    public void executeCommand(Actions action) {
+    public boolean executeCommand(Actions action) {
         switch (action) {
-            case MOVE_UP : model.tryMovePlayer(Level.UP); break;
-            case MOVE_DOWN: model.tryMovePlayer(Level.DOWN); break;
-            case MOVE_LEFT: model.tryMovePlayer(Level.LEFT); break;
-            case MOVE_RIGHT: model.tryMovePlayer(Level.RIGHT); break;
-            case DONT_MOVE: model.tryMovePlayer(Level.HERE); break;
+            case MOVE_UP : model.movePlayer(Level.UP); break;
+            case MOVE_DOWN: model.movePlayer(Level.DOWN); break;
+            case MOVE_LEFT: model.movePlayer(Level.LEFT); break;
+            case MOVE_RIGHT: model.movePlayer(Level.RIGHT); break;
             case CHANGE_VIEW: view.changeView(); startGame(); break;
             case EXIT: exit(); break;
             default:
-                break;
+                return false;
         }
+        return true;
+    }
+
+    public void moveWorld() {
+        model.moveWorld();
     }
 
     public void startMenu() {

@@ -8,7 +8,6 @@ public class View {
     private ModelView model;
     private ViewType type;
     private MyView view;
-    private boolean isGameStarted;
 
 
     public View(ViewType type, ModelView model, AllController controller) {
@@ -45,13 +44,5 @@ public class View {
 
     public void startGame() {
         view.startGame();
-        isGameStarted = true;
-    }
-
-    public void refresh() {
-        if (isGameStarted) {
-            view.refresh();
-        }
-//        Thread.getAllStackTraces().keySet().forEach((t) -> System.out.println(t.getName()));
     }
 }

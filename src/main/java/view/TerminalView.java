@@ -3,11 +3,11 @@ package view;
 import controllers.Actions;
 import controllers.AllController;
 import model.*;
+import model.items.Item;
 import model.war.Clazz;
 import model.war.Fighting;
 import model.war.Warrior;
 
-import java.util.Locale;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
@@ -92,7 +92,6 @@ public class TerminalView implements MyView, Runnable {
         }
     }
 
-    @Override
     public void refresh() {
         System.out.println("\33c");
         player = model.getPlayer();
@@ -227,9 +226,14 @@ public class TerminalView implements MyView, Runnable {
             try {
                 Actions action = Actions.getAction(s);
                 if (controller.isMeetEnemy(action) && !confirm("Do you want fight?") && Dice.d2()) {
-                    controller.executeCommand(Actions.DONT_MOVE);
+                    return;
                 } else {
-                    controller.executeCommand(action);
+                    if (controller.executeCommand(action)) {
+                        getReward();
+                        controller.moveWorld();
+                        getReward();
+                    }
+                    refresh();
                 }
             } catch (DeadException e) {
                 refresh();
@@ -240,6 +244,15 @@ public class TerminalView implements MyView, Runnable {
                 }
             }
         };
+    }
+
+    private void getReward() {
+        while (model.hasItems()) {
+            Item item = model.getItem();
+            if (confirm("Do you want equip " + item.getName() + "?")) {
+                item.equip(model.getPlayer());
+            }
+        }
     }
 
     private boolean confirm(String message) {

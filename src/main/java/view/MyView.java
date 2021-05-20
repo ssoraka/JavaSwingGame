@@ -5,6 +5,5 @@ public interface MyView {
     void createMenu();
     void continueGame();
     void startGame();
-    void refresh();
     void destroy();
 }

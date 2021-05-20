@@ -1,10 +1,16 @@
 package model.war;
 
+import model.items.Item;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Fighting {
 
     private static Warrior player;
     private static StringBuilder logger = new StringBuilder();
     private static boolean loggerOn = false;
+    private static List<Item> items = new ArrayList<>();
 
     public static void setPlayer(Warrior player) {
         Fighting.player = player;
@@ -31,18 +37,28 @@ public class Fighting {
         log(winner.getName(), " get ", String.valueOf(loser.getExperience()), " experience !!!\n");
         winner.addExperience(loser.getExperience());
 
+        List<Item> reward = new ArrayList<>();
         if (loser.getArmor().isBetterThen(winner.getArmor())) {
-            log(winner.getName(), " get ", loser.getArmor().getName(), "!!!\n");
-            winner.setArmor(loser.getArmor());
+            reward.add(loser.getArmor());
         }
         if (loser.getHelm().isBetterThen(winner.getHelm())) {
-            log(winner.getName(), " get ", loser.getHelm().getName(), "!!!\n");
-            winner.setHelm(loser.getHelm());
+            reward.add(loser.getHelm());
         }
         if (loser.getWeapon().isBetterThen(winner.getWeapon())) {
-            log(winner.getName(), " get ", loser.getWeapon().getName(), "!!!\n");
-            winner.setWeapon(loser.getWeapon());
+            reward.add(loser.getWeapon());
         }
+        if (winner.equals(player)) {
+            items.addAll(reward);
+            return;
+        }
+        for (Item item : reward) {
+            equip(item, winner);
+        }
+    }
+
+    public static void equip(Item item, Fighter fighter) {
+        log(fighter.getName(), " get ", item.getName(), "!!!\n");
+        item.equip(fighter);
     }
 
     public static Fighter fight(Fighter hero, Fighter enemy) {
@@ -69,6 +85,16 @@ public class Fighting {
         for (String s : text) {
             logger.append(s);
         }
+    }
+
+    public static boolean hasReward() {
+        return !items.isEmpty();
+    }
+
+    public static List<Item> getItems() {
+        List<Item> answer = items;
+        items = new ArrayList<>();
+        return answer;
     }
 
     public static String getTextLog() {

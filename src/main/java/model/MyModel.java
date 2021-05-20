@@ -1,33 +1,29 @@
 package model;
 
+import model.items.Item;
 import model.war.Clazz;
+import model.war.Fighting;
 import model.war.Warrior;
 import model.war.WarriorFabric;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MyModel implements ModelController, ModelView {
     private DAO db;
-    private boolean hasChange;
 
     private Level level;
     private Warrior player;
+    private List<Item> items = new ArrayList<>();
 
     public MyModel() {
-        hasChange = true;
     }
 
     public void setDb(DAO db) {
         this.db = db;
     }
 
-    public boolean wasChanged() {
-        if (hasChange) {
-            hasChange = false;
-            return true;
-        }
-        return false;
-    }
 
     @Override
     public void fillEnvironment(Place[][] env) {
@@ -44,21 +40,37 @@ public class MyModel implements ModelController, ModelView {
         level = new Level(player);
     }
 
+    @Override
+    public boolean hasItems() {
+        if (Fighting.hasReward()) {
+            items.addAll(Fighting.getItems());
+        }
+        return !items.isEmpty();
+    }
+
+    public Item getItem() {
+        return items.remove(0);
+    }
     // реакции на контроллеры
 
     @Override
-    public void tryMovePlayer(Point shift) {
+    public void movePlayer(Point shift) {
         if (level.isHeroLeaveLevel(shift)) {
             db.updatePlayer(player);
             level = new Level(player);
             player.heel();
         } else {
             level.moveHero(shift);
-            level.moveAnimals();
             if (!player.isAlive())
                 throw new DeadException("Player is dead!!!");
         }
-        hasChange = true;
+    }
+
+    @Override
+    public void moveWorld() {
+        level.moveAnimals();
+        if (!player.isAlive())
+            throw new DeadException("Player is dead!!!");
     }
 
     @Override

@@ -1,8 +1,9 @@
 package model.items;
 
 import model.Dice;
+import model.war.Fighter;
 
-public enum Weapon {
+public enum Weapon implements Item {
     ARM("arm", 2, 1),
     DAGGER("dagger", 4, 1),
     SWORD("sword", 6, 1),
@@ -25,10 +26,6 @@ public enum Weapon {
         return Weapon.values()[Dice.rand(0, Weapon.values().length - 1)];
     }
 
-    public String getName() {
-        return name;
-    }
-
     public int getDamage() {
         int damage = 0;
         for (int i = 0; i < attackCount; i++) {
@@ -39,5 +36,15 @@ public enum Weapon {
 
     public boolean isBetterThen(Weapon other) {
         return maxAttack * attackCount >= other.maxAttack * other.attackCount;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void equip(Fighter fighter) {
+        fighter.setWeapon(this);
     }
 }

@@ -120,9 +120,6 @@ public class Level {
 
             if (Fighting.fight(warrior, enemy).equals(warrior)) {
                 current.setWarrior(warrior);
-                if (enemy.equals(player)) {
-                    int i = 1;
-                }
             }
         }
     }
