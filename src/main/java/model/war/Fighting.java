@@ -37,21 +37,21 @@ public class Fighting {
         log(winner.getName(), " get ", String.valueOf(loser.getExperience()), " experience !!!\n");
         winner.addExperience(loser.getExperience());
 
-        List<Item> reward = new ArrayList<>();
         if (loser.getArmor().isBetterThen(winner.getArmor())) {
-            reward.add(loser.getArmor());
+            giveReward(loser.getArmor(), winner);
         }
         if (loser.getHelm().isBetterThen(winner.getHelm())) {
-            reward.add(loser.getHelm());
+            giveReward(loser.getHelm(), winner);
         }
         if (loser.getWeapon().isBetterThen(winner.getWeapon())) {
-            reward.add(loser.getWeapon());
+            giveReward(loser.getWeapon(), winner);
         }
+    }
+
+    private static void giveReward(Item item, Fighter winner) {
         if (winner.equals(player)) {
-            items.addAll(reward);
-            return;
-        }
-        for (Item item : reward) {
+            items.add(item);
+        } else {
             equip(item, winner);
         }
     }
@@ -87,14 +87,8 @@ public class Fighting {
         }
     }
 
-    public static boolean hasReward() {
-        return !items.isEmpty();
-    }
-
     public static List<Item> getItems() {
-        List<Item> answer = items;
-        items = new ArrayList<>();
-        return answer;
+        return items;
     }
 
     public static String getTextLog() {

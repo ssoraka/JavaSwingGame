@@ -29,7 +29,6 @@ public abstract class WarriorFabric {
         player.setHelm(Helmet.HEAVY_HELMET);
 
         player.setLevel(1);
-        Fighting.setPlayer(player);
         return player;
     }
 }

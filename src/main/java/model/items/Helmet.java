@@ -31,6 +31,11 @@ public enum Helmet implements Item {
     }
 
     @Override
+    public String toString() {
+        return name + "(+" + hp + "hp)";
+    }
+
+    @Override
     public String getName() {
         return name;
     }

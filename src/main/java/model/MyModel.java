@@ -15,9 +15,10 @@ public class MyModel implements ModelController, ModelView {
 
     private Level level;
     private Warrior player;
-    private List<Item> items = new ArrayList<>();
+    private List<Item> items;
 
     public MyModel() {
+        items = Fighting.getItems();
     }
 
     public void setDb(DAO db) {
@@ -38,13 +39,11 @@ public class MyModel implements ModelController, ModelView {
     private void setPlayer(Warrior warrior) {
         player = warrior;
         level = new Level(player);
+        Fighting.setPlayer(player);
     }
 
     @Override
     public boolean hasItems() {
-        if (Fighting.hasReward()) {
-            items.addAll(Fighting.getItems());
-        }
         return !items.isEmpty();
     }
 

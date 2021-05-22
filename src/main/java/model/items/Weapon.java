@@ -39,6 +39,11 @@ public enum Weapon implements Item {
     }
 
     @Override
+    public String toString() {
+        return name + "(" + attackCount + "d" + maxAttack + ")";
+    }
+
+    @Override
     public String getName() {
         return name;
     }

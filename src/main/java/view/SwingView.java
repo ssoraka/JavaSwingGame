@@ -2,7 +2,6 @@ package view;
 
 import controllers.Actions;
 import controllers.AllController;
-import javafx.scene.control.RadioButton;
 import model.DAOException;
 import model.DeadException;
 import model.Dice;
@@ -37,7 +36,7 @@ public class SwingView extends JFrame implements MyView {
     private static int TEXT_START_X = 20;
     private static int TEXT_START_Y = 20;
     private static int TEXT_STEP_X = 100;
-    private static int TEXT_STEP_Y = 30;
+    private static int TEXT_STEP_Y = 20;
 
     private static final String[] LABELS = {NAME, HP, LEVEL, EXP, "next exp", ATTACK, DEFENSE, HELMET};
 
@@ -97,7 +96,7 @@ public class SwingView extends JFrame implements MyView {
     private void getReward() {
         while (model.hasItems()) {
             Item item = model.getItem();
-            if (confirm("Do you want equip " + item.getName() + "?")) {
+            if (confirm("Do you want equip " + item + "?")) {
                 item.equip(model.getPlayer());
             }
         }
