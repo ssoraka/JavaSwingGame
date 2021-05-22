@@ -5,7 +5,7 @@ import model.war.Clazz;
 import java.awt.*;
 
 public interface ModelController {
-    void movePlayer(Point shift);
+    boolean movePlayer(Point shift);
     void moveWorld();
     boolean isMeetEnemy(Point shift);
     void createNewPersonAndStartGame(String login, String password, Clazz clazz);

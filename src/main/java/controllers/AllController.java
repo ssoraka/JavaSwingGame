@@ -63,16 +63,14 @@ public class AllController {
 
     public boolean executeCommand(Actions action) {
         switch (action) {
-            case MOVE_UP : model.movePlayer(Level.UP); break;
-            case MOVE_DOWN: model.movePlayer(Level.DOWN); break;
-            case MOVE_LEFT: model.movePlayer(Level.LEFT); break;
-            case MOVE_RIGHT: model.movePlayer(Level.RIGHT); break;
+            case MOVE_UP : return model.movePlayer(Level.UP);
+            case MOVE_DOWN: return model.movePlayer(Level.DOWN);
+            case MOVE_LEFT: return model.movePlayer(Level.LEFT);
+            case MOVE_RIGHT: return model.movePlayer(Level.RIGHT);
             case CHANGE_VIEW: view.changeView(); startGame(); break;
             case EXIT: exit(); break;
-            default:
-                return false;
         }
-        return true;
+        return false;
     }
 
     public void moveWorld() {

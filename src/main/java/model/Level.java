@@ -55,18 +55,20 @@ public class Level {
     public void initMap() {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                Place place = new Place();
+                if (y == height / 2 || x == width / 2) {
+                    map[y][x] = new Place();
+                    continue;
+                }
 
-                if (y != height / 2 && x != width / 2) {
-                    int rnd = random.nextInt(100);
-                    if (rnd < 4) {
-                        place.setWarrior(WarriorFabric.randomWarrior(level));
-                        enemy.put(place.getWarrior(), new Point(x, y));
-                    } else if (rnd < 7) {
-                        place.setType(Types.STONE);
-                    } else if (rnd < 10) {
-                        place.setType(Types.TREE);
-                    }
+                Place place = new Place();
+                int rnd = random.nextInt(100);
+                if (rnd < 4) {
+                    place.setWarrior(WarriorFabric.randomWarrior(level));
+                    enemy.put(place.getWarrior(), new Point(x, y));
+                } else if (rnd < 7) {
+                    place.setType(Types.STONE);
+                } else if (rnd < 10) {
+                    place.setType(Types.TREE);
                 }
                 map[y][x] = place;
             }

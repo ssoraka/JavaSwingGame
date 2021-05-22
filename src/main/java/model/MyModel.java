@@ -53,16 +53,18 @@ public class MyModel implements ModelController, ModelView {
     // реакции на контроллеры
 
     @Override
-    public void movePlayer(Point shift) {
+    public boolean movePlayer(Point shift) {
         if (level.isHeroLeaveLevel(shift)) {
             db.updatePlayer(player);
             level = new Level(player);
             player.heel();
+            return false;
         } else {
             level.moveHero(shift);
             if (!player.isAlive())
                 throw new DeadException("Player is dead!!!");
         }
+        return true;
     }
 
     @Override
