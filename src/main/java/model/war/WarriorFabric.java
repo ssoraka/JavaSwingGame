@@ -2,7 +2,7 @@ package model.war;
 
 import model.Dice;
 import model.items.Armor;
-import model.items.Helmet;
+import model.items.Helm;
 import model.items.Weapon;
 
 public abstract class WarriorFabric {
@@ -12,7 +12,7 @@ public abstract class WarriorFabric {
         Warrior warrior = new Warrior(clazz.name(), clazz);
         switch (Dice.rand(0, 4)) {
             case 1 : warrior.setArmor(Armor.randomArmor()); break;
-            case 2 : warrior.setHelm(Helmet.randomHelmet()); break;
+            case 2 : warrior.setHelm(Helm.randomHelm()); break;
             case 3 : warrior.setWeapon(Weapon.randomWeapon()); break;
         }
         warrior.setLevel(level);
@@ -26,7 +26,7 @@ public abstract class WarriorFabric {
 
         player.setArmor(Armor.HEAVY_ARMOR);
         player.setWeapon(Weapon.SPEAR);
-        player.setHelm(Helmet.HEAVY_HELMET);
+        player.setHelm(Helm.HEAVY_HELMET);
 
         player.setLevel(1);
         return player;

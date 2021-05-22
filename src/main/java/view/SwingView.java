@@ -12,8 +12,6 @@ import model.war.Fighting;
 import model.war.Warrior;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -42,7 +40,7 @@ public class SwingView extends JFrame implements MyView {
     private static int TEXT_STEP_Y = 20;
 
     private static final String LOGGER = "logger";
-    private static final String[] LABELS = {NAME, HP, LEVEL, EXP, ATTACK, DEFENSE, HELMET, ARMOR, WEAPON, HELM};
+    private static final String[] LABELS = {NAME, HP, LEVEL, EXP, ATTACK, DEFENSE, HIT_POINTS, ARMOR, WEAPON, HELM};
 
     private static final String TITLE = "SWINGY";
     private static final int GAME_PANEL_HEIGHT = 600;
@@ -275,7 +273,7 @@ public class SwingView extends JFrame implements MyView {
         updateField(LEVEL, Integer.toString(person.getLevel()));
         updateField(EXP, person.getExperience() + "/" + person.getExperienceForNextLevel());
         updateField(DEFENSE, Integer.toString(person.getDefense()));
-        updateField(HELMET, Integer.toString(person.getHelmet()));
+        updateField(HIT_POINTS, Integer.toString(person.getHitPoints()));
         updateField(ATTACK, Integer.toString(person.getAttack()));
 
         updateField(ARMOR, person.getArmor().toString());

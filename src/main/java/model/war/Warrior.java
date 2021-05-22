@@ -3,7 +3,7 @@ package model.war;
 
 import model.Dice;
 import model.items.Armor;
-import model.items.Helmet;
+import model.items.Helm;
 import model.items.Weapon;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -14,7 +14,7 @@ public class Warrior implements Fighter{
     public static final String HP = "hp";
     public static final String ATTACK = "attack";
     public static final String DEFENSE = "defense";
-    public static final String HELMET = "helmet";
+    public static final String HIT_POINTS = "hit_points";
     public static final String LEVEL = "level";
     public static final String EXP = "exp";
     public static final String TYPE = "type";
@@ -25,12 +25,12 @@ public class Warrior implements Fighter{
 
     private String name;
 
-    private int startHelmet;
+    private int startHp;
     private int startAttack;
     private int startDefense;
 
     @Min(value = 1, message = "Parameter helmet should not be less than 1")
-    private int helmet;
+    private int hitPoints;
     @Min(value = 1, message = "Parameter attack should not be less than 1")
     private int attack;
     @Min(value = 1, message = "Parameter defense should not be less than 1")
@@ -41,7 +41,7 @@ public class Warrior implements Fighter{
     @NotNull(message = "Weapon cannot be null")
     private Weapon weapon;
     @NotNull(message = "Helmet cannot be null")
-    private Helmet helm;
+    private Helm helm;
 
     @Min(value = 1, message = "Level should not be less than 1")
     private int level;
@@ -58,13 +58,13 @@ public class Warrior implements Fighter{
         this.name = name;
         this.clazz = clazz;
 
-        startHelmet = 5;
+        startHp = 5;
         startAttack = 1;
         startDefense = 1;
 
         setArmor(Armor.EMPTY);
         setWeapon(Weapon.ARM);
-        setHelm(Helmet.EMPTY);
+        setHelm(Helm.EMPTY);
 
         setLevel(1);
     }
@@ -75,7 +75,7 @@ public class Warrior implements Fighter{
                 startDefense = 3;
                 break;
             case CAPYBARA:
-                startHelmet = 6;
+                startHp = 6;
                 startAttack = 2;
                 startDefense = 2;
                 break;
@@ -83,14 +83,14 @@ public class Warrior implements Fighter{
                 startAttack = 3;
                 break;
             case HONEY_BADGER:
-                startHelmet = 7;
+                startHp = 7;
                 break;
         }
         heel();
     }
 
-    public void setHelm(Helmet helmet) {
-        helm = helmet;
+    public void setHelm(Helm helm) {
+        this.helm = helm;
     }
 
     public void setWeapon(Weapon weapon) {
@@ -102,15 +102,15 @@ public class Warrior implements Fighter{
     }
 
     public int maxHp() {
-        return helmet + helm.getHp();
+        return hitPoints + helm.getHp();
     }
 
     public void setHp(int hp) {
         this.hp = hp;
     }
 
-    public void setHelmet(int helmet) {
-        this.helmet = helmet;
+    public void setHitPoints(int hitPoints) {
+        this.hitPoints = hitPoints;
     }
 
     public void setAttack(int attack) {
@@ -129,7 +129,7 @@ public class Warrior implements Fighter{
         this.level = level;
         experienceForNextLevel();
 
-        helmet = startHelmet + level / 5 + 1;
+        hitPoints = startHp + level / 5 + 1;
         attack = startAttack + level / 5 + 1;
         defense = startDefense + level / 5 + 1;
         hp = maxHp();
@@ -139,8 +139,8 @@ public class Warrior implements Fighter{
         return attack;
     }
 
-    public int getHelmet() {
-        return helmet;
+    public int getHitPoints() {
+        return hitPoints;
     }
 
     public int getDefense() {
@@ -155,7 +155,7 @@ public class Warrior implements Fighter{
         return weapon;
     }
 
-    public Helmet getHelm() {
+    public Helm getHelm() {
         return helm;
     }
 

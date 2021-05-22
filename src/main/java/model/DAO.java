@@ -1,9 +1,8 @@
 package model;
 
 
-import com.sun.javafx.tools.ant.CSSToBinTask;
 import model.items.Armor;
-import model.items.Helmet;
+import model.items.Helm;
 import model.items.Weapon;
 import model.war.*;
 import org.sqlite.JDBC;
@@ -13,7 +12,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.io.IOException;
 import java.sql.*;
 import java.util.Set;
 
@@ -45,7 +43,7 @@ public class DAO {
                     "'" + HP + "' INT, " +
                     "'" + ATTACK + "' INT, " +
                     "'" + DEFENSE + "' INT, " +
-                    "'" + HELMET + "' INT, " +
+                    "'" + HIT_POINTS + "' INT, " +
                     "'" + WEAPON + "' text, " +
                     "'" + ARMOR + "' text, " +
                     "'" + HELM + "' text);";
@@ -128,7 +126,7 @@ public class DAO {
                 int hp = resSet.getInt(HP);
                 int attack = resSet.getInt(ATTACK);
                 int def = resSet.getInt(DEFENSE);
-                int helmet = resSet.getInt(HELMET);
+                int helmet = resSet.getInt(HIT_POINTS);
                 int level = resSet.getInt(LEVEL);
                 String type = resSet.getString(TYPE);
                 String weapon = resSet.getString(WEAPON);
@@ -201,10 +199,10 @@ public class DAO {
         addArg(TYPE, warrior.getClazz().name());
         addArg(LEVEL, warrior.getLevel());
         addArg(EXP, warrior.getExperience());
-        addArg(HP, warrior.getHelmet());
+        addArg(HP, warrior.getHitPoints());
         addArg(ATTACK, warrior.getAttack());
         addArg(DEFENSE, warrior.getDefense());
-        addArg(HELMET, warrior.getHelmet());
+        addArg(HIT_POINTS, warrior.getHitPoints());
 
         addArg(WEAPON, warrior.getWeapon().name());
         addArg(ARMOR, warrior.getArmor().name());
@@ -225,8 +223,8 @@ public class DAO {
                 .append(warrior.getExperience())
                 .append(",'").append(HP).append("'=")
                 .append(warrior.getHp())
-                .append(",'").append(HELMET).append("'=")
-                .append(warrior.getHelmet())
+                .append(",'").append(HIT_POINTS).append("'=")
+                .append(warrior.getHitPoints())
                 .append(",'").append(ATTACK).append("'=")
                 .append(warrior.getAttack())
                 .append(",'").append(DEFENSE).append("'=")
@@ -264,11 +262,11 @@ public class DAO {
             player.setLevel(resSet.getInt(LEVEL));
             player.setExperience(resSet.getInt(EXP));
             player.setAttack(resSet.getInt(ATTACK));
-            player.setHelmet(resSet.getInt(HELMET));
+            player.setHitPoints(resSet.getInt(HIT_POINTS));
             player.setDefense(resSet.getInt(DEFENSE));
 
             player.setWeapon(Weapon.valueOf(resSet.getString(WEAPON)));
-            player.setHelm(Helmet.valueOf(resSet.getString(HELM)));
+            player.setHelm(Helm.valueOf(resSet.getString(HELM)));
             player.setArmor(Armor.valueOf(resSet.getString(ARMOR)));
 
             player.setHp(resSet.getInt(HP));

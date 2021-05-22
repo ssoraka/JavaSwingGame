@@ -40,7 +40,7 @@ public class TerminalView implements MyView, Runnable {
     private boolean needDestroy;
 
 
-    private static String[] LABELS = {NAME, HP, LEVEL, EXP, ATTACK, DEFENSE, HELMET, ARMOR, WEAPON, HELM};
+    private static String[] LABELS = {NAME, HP, LEVEL, EXP, ATTACK, DEFENSE, HIT_POINTS, ARMOR, WEAPON, HELM};
 
     public TerminalView(ModelView model, AllController controller) {
         this.model = model;
@@ -139,8 +139,8 @@ public class TerminalView implements MyView, Runnable {
                 case DEFENSE:
                     System.out.print(player.getDefense());
                     break;
-                case HELMET:
-                    System.out.print(player.getHelmet());
+                case HIT_POINTS:
+                    System.out.print(player.getHitPoints());
                     break;
                 case ATTACK:
                     System.out.print(player.getAttack());

@@ -1,7 +1,7 @@
 package model.war;
 
 import model.items.Armor;
-import model.items.Helmet;
+import model.items.Helm;
 import model.items.Weapon;
 
 public interface Fighter {
@@ -20,9 +20,9 @@ public interface Fighter {
 
     Armor getArmor();
     Weapon getWeapon();
-    Helmet getHelm();
+    Helm getHelm();
 
-    void setHelm(Helmet helmet);
+    void setHelm(Helm helm);
     void setWeapon(Weapon weapon);
     void setArmor(Armor armor);
 }
