@@ -26,8 +26,8 @@ public class Activator {
 
     /*
 
+    -добавить возможность загружать ранее созданного персонажа
     -убрать вывод базы в терминал, очищение базы в самом начале
-    -увеличить размер экрана, чтоб лог влезал в экран всегда или добавить возможность прокрутки окна с логом
     -надо попробовать убрать ворнинг
     May 16, 2021 7:13:20 PM org.hibernate.validator.internal.util.Version <clinit>
     INFO: HV000001: Hibernate Validator 6.0.13.Final
@@ -38,7 +38,6 @@ public class Activator {
 
 
     public static void main(String[] args) throws SQLException {
-
         String mode = getMode();
 
         DAO db = new DAO();

@@ -42,6 +42,10 @@ public class View {
         view.continueGame();
     }
 
+    public void watchHero() {
+        view.watchHero();
+    }
+
     public void startGame() {
         view.startGame();
     }

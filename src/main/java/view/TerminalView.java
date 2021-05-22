@@ -92,7 +92,6 @@ public class TerminalView implements MyView, Runnable {
 
     public void refresh() {
         System.out.println("\33c");
-        player = model.getPlayer();
         logs = Fighting.getTextLog().split("\n");
         model.fillEnvironment(env);
 
@@ -210,7 +209,7 @@ public class TerminalView implements MyView, Runnable {
             controller.setClazz(readClass());
             try {
                 controller.createNewPersonInGame();
-                controller.startGame();
+                controller.watchHero();
             } catch (DAOException ex) {
                 System.out.println(ex.getMessage());
                 controller.startMenu();
@@ -222,9 +221,27 @@ public class TerminalView implements MyView, Runnable {
     public void continueGame() {
         try {
             controller.findPersonInGame();
-            controller.startGame();
+            controller.watchHero();
         } catch (RuntimeException ex) {
             System.out.println(ex.getMessage());
+            controller.startMenu();
+        }
+    }
+
+    @Override
+    public void watchHero() {
+        player = model.getPlayer();
+
+        System.out.println("Your hero:");
+        for (int i = 0; i < LABELS.length; i++) {
+            printParamOrLogs(i);
+            System.out.println("");
+        }
+        System.out.println("");
+
+        if (confirm("Do you accept it?")) {
+            controller.startGame();
+        } else {
             controller.startMenu();
         }
     }

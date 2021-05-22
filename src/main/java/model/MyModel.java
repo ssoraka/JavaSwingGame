@@ -80,19 +80,26 @@ public class MyModel implements ModelController, ModelView {
     }
 
     @Override
-    public void createNewPersonAndStartGame(String login, String password, Clazz clazz) {
-        if (db.isLoginAlreadyExist(login))
-            throw new DAOException("Такое имя уже существует");
-
-        setPlayer(WarriorFabric.createPlayer(login, clazz));
-        db.createPlayer(login, password, player);
+    public void findPerson(String login, String password) {
+        if (!db.isLoginAndPasswordAlreadyExist(login, password)) {
+            throw new DAOException("Неверное имя или пароль");
+        }
+        setPlayer(db.readPlayer(login, password));
     }
 
     @Override
-    public void findPersonAndStartGame(String login, String password) {
-        if (!db.isLoginAndPasswordAlreadyExist(login, password))
-            throw new DAOException("Неверное имя или пароль");
-        setPlayer(db.readPlayer(login, password));
+    public void createNewPerson(String login, Clazz clazz) {
+        if (db.isLoginAlreadyExist(login)) {
+            throw new DAOException("Такое имя уже существует");
+        }
+        setPlayer(WarriorFabric.createPlayer(login, clazz));
+    }
+
+    @Override
+    public void startGame(String login, String password) {
+        if (!db.isLoginAlreadyExist(login)) {
+            db.createPlayer(login, password, player);
+        }
     }
 
     @Override

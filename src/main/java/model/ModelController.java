@@ -8,7 +8,8 @@ public interface ModelController {
     boolean movePlayer(Point shift);
     void moveWorld();
     boolean isMeetEnemy(Point shift);
-    void createNewPersonAndStartGame(String login, String password, Clazz clazz);
-    void findPersonAndStartGame(String login, String password);
+    void createNewPerson(String login, Clazz clazz);
+    void findPerson(String login, String password);
+    void startGame(String login, String password);
     void exit();
 }

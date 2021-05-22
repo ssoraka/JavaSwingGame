@@ -225,7 +225,8 @@ public class SwingView extends JFrame implements MyView {
                 controller.setLogin(login.getText());
                 controller.setPassword(password.getText());
                 controller.createNewPersonInGame();
-                controller.startGame();
+                controller.watchHero();
+//                controller.startGame();
             } catch (DAOException ex) {
                 JOptionPane.showMessageDialog(null,
                         ex.getMessage(),
@@ -241,7 +242,7 @@ public class SwingView extends JFrame implements MyView {
     public void continueGame() {
         try {
             controller.findPersonInGame();
-            controller.startGame();
+            controller.watchHero();
         } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(null,
                     ex.getMessage(),
@@ -251,11 +252,45 @@ public class SwingView extends JFrame implements MyView {
     }
 
     @Override
+    public void watchHero() {
+        clearView();
+
+        JLabel label = new JLabel("HERO:");
+        label.setBounds(40, 10, 200, 50);
+        add(label);
+
+        setBounds(0,0,400,400);
+        setSize(400,400);
+
+        textPanel.setBounds(20, 50, 400 - 40, 230);
+        textPanel.setBackground(this.getBackground());
+
+        add(textPanel);
+
+        JButton buttonConfirm = new JButton("Подтвердить");
+        buttonConfirm.setBounds(200, 300, 200, 50);
+        add(buttonConfirm);
+
+        JButton buttonBack = new JButton("назад");
+        buttonBack.setBounds(0, 300, 200, 50);
+        add(buttonBack);
+
+        buttonBack.addActionListener(e -> controller.startMenu());
+        buttonConfirm.addActionListener(e -> controller.startGame());
+
+        refresh();
+    }
+
+    @Override
     public void startGame() {
         clearView();
 
         setBounds(0,0,GAME_PANEL_WIDTH + TEXT_PANEL_WIDTH, GAME_PANEL_HEIGHT);
         setSize(GAME_DIMENSIONS);
+
+        textPanel.setBounds(GAME_PANEL_WIDTH + 10, 10, TEXT_WIDTH - 20, 230);
+        textPanel.setBackground(Color.GRAY);
+        logPanel.setBounds(GAME_PANEL_WIDTH + 10, 250, TEXT_WIDTH - 20, 320);
 
         add(gamePanel);
         add(textPanel);

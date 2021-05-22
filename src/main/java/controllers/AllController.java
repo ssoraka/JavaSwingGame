@@ -36,14 +36,14 @@ public class AllController {
         if (password.isEmpty() || login.isEmpty()) {
             throw new RuntimeException("Ошибка: Введите логин и пароль");
         }
-        model.createNewPersonAndStartGame(login, password, clazz);
+        model.createNewPerson(login, clazz);
     }
 
     public void findPersonInGame() {
         if (password.isEmpty() || login.isEmpty()) {
             throw new RuntimeException("Ошибка: Введите логин и пароль");
         }
-        model.findPersonAndStartGame(login, password);
+        model.findPerson(login, password);
     }
 
     public void exit() {
@@ -89,7 +89,12 @@ public class AllController {
         view.continueGame();
     }
 
+    public void watchHero() {
+        view.watchHero();
+    }
+
     public void startGame() {
+        model.startGame(login, password);
         view.startGame();
     }
 }
