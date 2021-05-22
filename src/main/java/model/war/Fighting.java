@@ -100,9 +100,9 @@ public class Fighting {
     public static String getHtmlLog() {
         int index;
         while ( (index = logger.indexOf("\n")) != -1 ) {
-            logger.replace(index, index + 1, "<br>");
+            logger.replace(index, index + 1, "<br>&emsp;&#20;");
         }
-        logger.insert(0, "<html>");
+        logger.insert(0, "<html><br>&emsp;&#20;");
         logger.insert(logger.length(), "</html>");
         String s = logger.toString();
         logger.delete(0, logger.length());
