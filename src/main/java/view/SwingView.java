@@ -12,6 +12,8 @@ import model.war.Fighting;
 import model.war.Warrior;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -28,6 +30,7 @@ public class SwingView extends JFrame implements MyView {
 
     private MyPanel gamePanel;
     private JPanel textPanel;
+    private JScrollPane logPanel;
     private KeyListener listener;
 
     private Map<String, JLabel> labels;
@@ -54,8 +57,13 @@ public class SwingView extends JFrame implements MyView {
         gamePanel = new MyPanel(GAME_PANEL_WIDTH, GAME_PANEL_HEIGHT);
         gamePanel.setBounds(0, 0, GAME_PANEL_WIDTH, GAME_PANEL_HEIGHT);
 
+        labels = new HashMap<>();
+
         textPanel = createTextPane();
-        textPanel.setBounds(GAME_PANEL_WIDTH + 10, 10, TEXT_WIDTH - 20, GAME_PANEL_HEIGHT - 40);
+        textPanel.setBounds(GAME_PANEL_WIDTH + 10, 10, TEXT_WIDTH - 20, 230);
+
+        logPanel = createLogPane();
+        logPanel.setBounds(GAME_PANEL_WIDTH + 10, 250, TEXT_WIDTH - 20, 320);
 
         listener = new KeyListener() {
             @Override
@@ -128,8 +136,6 @@ public class SwingView extends JFrame implements MyView {
         panel.setSize(TEXT_PANEL_WIDTH - 20, GAME_PANEL_HEIGHT);
         panel.setBackground(Color.GRAY);
 
-        labels = new HashMap<>();
-
         int y = TEXT_START_Y;
         for (String s : LABELS) {
             JLabel label = new JLabel(s);
@@ -137,29 +143,25 @@ public class SwingView extends JFrame implements MyView {
             panel.add(label);
 
             label = new JLabel(s);
-            label.setBounds(TEXT_START_X + TEXT_STEP_X, y, TEXT_WIDTH - TEXT_STEP_X, TEXT_START_Y);
+            label.setBounds(TEXT_START_X + TEXT_STEP_X, y, TEXT_WIDTH - 2 * TEXT_START_X - TEXT_STEP_X, TEXT_START_Y);
             panel.add(label);
             labels.put(s, label);
 
             y += TEXT_STEP_Y;
         }
+        return  panel;
+    }
 
+    private JScrollPane createLogPane() {
         JLabel label = new JLabel(LOGGER);
-//        label.setPreferredSize(new Dimension( TEXT_PANEL_WIDTH - 40,2000));
-//
-//        JScrollPane scrollFrame = new JScrollPane();
-//        label.setAutoscrolls(true);
-//        scrollFrame.add(label);
-//        scrollFrame.setPreferredSize(new Dimension( TEXT_PANEL_WIDTH - 40,100));
-//        scrollFrame.setBounds(10, y, TEXT_PANEL_WIDTH - 50, 300);
-//        panel.add(scrollFrame);
-
-        label.setBounds(20, y, TEXT_PANEL_WIDTH - 40, GAME_PANEL_HEIGHT);
         label.setVerticalAlignment(SwingConstants.TOP);
-        panel.add(label);
         labels.put(LOGGER, label);
 
-        return  panel;
+        JScrollPane scroller = new JScrollPane(label, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroller.setBackground(Color.GRAY);
+        scroller.getViewport().setBackground(Color.GRAY);
+
+        return scroller;
     }
 
     public void updateField(String name, String value) {
@@ -259,6 +261,7 @@ public class SwingView extends JFrame implements MyView {
 
         add(gamePanel);
         add(textPanel);
+        add(logPanel);
         addKeyListener(listener);
 
         refresh();
