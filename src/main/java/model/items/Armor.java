@@ -31,7 +31,7 @@ public enum Armor implements Item {
 
     @Override
     public String toString() {
-        return name + "(+" + defense + "AC)";
+        return name + "(" + defense + "AC)";
     }
 
     @Override

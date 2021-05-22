@@ -16,7 +16,6 @@ import static model.war.Warrior.*;
 public class TerminalView implements MyView, Runnable {
 
     private final static String TREE = "\033[2;0;32mT\033[00m";
-    private final static String ANIMAL = "\033[0;31mA\033[00m";
     private final static String BLOOD = "\033[41;30m \033[00m";
     private final static String EMPTY = " ";
     private final static String SALAMANDER = "\033[2;45;30ms\033[00m";
@@ -24,7 +23,6 @@ public class TerminalView implements MyView, Runnable {
     private final static String ALPACA = "\033[2;42;30ma\033[00m";
     private final static String HONEY_BADGER = "\033[2;44;30mh\033[00m";
     private final static String STONE = "\033[7;37ms\033[00m";
-    private final static String PlAYER = "\033[0;36mX\033[00m";
     private final static String BOUNDARY = "\033[6;30mX\033[00m";
 
     private Place[][] env;
@@ -42,7 +40,7 @@ public class TerminalView implements MyView, Runnable {
     private boolean needDestroy;
 
 
-    private static String[] LABELS = {NAME, HP, LEVEL, EXP, ATTACK, DEFENSE, HELMET};
+    private static String[] LABELS = {NAME, HP, LEVEL, EXP, ATTACK, DEFENSE, HELMET, ARMOR, WEAPON, HELM};
 
     public TerminalView(ModelView model, AllController controller) {
         this.model = model;
@@ -127,12 +125,16 @@ public class TerminalView implements MyView, Runnable {
                     break;
                 case HP:
                     System.out.print(player.getHp());
+                    System.out.print('/');
+                    System.out.print(player.maxHp());
                     break;
                 case LEVEL:
                     System.out.print(player.getLevel());
                     break;
                 case EXP:
                     System.out.print(player.getExperience());
+                    System.out.print('/');
+                    System.out.print(player.getExperienceForNextLevel());
                     break;
                 case DEFENSE:
                     System.out.print(player.getDefense());
@@ -142,6 +144,15 @@ public class TerminalView implements MyView, Runnable {
                     break;
                 case ATTACK:
                     System.out.print(player.getAttack());
+                    break;
+                case ARMOR:
+                    System.out.print(player.getArmor());
+                    break;
+                case WEAPON:
+                    System.out.print(player.getWeapon());
+                    break;
+                case HELM:
+                    System.out.print(player.getHelm());
                     break;
                 default:
                     break;

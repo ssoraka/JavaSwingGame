@@ -32,19 +32,19 @@ public class SwingView extends JFrame implements MyView {
 
     private Map<String, JLabel> labels;
 
-    private static int TEXT_WIDTH = 300;
+    private static int TEXT_WIDTH = 500;
     private static int TEXT_START_X = 20;
     private static int TEXT_START_Y = 20;
     private static int TEXT_STEP_X = 100;
     private static int TEXT_STEP_Y = 20;
 
     private static final String LOGGER = "logger";
-    private static final String[] LABELS = {NAME, HP, LEVEL, EXP, NEXT_EXP, ATTACK, DEFENSE, HELMET};
+    private static final String[] LABELS = {NAME, HP, LEVEL, EXP, ATTACK, DEFENSE, HELMET, ARMOR, WEAPON, HELM};
 
     private static final String TITLE = "SWINGY";
     private static final int GAME_PANEL_HEIGHT = 600;
     private static final int GAME_PANEL_WIDTH = 800;
-    private static final int TEXT_PANEL_WIDTH = 300;
+    private static final int TEXT_PANEL_WIDTH = 500;
     private static final Dimension GAME_DIMENSIONS = new Dimension(GAME_PANEL_WIDTH + TEXT_PANEL_WIDTH, GAME_PANEL_HEIGHT);
 
     public SwingView(ModelView model, AllController controller) {
@@ -137,7 +137,7 @@ public class SwingView extends JFrame implements MyView {
             panel.add(label);
 
             label = new JLabel(s);
-            label.setBounds(TEXT_START_X + TEXT_STEP_X, y, TEXT_STEP_X, TEXT_START_Y);
+            label.setBounds(TEXT_START_X + TEXT_STEP_X, y, TEXT_WIDTH - TEXT_STEP_X, TEXT_START_Y);
             panel.add(label);
             labels.put(s, label);
 
@@ -154,7 +154,7 @@ public class SwingView extends JFrame implements MyView {
 //        scrollFrame.setBounds(10, y, TEXT_PANEL_WIDTH - 50, 300);
 //        panel.add(scrollFrame);
 
-        label.setBounds(20, y, TEXT_PANEL_WIDTH - 40, 300);
+        label.setBounds(20, y, TEXT_PANEL_WIDTH - 40, GAME_PANEL_HEIGHT);
         label.setVerticalAlignment(SwingConstants.TOP);
         panel.add(label);
         labels.put(LOGGER, label);
@@ -268,13 +268,17 @@ public class SwingView extends JFrame implements MyView {
         model.fillEnvironment(gamePanel.getEnv());
         Warrior person = model.getPlayer();
         updateField(NAME, person.getName());
-        updateField(HP, Integer.toString(person.getHp()));
+        updateField(HP, person.getHp() + "/" + person.maxHp());
         updateField(LEVEL, Integer.toString(person.getLevel()));
-        updateField(EXP, Integer.toString(person.getExperience()));
-        updateField(NEXT_EXP, Integer.toString(person.getExperienceForNextLevel()));
+        updateField(EXP, person.getExperience() + "/" + person.getExperienceForNextLevel());
         updateField(DEFENSE, Integer.toString(person.getDefense()));
         updateField(HELMET, Integer.toString(person.getHelmet()));
         updateField(ATTACK, Integer.toString(person.getAttack()));
+
+        updateField(ARMOR, person.getArmor().toString());
+        updateField(WEAPON, person.getWeapon().toString());
+        updateField(HELM, person.getHelm().toString());
+
         updateField(LOGGER, Fighting.getHtmlLog());
 
         repaint();
