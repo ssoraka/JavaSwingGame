@@ -17,6 +17,7 @@ public class Warrior implements Fighter{
     public static final String HELMET = "helmet";
     public static final String LEVEL = "level";
     public static final String EXP = "exp";
+    public static final String NEXT_EXP = "levelUp";
     public static final String TYPE = "type";
 
     public static final String WEAPON = "weapon";

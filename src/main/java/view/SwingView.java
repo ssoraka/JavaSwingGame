@@ -38,7 +38,8 @@ public class SwingView extends JFrame implements MyView {
     private static int TEXT_STEP_X = 100;
     private static int TEXT_STEP_Y = 20;
 
-    private static final String[] LABELS = {NAME, HP, LEVEL, EXP, "next exp", ATTACK, DEFENSE, HELMET};
+    private static final String LOGGER = "logger";
+    private static final String[] LABELS = {NAME, HP, LEVEL, EXP, NEXT_EXP, ATTACK, DEFENSE, HELMET};
 
     private static final String TITLE = "SWINGY";
     private static final int GAME_PANEL_HEIGHT = 600;
@@ -143,7 +144,7 @@ public class SwingView extends JFrame implements MyView {
             y += TEXT_STEP_Y;
         }
 
-        JLabel label = new JLabel("logger");
+        JLabel label = new JLabel(LOGGER);
 //        label.setPreferredSize(new Dimension( TEXT_PANEL_WIDTH - 40,2000));
 //
 //        JScrollPane scrollFrame = new JScrollPane();
@@ -156,7 +157,7 @@ public class SwingView extends JFrame implements MyView {
         label.setBounds(20, y, TEXT_PANEL_WIDTH - 40, 300);
         label.setVerticalAlignment(SwingConstants.TOP);
         panel.add(label);
-        labels.put("logger", label);
+        labels.put(LOGGER, label);
 
         return  panel;
     }
@@ -270,11 +271,11 @@ public class SwingView extends JFrame implements MyView {
         updateField(HP, Integer.toString(person.getHp()));
         updateField(LEVEL, Integer.toString(person.getLevel()));
         updateField(EXP, Integer.toString(person.getExperience()));
-        updateField("next exp", Integer.toString(person.getExperienceForNextLevel()));
+        updateField(NEXT_EXP, Integer.toString(person.getExperienceForNextLevel()));
         updateField(DEFENSE, Integer.toString(person.getDefense()));
         updateField(HELMET, Integer.toString(person.getHelmet()));
         updateField(ATTACK, Integer.toString(person.getAttack()));
-        updateField("logger", Fighting.getHtmlLog());
+        updateField(LOGGER, Fighting.getHtmlLog());
 
         repaint();
     }

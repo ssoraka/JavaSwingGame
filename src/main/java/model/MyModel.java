@@ -79,10 +79,10 @@ public class MyModel implements ModelController, ModelView {
 
     @Override
     public void createNewPersonAndStartGame(String login, String password, Clazz clazz) {
-        if (db.isLoginOrPasswordAlreadyExist(login, password))
-            throw new DAOException("Такое имя или пароль уже существует");
+        if (db.isLoginAlreadyExist(login))
+            throw new DAOException("Такое имя уже существует");
 
-        setPlayer(WarriorFabric.createPlayer(login, clazz)); //подумать, игрок есть в классе Fighting
+        setPlayer(WarriorFabric.createPlayer(login, clazz));
         db.createPlayer(login, password, player);
     }
 

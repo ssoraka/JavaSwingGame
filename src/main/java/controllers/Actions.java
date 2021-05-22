@@ -1,7 +1,6 @@
 package controllers;
 
 import model.Dice;
-import model.war.Clazz;
 
 public enum Actions {
     NOTHING,

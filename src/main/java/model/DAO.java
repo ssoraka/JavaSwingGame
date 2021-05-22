@@ -1,6 +1,7 @@
 package model;
 
 
+import com.sun.javafx.tools.ant.CSSToBinTask;
 import model.items.Armor;
 import model.items.Helmet;
 import model.items.Weapon;
@@ -26,12 +27,30 @@ public class DAO {
     private static String LOGIN = "login";
     private static String PASSWORD = "password";
     private static String ID = "id";
-    private static String TABLE_NAME = "players";
+
+    private static String SELECT_QUERY_BY_LOGIN_AND_PASSWORD = "SELECT * FROM players WHERE login=? AND password=?";
+    private static String SELECT_QUERY_BY_LOGIN = "SELECT * FROM players WHERE login=?";
+    private static String SELECT_QUERY_ALL = "SELECT * FROM players";
+    private static String INSERT_QUERY_START = "INSERT INTO 'players' ";
+    private static String UPDATE_QUERY_START = "UPDATE players SET ";
+    private static String DROP_TABLE_QUERY = "DROP TABLE if exists 'players';";
+    private static String CREATE_TABLE_QUERY =
+            "CREATE TABLE if not exists 'players' (" +
+                    "'" + ID + "' INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "'" + LOGIN + "' text, " +
+                    "'" + PASSWORD + "' text, " +
+                    "'" + TYPE + "' text, " +
+                    "'" + LEVEL + "' INT, " +
+                    "'" + EXP + "' INT, " +
+                    "'" + HP + "' INT, " +
+                    "'" + ATTACK + "' INT, " +
+                    "'" + DEFENSE + "' INT, " +
+                    "'" + HELMET + "' INT, " +
+                    "'" + WEAPON + "' text, " +
+                    "'" + ARMOR + "' text, " +
+                    "'" + HELM + "' text);";
 
     private static Connection connection;
-//    private static PreparedStatement statement;
-    private static Statement statement;
-    private static ResultSet resSet;
     private StringBuilder request;
 
     // --------ПОДКЛЮЧЕНИЕ К БАЗЕ ДАННЫХ--------
@@ -39,14 +58,13 @@ public class DAO {
         if (connection == null) {
             DriverManager.registerDriver(new JDBC());
             connection = DriverManager.getConnection("jdbc:sqlite:" + ApplicationProperties.getProperties("db_path"));
-            statement = connection.createStatement();
             System.out.println("База Подключена!");
         }
     }
 
     public DAO() throws SQLException {
         createConnection();
-        dropTable(TABLE_NAME);
+        dropTable();
         createDB();
         initDB();
         readDB();
@@ -54,47 +72,32 @@ public class DAO {
 
     public void closeDB() {
         try {
-            if (connection != null)
+            if (connection != null) {
                 connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            if (statement != null)
-                statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            if (resSet != null)
-                resSet.close();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         System.out.println("Соединения закрыты, база отключена");
     }
 
-    public void dropTable(String name) throws SQLException {
-        statement.execute("DROP TABLE if exists '" + name + "';");
+    public void dropTable() {
+        try ( PreparedStatement statement = connection.prepareStatement(DROP_TABLE_QUERY) ) {
+            statement.execute() ;
+            System.out.println("удалили старую таблицу");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void createDB() throws SQLException {
-        statement.execute("CREATE TABLE if not exists '" + TABLE_NAME + "' (" +
-                "'" + ID + "' INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "'" + LOGIN + "' text, " +
-                "'" + PASSWORD + "' text, " +
-                "'" + TYPE + "' text, " +
-                "'" + LEVEL + "' INT, " +
-                "'" + EXP + "' INT, " +
-                "'" + HP + "' INT, " +
-                "'" + ATTACK + "' INT, " +
-                "'" + DEFENSE + "' INT, " +
-                "'" + HELMET + "' INT, " +
-                "'" + WEAPON + "' text, " +
-                "'" + ARMOR + "' text, " +
-                "'" + HELM + "' text);"
-        );
-        System.out.println("Таблица создана или уже существует.");
+    public void createDB() {
+        try ( PreparedStatement statement = connection.prepareStatement(CREATE_TABLE_QUERY) ) {
+            statement.execute();
+            System.out.println("создали новую таблицу");
+        } catch (SQLException e) {
+            System.out.println("Не получилось создать таблицу");
+            e.printStackTrace();
+        }
     }
 
     // --------Заполнение таблицы--------
@@ -114,32 +117,36 @@ public class DAO {
     }
 
     // -------- Вывод таблицы--------
-    public void readDB() throws SQLException {
-        resSet = statement.executeQuery("SELECT * FROM " + TABLE_NAME);
-        while (resSet.next()) {
-            int id = resSet.getInt(ID);
-            String login = resSet.getString(LOGIN);
-            String password = resSet.getString(PASSWORD);
-            int exp = resSet.getInt(EXP);
-            int hp = resSet.getInt(HP);
-            int attack = resSet.getInt(ATTACK);
-            int def = resSet.getInt(DEFENSE);
-            int helmet = resSet.getInt(HELMET);
-            int level = resSet.getInt(LEVEL);
-            String type = resSet.getString(TYPE);
-            String weapon = resSet.getString(WEAPON);
-            String armor = resSet.getString(ARMOR);
-            String helm = resSet.getString(HELM);
-            System.out.printf("ID = %d, login = %s, pas = %s, exp = %d, hp = %d, attack = %d, def = %d, helmet = %d, level = %d, type = %s, %s, %s, %s",
-                    id, login, password, exp, hp, attack, def, helmet, level, type, weapon, armor, helm);
-            System.out.println();
+    public void readDB() {
+        try ( PreparedStatement statement = connection.prepareStatement(SELECT_QUERY_ALL) ) {
+            ResultSet resSet = statement.executeQuery();
+            while (resSet.next()) {
+                int id = resSet.getInt(ID);
+                String login = resSet.getString(LOGIN);
+                String password = resSet.getString(PASSWORD);
+                int exp = resSet.getInt(EXP);
+                int hp = resSet.getInt(HP);
+                int attack = resSet.getInt(ATTACK);
+                int def = resSet.getInt(DEFENSE);
+                int helmet = resSet.getInt(HELMET);
+                int level = resSet.getInt(LEVEL);
+                String type = resSet.getString(TYPE);
+                String weapon = resSet.getString(WEAPON);
+                String armor = resSet.getString(ARMOR);
+                String helm = resSet.getString(HELM);
+                System.out.printf("ID = %d, login = %s, pas = %s, exp = %d, hp = %d, attack = %d, def = %d, helmet = %d, level = %d, type = %s, %s, %s, %s",
+                        id, login, password, exp, hp, attack, def, helmet, level, type, weapon, armor, helm);
+                System.out.println();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
         System.out.println("Таблица выведена");
     }
 
     private void insertRequest(String field, String value) {
-        request = new StringBuilder("INSERT INTO '").append(TABLE_NAME).append("' ( '")
+        request = new StringBuilder(INSERT_QUERY_START)
+                .append("( '")
                 .append(field)
                 .append("' ) VALUES ( '")
                 .append(value)
@@ -165,9 +172,10 @@ public class DAO {
         insertInRequest("'", "");
     }
 
-    public boolean isLoginOrPasswordAlreadyExist(String login, String password) {
-        try {
-            resSet = statement.executeQuery(String.format("SELECT * FROM %s WHERE %s='%s' OR %s='%s'", TABLE_NAME, LOGIN, login, PASSWORD, password));
+    public boolean isLoginAlreadyExist(String login) {
+        try ( PreparedStatement statement = connection.prepareStatement(SELECT_QUERY_BY_LOGIN) ) {
+            statement.setString(1, login);
+            ResultSet resSet = statement.executeQuery();
             return resSet.next();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -176,8 +184,10 @@ public class DAO {
     }
 
     public boolean isLoginAndPasswordAlreadyExist(String login, String password) {
-        try {
-            resSet = statement.executeQuery(String.format("SELECT * FROM %s WHERE %s='%s' AND %s='%s'", TABLE_NAME, LOGIN, login, PASSWORD, password));
+        try ( PreparedStatement statement = connection.prepareStatement(SELECT_QUERY_BY_LOGIN_AND_PASSWORD) ) {
+            statement.setString(1, login);
+            statement.setString(2, password);
+            ResultSet resSet = statement.executeQuery();
             return resSet.next();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -199,16 +209,18 @@ public class DAO {
         addArg(WEAPON, warrior.getWeapon().name());
         addArg(ARMOR, warrior.getArmor().name());
         addArg(HELM, warrior.getHelm().name());
-        try {
-            statement.execute(request.toString());
+
+        try ( PreparedStatement statement = connection.prepareStatement(request.toString()) ) {
+            statement.execute();
             readDB();
         } catch (Exception e) {
             System.out.println("Не записалось в бд");
+            e.printStackTrace();
         }
     }
 
     public void updatePlayer(Warrior warrior) {
-        request = new StringBuilder("UPDATE ").append(TABLE_NAME).append(" SET ")
+        request = new StringBuilder(UPDATE_QUERY_START)
                 .append("'").append(EXP).append("'=")
                 .append(warrior.getExperience())
                 .append(",'").append(HP).append("'=")
@@ -232,18 +244,21 @@ public class DAO {
                 .append(" WHERE ").append(LOGIN).append("='")
                 .append(warrior.getName())
                 .append("';");
-        try {
-            statement.execute(request.toString());
+        try ( PreparedStatement statement = connection.prepareStatement(request.toString()) ) {
+            statement.execute();
             readDB();
         } catch (Exception e) {
             System.out.println("Не обновилась запись в бд");
+            e.printStackTrace();
         }
     }
 
     public Warrior readPlayer(String login, String password) {
-        Warrior player = WarriorFabric.createPlayer(login, Clazz.CAPYBARA);
-        try {
-            resSet = statement.executeQuery(String.format("SELECT * FROM %s WHERE %s='%s' AND %s='%s'", TABLE_NAME, LOGIN, login, PASSWORD, password));
+        Warrior player = null;
+        try ( PreparedStatement statement = connection.prepareStatement(SELECT_QUERY_BY_LOGIN_AND_PASSWORD) ) {
+            statement.setString(1, login);
+            statement.setString(2, password);
+            ResultSet resSet = statement.executeQuery();
 
             player = WarriorFabric.createPlayer(login, Clazz.valueOf(resSet.getString(TYPE)));
             player.setLevel(resSet.getInt(LEVEL));
@@ -269,11 +284,11 @@ public class DAO {
                 }
                 throw new DAOException(log.toString());
             }
+        } catch (IllegalArgumentException e) {
+            throw new DAOException("Неверно указаны оружие, броня или шлем");
         } catch (SQLException e) {
             throw new DAOException("Нет такого в бд");
         }
-
         return player;
     }
-
 }
