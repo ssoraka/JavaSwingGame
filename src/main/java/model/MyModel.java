@@ -100,6 +100,9 @@ public class MyModel implements ModelController, ModelView {
         if (!db.isLoginAlreadyExist(login)) {
             db.createPlayer(login, password, player);
         }
+        if (!player.isAlive()) {
+            setPlayer(db.readPlayer(login, password));
+        }
     }
 
     @Override

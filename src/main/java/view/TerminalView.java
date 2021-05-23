@@ -92,6 +92,7 @@ public class TerminalView implements MyView, Runnable {
 
     public void refresh() {
         System.out.println("\33c");
+        player = model.getPlayer();
         logs = Fighting.getTextLog().split("\n");
         model.fillEnvironment(env);
 
@@ -266,7 +267,7 @@ public class TerminalView implements MyView, Runnable {
             } catch (DeadException e) {
                 refresh();
                 if (confirm(e.getMessage() + "\nrestart level?")) {
-                    controller.continueGame();
+                    controller.startGame();
                 } else {
                     controller.startMenu();
                 }

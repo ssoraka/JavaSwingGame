@@ -6,6 +6,7 @@ public enum Actions {
     NOTHING,
     ENTER,
 
+    CLOSE_GAME,
     EXIT,
 
     CHANGE_VIEW,
@@ -29,6 +30,7 @@ public enum Actions {
             case '\n': return ENTER;
             case 'q': return EXIT;
             case 'z': return CHANGE_VIEW;
+            case 'c': return CLOSE_GAME;
             default:
                 return NOTHING;
         }
@@ -58,6 +60,7 @@ public enum Actions {
             case "quit":
             case "exit": return EXIT;
             case "z": return CHANGE_VIEW;
+            case "c": return CLOSE_GAME;
             default:
                 return NOTHING;
         }

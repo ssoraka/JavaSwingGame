@@ -68,6 +68,7 @@ public class AllController {
             case MOVE_LEFT: return model.movePlayer(Level.LEFT);
             case MOVE_RIGHT: return model.movePlayer(Level.RIGHT);
             case CHANGE_VIEW: view.changeView(); startGame(); break;
+            case CLOSE_GAME: view.startMenu(); break;
             case EXIT: exit(); break;
         }
         return false;

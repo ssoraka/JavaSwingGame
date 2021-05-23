@@ -88,7 +88,7 @@ public class SwingView extends JFrame implements MyView {
                 } catch (DeadException ex) {
                     refresh();
                     if (confirm(ex.getMessage() + "\nrestart level?")) {
-                        controller.continueGame();
+                        controller.startGame();
                     } else {
                         controller.startMenu();
                     }
