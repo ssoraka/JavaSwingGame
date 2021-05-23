@@ -35,7 +35,10 @@ public class TerminalView implements MyView, Runnable {
     private String[] logs;
     private String emptyLine;
 
-    private static Runnable DEFAULT_ACTION = () -> {};
+    private static Runnable DEFAULT_ACTION = new Runnable() {
+        @Override
+        public void run() {}
+    };
     private Runnable runner;
     private boolean needDestroy;
 
@@ -185,98 +188,113 @@ public class TerminalView implements MyView, Runnable {
         System.out.println("2) continue");
         System.out.println("3) quit");
 
-        runner = () -> {
-            switch (readLine()) {
-                case "s" :
-                case "start" :
-                case "1" : controller.createMenu(); break;
-                case "c" :
-                case "continue" :
-                case "2" : controller.continueGame(); break;
-                case "q" :
-                case "quit" :
-                case "3" : controller.exit(); break;
-                default: System.out.println("Enter the number 1-3"); break;
+        runner = new Runnable() {
+            @Override
+            public void run() {
+                switch (readLine()) {
+                    case "s":
+                    case "start":
+                    case "1": controller.createMenu(); break;
+                    case "c":
+                    case "continue":
+                    case "2": controller.continueGame(); break;
+                    case "q":
+                    case "quit":
+                    case "3": controller.exit(); break;
+                    default: System.out.println("Enter the number 1-3"); break;
+                }
             }
         };
     }
 
     @Override
     public void createMenu() {
-        runner = () -> {
-            System.out.println("Enter Your Login");
-            controller.setLogin(readLine());
-            System.out.println("Enter Your Password");
-            controller.setPassword(readLine());
-            controller.setClazz(readClass());
-            try {
-                controller.createNewPersonInGame();
-                controller.watchHero();
-            } catch (DAOException ex) {
-                System.out.println(ex.getMessage());
-                controller.startMenu();
+        runner = new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Enter Your Login");
+                controller.setLogin(readLine());
+                System.out.println("Enter Your Password");
+                controller.setPassword(readLine());
+                controller.setClazz(readClass());
+                try {
+                    controller.createNewPersonInGame();
+                    controller.watchHero();
+                } catch (DAOException ex) {
+                    System.out.println(ex.getMessage());
+                    controller.startMenu();
+                }
             }
         };
     }
 
     @Override
     public void continueGame() {
-        runner = () -> {
-            System.out.println("Enter Your Login");
-            controller.setLogin(readLine());
-            System.out.println("Enter Your Password");
-            controller.setPassword(readLine());
-            try {
-                controller.findPersonInGame();
-                controller.watchHero();
-            } catch (DAOException ex) {
-                System.out.println(ex.getMessage());
-                controller.startMenu();
+        runner = new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Enter Your Login");
+                controller.setLogin(readLine());
+                System.out.println("Enter Your Password");
+                controller.setPassword(readLine());
+                try {
+                    controller.findPersonInGame();
+                    controller.watchHero();
+                } catch (DAOException ex) {
+                    System.out.println(ex.getMessage());
+                    controller.startMenu();
+                }
             }
         };
     }
 
     @Override
     public void watchHero() {
-        runner = () -> {
-            player = model.getPlayer();
+        runner = new Runnable() {
+            @Override
+            public void run() {
+                player = model.getPlayer();
 
-            System.out.println("Your hero:");
-            for (int i = 0; i < LABELS.length; i++) {
-                printParamOrLogs(i);
+                System.out.println("Your hero:");
+                for (int i = 0; i < LABELS.length; i++) {
+                    printParamOrLogs(i);
+                    System.out.println("");
+                }
                 System.out.println("");
-            }
-            System.out.println("");
 
-            if (confirm("Do you accept it?")) {
-                controller.startGame();
-            } else {
-                controller.startMenu();
+                if (confirm("Do you accept it?")) {
+                    controller.startGame();
+                } else {
+                    controller.startMenu();
+                }
             }
         };
     }
 
     @Override
     public void startGame() {
-        runner = () -> {
-            refresh();
-            try {
-                Actions action = Actions.getAction(readLine());
-                if (controller.isMeetEnemy(action) && !confirm("Do you want fight?") && Dice.d2()) {
-                    return;
-                } else {
-                    if (controller.executeCommand(action)) {
-                        getReward();
-                        controller.moveWorld();
-                        getReward();
-                    }
-                }
-            } catch (DeadException e) {
+        runner = new Runnable() {
+            @Override
+            public void run() {
                 refresh();
-                if (confirm(e.getMessage() + "\nrestart level?")) {
-                    controller.startGame();
-                } else {
-                    controller.startMenu();
+                try {
+                    Actions action = Actions.getAction(readLine());
+                    if (controller.isMeetEnemy(action) && !confirm("Do you want fight?") && Dice.d2()) {
+                        return;
+                    } else {
+                        if (controller.executeCommand(action)) {
+                            getReward();
+                            controller.moveWorld();
+                            getReward();
+                        }
+                    }
+                } catch (DeadException e) {
+                    refresh();
+                    if (confirm(e.getMessage() + "\nrestart level?")) {
+                        controller.startGame();
+                    } else {
+                        controller.startMenu();
+                    }
                 }
             }
         };

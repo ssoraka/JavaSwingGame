@@ -13,6 +13,8 @@ import model.war.Warrior;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashMap;
@@ -36,6 +38,12 @@ public class SwingView extends JFrame implements MyView {
     private JButton buttonConfirm;
     private JButton buttonBack;
 
+    private ActionListener createListener;
+    private ActionListener startListener;
+    private ActionListener exitListener;
+    private ActionListener startGameListener;
+    private ActionListener continueListener;
+
     private Map<String, JLabel> labels;
 
     private static int TEXT_WIDTH = 500;
@@ -53,7 +61,7 @@ public class SwingView extends JFrame implements MyView {
     private static final int TEXT_PANEL_WIDTH = 500;
     private static final Dimension GAME_DIMENSIONS = new Dimension(GAME_PANEL_WIDTH + TEXT_PANEL_WIDTH, GAME_PANEL_HEIGHT);
 
-    public SwingView(ModelView model, AllController controller) {
+    public SwingView(ModelView model, final AllController controller) {
         this.controller = controller;
         this.model = model;
 
@@ -102,6 +110,38 @@ public class SwingView extends JFrame implements MyView {
 
             @Override
             public void keyReleased(KeyEvent e) {}
+        };
+
+
+        createListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.createMenu();
+            }
+        };
+        startListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.startMenu();
+            }
+        };
+        exitListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.exit();
+            }
+        };
+        startGameListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.startGame();
+            }
+        };
+        continueListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.continueGame();
+            }
         };
     }
 
@@ -188,9 +228,9 @@ public class SwingView extends JFrame implements MyView {
         add(buttonContinue);
         add(buttonExit);
 
-        buttonCreate.addActionListener(e -> controller.createMenu());
-        buttonContinue.addActionListener(e -> controller.continueGame());
-        buttonExit.addActionListener(e -> controller.exit());
+        buttonCreate.addActionListener(createListener);
+        buttonContinue.addActionListener(continueListener);
+        buttonExit.addActionListener(exitListener);
         repaint();
     }
 
@@ -200,10 +240,16 @@ public class SwingView extends JFrame implements MyView {
 
         createLoginPassword();
 
+        final AllController controller = this.controller;
         ButtonGroup race = new ButtonGroup();
-        for (Clazz c : Clazz.values()) {
+        for (final Clazz c : Clazz.values()) {
             JRadioButton cap = new JRadioButton(c.name());
-            cap.addActionListener(e -> controller.setClazz(c));
+            cap.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    controller.setClazz(c);
+                }
+            });
             cap.setBounds(30 + 200 * (c.ordinal() % 2), 180 + 50 * ((c.ordinal() < 2) ? 0:1), 200, 50);
             add(cap);
             cap.setSelected(true);
@@ -211,18 +257,21 @@ public class SwingView extends JFrame implements MyView {
         }
 
         createConfirmBack();
-        buttonBack.addActionListener(e -> controller.startMenu());
-        buttonConfirm.addActionListener(e -> {
-            try {
-                controller.setLogin(login.getText());
-                controller.setPassword(password.getText());
-                controller.createNewPersonInGame();
-                controller.watchHero();
-            } catch (DAOException ex) {
-                JOptionPane.showMessageDialog(null,
-                        ex.getMessage(),
-                        "Authentication error",
-                        JOptionPane.PLAIN_MESSAGE);
+        buttonBack.addActionListener(startListener);
+        buttonConfirm.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    controller.setLogin(login.getText());
+                    controller.setPassword(password.getText());
+                    controller.createNewPersonInGame();
+                    controller.watchHero();
+                } catch (DAOException ex) {
+                    JOptionPane.showMessageDialog(null,
+                            ex.getMessage(),
+                            "Authentication error",
+                            JOptionPane.PLAIN_MESSAGE);
+                }
             }
         });
 
@@ -263,18 +312,21 @@ public class SwingView extends JFrame implements MyView {
 
         createLoginPassword();
         createConfirmBack();
-        buttonBack.addActionListener(e -> controller.startMenu());
-        buttonConfirm.addActionListener(e -> {
-            try {
-                controller.setLogin(login.getText());
-                controller.setPassword(password.getText());
-                controller.findPersonInGame();
-                controller.watchHero();
-            } catch (DAOException ex) {
-                JOptionPane.showMessageDialog(null,
-                        ex.getMessage(),
-                        "Authentication error",
-                        JOptionPane.PLAIN_MESSAGE);
+        buttonBack.addActionListener(startListener);
+        buttonConfirm.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    controller.setLogin(login.getText());
+                    controller.setPassword(password.getText());
+                    controller.findPersonInGame();
+                    controller.watchHero();
+                } catch (DAOException ex) {
+                    JOptionPane.showMessageDialog(null,
+                            ex.getMessage(),
+                            "Authentication error",
+                            JOptionPane.PLAIN_MESSAGE);
+                }
             }
         });
 
@@ -298,8 +350,8 @@ public class SwingView extends JFrame implements MyView {
         add(textPanel);
 
         createConfirmBack();
-        buttonBack.addActionListener(e -> controller.startMenu());
-        buttonConfirm.addActionListener(e -> controller.startGame());
+        buttonBack.addActionListener(startListener);
+        buttonConfirm.addActionListener(startGameListener);
 
         refresh();
     }
@@ -347,6 +399,5 @@ public class SwingView extends JFrame implements MyView {
     public void destroy() {
         clearView();
         setVisible(false);
-//        enableEvents(WindowEvent.WINDOW_CLOSING);
     }
 }
