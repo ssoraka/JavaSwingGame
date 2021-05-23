@@ -9,7 +9,6 @@ import model.war.Fighting;
 import model.war.Warrior;
 
 import java.util.Scanner;
-import java.util.function.Consumer;
 
 import static model.war.Warrior.*;
 
@@ -23,7 +22,7 @@ public class TerminalView implements MyView, Runnable {
     private final static String ALPACA = "\033[2;42;30ma\033[00m";
     private final static String HONEY_BADGER = "\033[2;44;30mh\033[00m";
     private final static String STONE = "\033[7;37ms\033[00m";
-    private final static String BOUNDARY = "\033[6;30mX\033[00m";
+    private final static String BOUNDARY = "\033[1;30mX\033[00m";
 
     private Place[][] env;
     private int width;
@@ -183,6 +182,7 @@ public class TerminalView implements MyView, Runnable {
 
     @Override
     public void startMenu() {
+        System.out.println("\33c");
         System.out.println("Choose you destiny!!!");
         System.out.println("1) start new game");
         System.out.println("2) continue");

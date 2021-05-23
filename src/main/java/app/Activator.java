@@ -9,36 +9,39 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Activator {
-
     private static MyModel model;
     private static AllController controller;
     private static View view;
 
-    private static final String TERMINAL_MODE = "terminal";
-    private static final String SWING_MODE = "swing";
-
-
-//        System.out.print("\033[H\033[2J");
-//        System.out.flush();
-//        System.out.print("dsadasdadas");
-//        System.out.print("\033[H\033[2J");
-//        System.out.flush();
+    private static final String TERMINAL_MODE = "console";
+    private static final String SWING_MODE = "gui";
 
     /*
 
-    -добавить возможность загружать ранее созданного персонажа
     -убрать вывод базы в терминал, очищение базы в самом начале
     -надо попробовать убрать ворнинг
     May 16, 2021 7:13:20 PM org.hibernate.validator.internal.util.Version <clinit>
     INFO: HV000001: Hibernate Validator 6.0.13.Final
 
-
      */
 
-
+    private static final String USAGE =
+            "java -jar swingy.jar console\n" +
+            "java -jar swingy.jar gui";
 
     public static void main(String[] args) throws SQLException {
-        String mode = getMode();
+        String mode = SWING_MODE;
+        if (args.length == 0 || (args.length == 1 && args[0].equals("-help"))) {
+            System.out.println(USAGE);
+            return;
+        } else if (args.length == 1 && args[0].equals(TERMINAL_MODE)) {
+            mode = TERMINAL_MODE;
+        } else if (args.length == 1 && args[0].equals(SWING_MODE)) {
+            mode = SWING_MODE;
+        } else {
+            System.out.println("Not valid game mode.");
+            mode = getMode();
+        }
 
         DAO db = new DAO();
         model = new MyModel();
@@ -60,16 +63,18 @@ public class Activator {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Choose game mode:");
-        System.out.println("1 - \"swing\"");
-        System.out.println("2 - \"terminal\"");
+        System.out.println("1) " + SWING_MODE);
+        System.out.println("2) " + TERMINAL_MODE);
 
         while (scanner.hasNext()) {
             String text = scanner.nextLine();
             switch (text) {
                 case TERMINAL_MODE :
+                case "c" :
                 case "t" :
                 case "2" : return TERMINAL_MODE;
                 case SWING_MODE :
+                case "g" :
                 case "s" :
                 case "1" : return SWING_MODE;
                 default :

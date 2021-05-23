@@ -1,6 +1,5 @@
 package model;
 
-import controllers.Actions;
 import model.war.*;
 
 import java.awt.*;
@@ -25,7 +24,6 @@ public class Level {
 
     private Random random;
 
-    // надо сделать чтение карты с файла
     public Level(int width, int height) {
         this.width = width;
         this.height = height;
