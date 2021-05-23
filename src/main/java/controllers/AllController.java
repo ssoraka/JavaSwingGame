@@ -1,5 +1,6 @@
 package controllers;
 
+import model.DAOException;
 import model.Level;
 import model.ModelController;
 import model.war.Clazz;
@@ -34,7 +35,7 @@ public class AllController {
 
     public void createNewPersonInGame() {
         if (password.isEmpty() || login.isEmpty()) {
-            throw new RuntimeException("Ошибка: Введите логин и пароль");
+            throw new DAOException("Ошибка: Введите логин и пароль");
         }
         model.createNewPerson(login, clazz);
     }

@@ -31,6 +31,11 @@ public class SwingView extends JFrame implements MyView {
     private JScrollPane logPanel;
     private KeyListener listener;
 
+    private JTextField login;
+    private JTextField password;
+    private JButton buttonConfirm;
+    private JButton buttonBack;
+
     private Map<String, JLabel> labels;
 
     private static int TEXT_WIDTH = 500;
@@ -193,32 +198,19 @@ public class SwingView extends JFrame implements MyView {
     public void createMenu() {
         clearView();
 
-        JTextField login = new JTextField("", 5);
-        JTextField password = new JTextField("", 5);
-        JLabel labelLogin = new JLabel("login:");
-        JLabel labelPassword = new JLabel("password:");
-        JButton buttonConfirm = new JButton("Подтвердить");
-        JButton buttonBack = new JButton("назад");
+        createLoginPassword();
+
         ButtonGroup race = new ButtonGroup();
-
-        setLayout(new GridLayout(10,1));
-        add(labelLogin);
-        add(login);
-        add(labelPassword);
-        add(password);
-
         for (Clazz c : Clazz.values()) {
             JRadioButton cap = new JRadioButton(c.name());
             cap.addActionListener(e -> controller.setClazz(c));
+            cap.setBounds(30 + 200 * (c.ordinal() % 2), 180 + 50 * ((c.ordinal() < 2) ? 0:1), 200, 50);
             add(cap);
             cap.setSelected(true);
             race.add(cap);
         }
 
-
-        add(buttonConfirm);
-        add(buttonBack);
-
+        createConfirmBack();
         buttonBack.addActionListener(e -> controller.startMenu());
         buttonConfirm.addActionListener(e -> {
             try {
@@ -226,7 +218,6 @@ public class SwingView extends JFrame implements MyView {
                 controller.setPassword(password.getText());
                 controller.createNewPersonInGame();
                 controller.watchHero();
-//                controller.startGame();
             } catch (DAOException ex) {
                 JOptionPane.showMessageDialog(null,
                         ex.getMessage(),
@@ -238,17 +229,56 @@ public class SwingView extends JFrame implements MyView {
         repaint();
     }
 
+    private void createLoginPassword() {
+        login = new JTextField("", 5);
+        login.setBounds(150, 50, 250, 50);
+        add(login);
+
+        password = new JTextField("", 5);
+        password.setBounds(150, 100, 250, 50);
+        add(password);
+
+        JLabel labelLogin = new JLabel("login:");
+        labelLogin.setBounds(20, 50, 200, 50);
+        add(labelLogin);
+
+        JLabel labelPassword = new JLabel("password:");
+        labelPassword.setBounds(20, 100, 200, 50);
+        add(labelPassword);
+    }
+
+    private void createConfirmBack() {
+        buttonConfirm = new JButton("Подтвердить");
+        buttonConfirm.setBounds(200, 300, 200, 50);
+        add(buttonConfirm);
+
+        buttonBack = new JButton("назад");
+        buttonBack.setBounds(0, 300, 200, 50);
+        add(buttonBack);
+    }
+
     @Override
     public void continueGame() {
-        try {
-            controller.findPersonInGame();
-            controller.watchHero();
-        } catch (RuntimeException ex) {
-            JOptionPane.showMessageDialog(null,
-                    ex.getMessage(),
-                    "Authentication error",
-                    JOptionPane.PLAIN_MESSAGE);
-        }
+        clearView();
+
+        createLoginPassword();
+        createConfirmBack();
+        buttonBack.addActionListener(e -> controller.startMenu());
+        buttonConfirm.addActionListener(e -> {
+            try {
+                controller.setLogin(login.getText());
+                controller.setPassword(password.getText());
+                controller.findPersonInGame();
+                controller.watchHero();
+            } catch (DAOException ex) {
+                JOptionPane.showMessageDialog(null,
+                        ex.getMessage(),
+                        "Authentication error",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
+        });
+
+        repaint();
     }
 
     @Override
@@ -267,14 +297,7 @@ public class SwingView extends JFrame implements MyView {
 
         add(textPanel);
 
-        JButton buttonConfirm = new JButton("Подтвердить");
-        buttonConfirm.setBounds(200, 300, 200, 50);
-        add(buttonConfirm);
-
-        JButton buttonBack = new JButton("назад");
-        buttonBack.setBounds(0, 300, 200, 50);
-        add(buttonBack);
-
+        createConfirmBack();
         buttonBack.addActionListener(e -> controller.startMenu());
         buttonConfirm.addActionListener(e -> controller.startGame());
 

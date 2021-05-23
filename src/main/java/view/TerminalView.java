@@ -220,13 +220,19 @@ public class TerminalView implements MyView, Runnable {
 
     @Override
     public void continueGame() {
-        try {
-            controller.findPersonInGame();
-            controller.watchHero();
-        } catch (RuntimeException ex) {
-            System.out.println(ex.getMessage());
-            controller.startMenu();
-        }
+        System.out.println("Enter Your Login");
+        func = s -> {
+            controller.setLogin(s);
+            System.out.println("Enter Your Password");
+            controller.setPassword(readLine());
+            try {
+                controller.findPersonInGame();
+                controller.watchHero();
+            } catch (DAOException ex) {
+                System.out.println(ex.getMessage());
+                controller.startMenu();
+            }
+        };
     }
 
     @Override
