@@ -35,8 +35,8 @@ public class TerminalView implements MyView, Runnable {
     private String[] logs;
     private String emptyLine;
 
-    private static Consumer<String> DEFAULT_ACTION = (s) -> {};
-    private Consumer<String> func;
+    private static Runnable DEFAULT_ACTION = () -> {};
+    private Runnable runner;
     private boolean needDestroy;
 
 
@@ -45,7 +45,7 @@ public class TerminalView implements MyView, Runnable {
     public TerminalView(ModelView model, AllController controller) {
         this.model = model;
         this.controller = controller;
-        func = DEFAULT_ACTION;
+        runner = DEFAULT_ACTION;
 
         width = 60;
         height = 20;
@@ -166,13 +166,13 @@ public class TerminalView implements MyView, Runnable {
 
     @Override
     public void run() {
-        Scanner scanner = new Scanner(System.in);
+        while (!needDestroy) {
+            runner.run();
 
-        while (!needDestroy && scanner.hasNext()) {
-            String text = scanner.nextLine();
-
-            if (!text.trim().isEmpty()) {
-                func.accept(text);
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -184,8 +184,9 @@ public class TerminalView implements MyView, Runnable {
         System.out.println("1) start new game");
         System.out.println("2) continue");
         System.out.println("3) quit");
-        func = s -> {
-            switch (s) {
+
+        runner = () -> {
+            switch (readLine()) {
                 case "s" :
                 case "start" :
                 case "1" : controller.createMenu(); break;
@@ -202,9 +203,9 @@ public class TerminalView implements MyView, Runnable {
 
     @Override
     public void createMenu() {
-        System.out.println("Enter Your Login");
-        func = s -> {
-            controller.setLogin(s);
+        runner = () -> {
+            System.out.println("Enter Your Login");
+            controller.setLogin(readLine());
             System.out.println("Enter Your Password");
             controller.setPassword(readLine());
             controller.setClazz(readClass());
@@ -220,9 +221,9 @@ public class TerminalView implements MyView, Runnable {
 
     @Override
     public void continueGame() {
-        System.out.println("Enter Your Login");
-        func = s -> {
-            controller.setLogin(s);
+        runner = () -> {
+            System.out.println("Enter Your Login");
+            controller.setLogin(readLine());
             System.out.println("Enter Your Password");
             controller.setPassword(readLine());
             try {
@@ -237,29 +238,30 @@ public class TerminalView implements MyView, Runnable {
 
     @Override
     public void watchHero() {
-        player = model.getPlayer();
+        runner = () -> {
+            player = model.getPlayer();
 
-        System.out.println("Your hero:");
-        for (int i = 0; i < LABELS.length; i++) {
-            printParamOrLogs(i);
+            System.out.println("Your hero:");
+            for (int i = 0; i < LABELS.length; i++) {
+                printParamOrLogs(i);
+                System.out.println("");
+            }
             System.out.println("");
-        }
-        System.out.println("");
 
-        if (confirm("Do you accept it?")) {
-            controller.startGame();
-        } else {
-            controller.startMenu();
-        }
+            if (confirm("Do you accept it?")) {
+                controller.startGame();
+            } else {
+                controller.startMenu();
+            }
+        };
     }
 
     @Override
     public void startGame() {
-        System.out.println("Game Start");
-        refresh();
-        func = s -> {
+        runner = () -> {
+            refresh();
             try {
-                Actions action = Actions.getAction(s);
+                Actions action = Actions.getAction(readLine());
                 if (controller.isMeetEnemy(action) && !confirm("Do you want fight?") && Dice.d2()) {
                     return;
                 } else {
@@ -268,7 +270,6 @@ public class TerminalView implements MyView, Runnable {
                         controller.moveWorld();
                         getReward();
                     }
-                    refresh();
                 }
             } catch (DeadException e) {
                 refresh();
@@ -342,11 +343,7 @@ public class TerminalView implements MyView, Runnable {
                 case "s":
                 case "salamander": return Clazz.SALAMANDER;
                 default:
-                    System.out.println("Enter Your Class");
-                    System.out.println("1) Capybara");
-                    System.out.println("2) Honey badger");
-                    System.out.println("3) Alpaca");
-                    System.out.println("4) Salamander");
+                    System.out.println("Enter the number 1-4 or first letter"); break;
             }
 
         }
