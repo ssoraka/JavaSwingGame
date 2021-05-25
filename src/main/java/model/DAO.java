@@ -19,9 +19,7 @@ import static model.war.Warrior.*;
 
 public class DAO {
 
-    //https://habr.com/en/sandbox/88039/
-    //https://alekseygulynin.ru/rabota-s-sqlite-v-java/
-
+    private static boolean loggerOn = ApplicationProperties.propertyEqual("db_logs", "true");
     private static String LOGIN = "login";
     private static String PASSWORD = "password";
     private static String ID = "id";
@@ -51,21 +49,24 @@ public class DAO {
     private static Connection connection;
     private StringBuilder request;
 
-    // --------ПОДКЛЮЧЕНИЕ К БАЗЕ ДАННЫХ--------
     public synchronized void createConnection() throws SQLException {
         if (connection == null) {
             DriverManager.registerDriver(new JDBC());
             connection = DriverManager.getConnection("jdbc:sqlite:" + ApplicationProperties.getProperties("db_path"));
-            System.out.println("База Подключена!");
+            if (loggerOn) {
+                System.out.println("Base connected!");
+            }
         }
     }
 
     public DAO() throws SQLException {
         createConnection();
-        dropTable();
-        createDB();
-        initDB();
-        readDB();
+        if (ApplicationProperties.propertyEqual("profile", "test")) {
+            dropTable();
+            createDB();
+            initDB();
+            readDB();
+        }
     }
 
     public void closeDB() {
@@ -76,13 +77,17 @@ public class DAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("Соединения закрыты, база отключена");
+        if (loggerOn) {
+            System.out.println("Connections closed, base disconnected");
+        }
     }
 
     public void dropTable() {
         try ( PreparedStatement statement = connection.prepareStatement(DROP_TABLE_QUERY) ) {
             statement.execute() ;
-            System.out.println("удалили старую таблицу");
+            if (loggerOn) {
+                System.out.println("deleted the old table");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -91,14 +96,17 @@ public class DAO {
     public void createDB() {
         try ( PreparedStatement statement = connection.prepareStatement(CREATE_TABLE_QUERY) ) {
             statement.execute();
-            System.out.println("создали новую таблицу");
+            if (loggerOn) {
+                System.out.println("Created a new table");
+            }
         } catch (SQLException e) {
-            System.out.println("Не получилось создать таблицу");
+            if (loggerOn) {
+                System.out.println("Failed to create table");
+            }
             e.printStackTrace();
         }
     }
 
-    // --------Заполнение таблицы--------
     public void initDB() {
         Warrior player = WarriorFabric.createPlayer("Capybara", Clazz.CAPYBARA);
         player.setExperience(0);
@@ -111,11 +119,16 @@ public class DAO {
         player = WarriorFabric.createPlayer("Name3", Clazz.HONEY_BADGER);
         createPlayer(player.getName(), "_" + player.getName() + "_", player);
 
-        System.out.println("Таблица заполнена");
+        if (loggerOn) {
+            System.out.println("Init table");
+        }
     }
 
-    // -------- Вывод таблицы--------
     public void readDB() {
+        if (!loggerOn) {
+            return;
+        }
+
         try ( PreparedStatement statement = connection.prepareStatement(SELECT_QUERY_ALL) ) {
             ResultSet resSet = statement.executeQuery();
             while (resSet.next()) {
@@ -139,7 +152,7 @@ public class DAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println("Таблица выведена");
+        System.out.println("select");
     }
 
     private void insertRequest(String field, String value) {
@@ -212,7 +225,7 @@ public class DAO {
             statement.execute();
             readDB();
         } catch (Exception e) {
-            System.out.println("Не записалось в бд");
+            System.err.println("Not registered in the database");
             e.printStackTrace();
         }
     }
@@ -246,7 +259,7 @@ public class DAO {
             statement.execute();
             readDB();
         } catch (Exception e) {
-            System.out.println("Не обновилась запись в бд");
+            System.err.println("The record in the database has not been updated");
             e.printStackTrace();
         }
     }
@@ -283,9 +296,9 @@ public class DAO {
                 throw new DAOException(log.toString());
             }
         } catch (IllegalArgumentException e) {
-            throw new DAOException("Неверно указаны оружие, броня или шлем");
+            throw new DAOException("Weapon, armor or helmet specified incorrectly");
         } catch (SQLException e) {
-            throw new DAOException("Нет такого в бд");
+            throw new DAOException("There is no such login and password in the database");
         }
         return player;
     }

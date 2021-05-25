@@ -50,7 +50,6 @@ public class MyModel implements ModelController, ModelView {
     public Item getItem() {
         return items.remove(0);
     }
-    // реакции на контроллеры
 
     @Override
     public boolean movePlayer(Point shift) {
@@ -82,7 +81,7 @@ public class MyModel implements ModelController, ModelView {
     @Override
     public void findPerson(String login, String password) {
         if (!db.isLoginAndPasswordAlreadyExist(login, password)) {
-            throw new DAOException("Неверное имя или пароль");
+            throw new DAOException("Invalid login or password");
         }
         setPlayer(db.readPlayer(login, password));
     }
@@ -90,7 +89,7 @@ public class MyModel implements ModelController, ModelView {
     @Override
     public void createNewPerson(String login, Clazz clazz) {
         if (db.isLoginAlreadyExist(login)) {
-            throw new DAOException("Такое имя уже существует");
+            throw new DAOException("This name already used");
         }
         setPlayer(WarriorFabric.createPlayer(login, clazz));
     }

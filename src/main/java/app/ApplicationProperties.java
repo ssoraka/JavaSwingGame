@@ -45,5 +45,18 @@ public class ApplicationProperties {
 
         return store.get(key);
     }
+
+    public static boolean propertyEqual(String key, String value) {
+        if (store == null) {
+            store = new HashMap<>();
+            readApplicationProperties();
+        }
+
+        if (!store.containsKey(key)) {
+            return false;
+        }
+
+        return store.get(key).equals(value);
+    }
 }
 

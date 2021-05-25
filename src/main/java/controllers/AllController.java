@@ -35,14 +35,14 @@ public class AllController {
 
     public void createNewPersonInGame() {
         if (password.isEmpty() || login.isEmpty()) {
-            throw new DAOException("Ошибка: Введите логин и пароль");
+            throw new DAOException("Error: Enter login and password");
         }
         model.createNewPerson(login, clazz);
     }
 
     public void findPersonInGame() {
         if (password.isEmpty() || login.isEmpty()) {
-            throw new RuntimeException("Ошибка: Введите логин и пароль");
+            throw new RuntimeException("Error: Enter login and password");
         }
         model.findPerson(login, password);
     }

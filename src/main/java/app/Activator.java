@@ -16,15 +16,6 @@ public class Activator {
     private static final String TERMINAL_MODE = "console";
     private static final String SWING_MODE = "gui";
 
-    /*
-
-    -убрать вывод базы в терминал, очищение базы в самом начале
-    -надо попробовать убрать ворнинг
-    May 16, 2021 7:13:20 PM org.hibernate.validator.internal.util.Version <clinit>
-    INFO: HV000001: Hibernate Validator 6.0.13.Final
-
-     */
-
     private static final String USAGE =
             "java -jar swingy.jar console\n" +
             "java -jar swingy.jar gui";

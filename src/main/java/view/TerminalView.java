@@ -222,6 +222,9 @@ public class TerminalView implements MyView, Runnable {
                     controller.watchHero();
                 } catch (DAOException ex) {
                     System.out.println(ex.getMessage());
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {}
                     controller.startMenu();
                 }
             }
@@ -241,7 +244,9 @@ public class TerminalView implements MyView, Runnable {
                     controller.findPersonInGame();
                     controller.watchHero();
                 } catch (DAOException ex) {
-                    System.out.println(ex.getMessage());
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {}
                     controller.startMenu();
                 }
             }

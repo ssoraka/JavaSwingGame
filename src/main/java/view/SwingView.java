@@ -221,9 +221,9 @@ public class SwingView extends JFrame implements MyView {
         setBounds(0,0,400,400);
         setSize(400,400);
 
-        JButton buttonCreate = new JButton("Начать сначала");
-        JButton buttonContinue = new JButton("Продолжить");
-        JButton buttonExit = new JButton("Выход");
+        JButton buttonCreate = new JButton("Try again");
+        JButton buttonContinue = new JButton("Continue");
+        JButton buttonExit = new JButton("Exit");
         add(buttonCreate);
         add(buttonContinue);
         add(buttonExit);
@@ -297,11 +297,11 @@ public class SwingView extends JFrame implements MyView {
     }
 
     private void createConfirmBack() {
-        buttonConfirm = new JButton("Подтвердить");
+        buttonConfirm = new JButton("Accept");
         buttonConfirm.setBounds(200, 300, 200, 50);
         add(buttonConfirm);
 
-        buttonBack = new JButton("назад");
+        buttonBack = new JButton("Back");
         buttonBack.setBounds(0, 300, 200, 50);
         add(buttonBack);
     }
